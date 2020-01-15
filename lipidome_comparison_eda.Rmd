@@ -1,0 +1,27 @@
+---
+title: "Lipidome Comparison EDA"
+author: "Lisa Schneider"
+date: "January 15, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+data_path <- "/home/lisa/FH/Masterarbeit/TestData/lipidome_comparison_test_data.csv"
+```
+
+## Data import
+
+
+```{r data}
+input_data <- read.csv(data_path)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
