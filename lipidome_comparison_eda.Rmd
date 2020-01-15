@@ -5,23 +5,30 @@ date: "January 15, 2020"
 output: html_document
 ---
 
+Install dependencies
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-data_path <- "/home/lisa/FH/Masterarbeit/TestData/lipidome_comparison_test_data.csv"
+install.packages("reshape")
 ```
 
-## Data import
+Load packages
+```{r packages, include=FALSE}
+library(knitr)
+library(reshape)
+```
+Set path
+```{r path, include=FALSE}
+data_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/Probe-Datensatz_lisa.csv"
+```
 
-
+Data import & sorting
 ```{r data}
-input_data <- read.csv(data_path)
+input_data <- read.table(data_path, header = TRUE, sep = ",", dec = ".") #read data
 ```
 
-## Including Plots
+Summary data
+```{r summary}
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
