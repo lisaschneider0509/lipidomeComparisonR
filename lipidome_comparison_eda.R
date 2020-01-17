@@ -29,13 +29,32 @@ biol_replicate <- list(substr(row.names(working_data), 1, 5)) # letter 1-5 ident
 means_biol <- as.data.frame(aggregate(working_data, by=sample_ID, FUN=mean)) # grouping by sample-ID calculates the mean over all biological replicates
 means_tech <- as.data.frame(aggregate(working_data, by=biol_replicate, FUN=mean)) # grouping by biological replicate calculates the mean over all technical replicates
 
-plotlist <- list()
-for (i in 2:ncol(means_tech[,1: ncol(means_tech)])){  
-  p1 <- ggplot(means_tech, aes(sample=means_tech[, i]))+stat_qq()+stat_qq_line()+labs(title = colnames(means_tech)[i])
-  plotlist[[i]] <- p1
+plot_qq <- function(sample_df,plot_type){
+  print(plot_type)
+  plotlist <- list()
+  for (i in 2:ncol(sample_df[,1: ncol(sample_df)])){
+    if (plot_type=="qqplot"){
+      p1 <- ggplot(sample_df, aes(sample=sample_df[, i]))
+      p1 <- p1 + labs(title = colnames(means_tech)[i])
+      p1 <- p1 +stat_qq()+stat_qq_line()
+    }
+    else if(plot_type=="boxplot"){
+          p1 <- ggplot(means_tech, aes(x=means_tech[[1]], y=means_tech[,i])) 
+    p1 <- p1 + geom_boxplot()+labs(title = colnames(means_tech)[i])
+    }
+    else if(plot_type=="histogram"){
+      p1 <- ggplot(means_tech, aes(means_tech[,i])) 
+      p1 <- p1 + geom_histogram()+labs(title = colnames(means_tech)[i])
+    }
+    plotlist[[i]] <- p1
+  }
+  
+  n_plots <- length(plotlist)
+  nCol <- floor(sqrt(n_plots))
+  grid.arrange(grobs = plotlist[2:ncol(sample_df)], ncol = nCol)
 }
+plot_qq(means_tech, "boxplot")
 
-n_plots <- length(plotlist)
-nCol <- floor(sqrt(n_plots))
-grid.arrange(grobs = plotlist[2:ncol(means_tech)], ncol = nCol)
+
+
 
