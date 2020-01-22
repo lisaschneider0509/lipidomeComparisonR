@@ -21,8 +21,20 @@ theme_set(
 )
 
 # set variables
+working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
+setwd(working_directory)
+
 input_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/Probe-Datensatz_lisa.csv"
 test_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/prefix_data.csv"
+plot_path <- paste(working_directory, "/plots", sep = "")
+plot_name <- paste(plot_path, "/test_data")
+
+
+if (! file.exists(plot_path)){
+  print("HI")
+} else {
+  print("Nope")
+}
 
 # load & transform data
 lipid_data <- read.csv(input_path, sep = ",", dec = ".", header = TRUE) #read data
@@ -41,9 +53,6 @@ working_data <- t_test_data
 
 
 ### summary biological & technical replicates
-sample_ID <- list(substr(row.names(working_data), 1, 3)) # letter 1-3 identify the sample
-# biol_replicate <- list(substr(row.names(working_data), 1, 5)) # letter 1-5 identify the biological replicates
-
 meta_info <- read.table(text = row.names(working_data), sep = "_")
 meta_info$V2 <- paste(meta_info$V1, meta_info$V2, sep = "_")
 meta_info$V3 <- NULL
@@ -51,33 +60,35 @@ working_data <- tibble::add_column(working_data, treatment = meta_info$V1, .befo
 working_data <- tibble::add_column(working_data, biol_replicate = meta_info$V2, .after = 1)
 
 means_biol <- as.data.frame(aggregate(working_data[-(1:2)], by=list(working_data$treatment), FUN=mean)) # grouping by sample-ID calculates the mean over all biological replicates
-means_tech <- as.data.frame(aggregate(working_data[-(1:2)], by=biol_replicate, FUN=mean)) # grouping by biological replicate calculates the mean over all technical replicates
+means_tech <- as.data.frame(aggregate(working_data[-(1:2)], by=list(working_data$biol_replicate), FUN=mean)) # grouping by biological replicate calculates the mean over all technical replicates
 
-plot_qq <- function(sample_df,plot_type){
-  print(plot_type)
-  plotlist <- list()
-  for (i in 2:ncol(sample_df[,1: ncol(sample_df)])){
-    if (plot_type=="qqplot"){
-      p1 <- ggplot(sample_df, aes(sample=sample_df[, i]))
-      p1 <- p1 + labs(title = colnames(means_tech)[i])
-      p1 <- p1 +stat_qq()+stat_qq_line()
-    }
-    else if(plot_type=="boxplot"){
-          p1 <- ggplot(means_tech, aes(x=means_tech[[1]], y=means_tech[,i])) 
-    p1 <- p1 + geom_boxplot()+labs(title = colnames(means_tech)[i])
-    }
-    else if(plot_type=="histogram"){
-      p1 <- ggplot(means_tech, aes(means_tech[,i])) 
-      p1 <- p1 + geom_histogram()+labs(title = colnames(means_tech)[i])
-    }
-    plotlist[[i]] <- p1
-  }
-  
-  n_plots <- length(plotlist)
-  nCol <- floor(sqrt(n_plots))
-  grid.arrange(grobs = plotlist[2:ncol(sample_df)], ncol = nCol)
+sd_biol <- as.data.frame(aggregate(working_data[-(1:2)], by=list(working_data$treatment), FUN=sd)) # grouping by sample-ID calculates the mean over all biological replicates
+sd_tech <- as.data.frame(aggregate(working_data[-(1:2)], by=list(working_data$biol_replicate), FUN=sd)) # grouping by biological replicate calculates the mean over all technical replicates
+
+## plots for normal distribution
+sample_df <- working_data
+
+pdf(paste(graph_path, "_qqplot", ".pdf", sep = ""))
+par(mfrow=c(3,3))
+for (i in 3:ncol(sample_df[,1: ncol(sample_df)])){
+  col_name <- colnames(sample_df)[i]
+  qqnorm(sample_df[,i], main = col_name, cex.main = 0.8) # qq-plot
+  qqline(sample_df[,i]) # expected values from qq if data was ND
 }
-plot_qq(working_data, "boxplot")
+dev.off()
+ 
+pdf(paste(out_name, "_histogram", ".pdf", sep = ""))
+par(mfrow=c(3,3))
+for (i in 3:ncol(sample_df[,1: ncol(sample_df)])){
+  col_name <- colnames(sample_df)[i]
+  hist(sample_df[,i], main = col_name, xlab = "intensity", cex.main = 0.8)
+  lines(density(sample_df[,i]))
+  lines(density(sample_df[,i],adjust=1.5),col=2) # 1.5 x bandwidth 
+}
+dev.off()
+
+## test for normal distribution
+### Don't use with multi modal data --> check histogram and qq plots first
 
 
 
