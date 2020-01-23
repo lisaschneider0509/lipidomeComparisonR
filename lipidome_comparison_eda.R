@@ -27,7 +27,7 @@ setwd(working_directory)
 input_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/Probe-Datensatz_lisa.csv"
 test_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/prefix_data.csv"
 plot_path <- paste(working_directory, "/plots", sep = "")
-plot_name <- paste(plot_path, "/test_data")
+plot_name <- paste(plot_path, "/test_data", sep = "")
 
 
 if (! file.exists(plot_path)){
@@ -68,22 +68,42 @@ sd_tech <- as.data.frame(aggregate(working_data[-(1:2)], by=list(working_data$bi
 ## plots for normal distribution
 sample_df <- working_data
 
-pdf(paste(graph_path, "_qqplot", ".pdf", sep = ""))
+pdf(paste(plot_name, "_qqplot", ".pdf", sep = ""))
 par(mfrow=c(3,3))
 for (i in 3:ncol(sample_df[,1: ncol(sample_df)])){
   col_name <- colnames(sample_df)[i]
+  levels <- levels(sample_df$treatment)
+  color_list <- c("blue", "red", "green") 
+  
+  # qqnorm(sample_df[,i][sample_df$treatment == levels[1]], main = col_name, cex.main = 0.8, xlab = NULL, col = color_list[1])
+  # qqline(sample_df[,i][sample_df$treatment == levels[1]])
+  # 
+  # for (j in 2:length(levels)){
+  #   qqnorm(sample_df[,i][sample_df$treatment == levels[j]], main = col_name, cex.main = 0.8, xlab = NULL, col = color_list[j], add = TRUE)
+  #   qqline(sample_df[,i][sample_df$treatment == levels[j]], col = color_list[j], add = TRUE)
+  # }
+  
   qqnorm(sample_df[,i], main = col_name, cex.main = 0.8) # qq-plot
   qqline(sample_df[,i]) # expected values from qq if data was ND
 }
 dev.off()
  
-pdf(paste(out_name, "_histogram", ".pdf", sep = ""))
+pdf(paste(plot_name, "_histogram", ".pdf", sep = ""))
 par(mfrow=c(3,3))
 for (i in 3:ncol(sample_df[,1: ncol(sample_df)])){
   col_name <- colnames(sample_df)[i]
+  levels <- levels(sample_df$treatment)
+  color_list <- c(rgb(173,216,230,max = 255, alpha = 80, names = "lt.blue"), rgb(255,192,203, max = 255, alpha = 80, names = "lt.pink"), rgb(144,238,144, max = 255, alpha = 80, names = "lt.green")) 
+
+  # hist(sample_df[,i][sample_df$treatment == levels[1]], main = col_name, cex.main = 0.8, xlab = NULL, col = color_list[1], border = FALSE)
+  # lines(density(sample_df[,i][sample_df$treatment == levels[1]]))
+  # 
+  # for (j in 2:length(levels)){
+  #   hist(sample_df[,i][sample_df$treatment == levels[j]], add = TRUE, col = color_list[j], border = FALSE)
+  # }
   hist(sample_df[,i], main = col_name, xlab = "intensity", cex.main = 0.8)
   lines(density(sample_df[,i]))
-  lines(density(sample_df[,i],adjust=1.5),col=2) # 1.5 x bandwidth 
+  lines(density(sample_df[,i],adjust=1.5),col=2) # 1.5 x bandwidth
 }
 dev.off()
 
