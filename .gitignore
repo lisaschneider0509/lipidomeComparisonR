@@ -3,3 +3,5 @@
 *.csv
 *scratch*
 *.Rhistory
+.Rproj.user
+packrat/lib*/
