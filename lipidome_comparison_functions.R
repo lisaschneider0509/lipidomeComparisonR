@@ -2,8 +2,7 @@
 
 ### Data handeling
 ## read and transpose data
-read_transpose <- function(input_path){
-  input_df <- read.csv(input_path, sep = ",", dec = ".", header = TRUE) #read data
+read_transpose <- function(input_df){
   t_input_df <- data.table::transpose(as.data.table(input_df), make.names = 1)
   t_input_df <- as.data.frame(t_input_df)
   row.names(t_input_df) <- colnames(input_df[-1])
@@ -33,12 +32,17 @@ SID_to_metadata <- function(input_df){
   }
 }
 
+## remove non numeric columns
+# remove_non_numeric <- function(input_df){
+  working_data[lapply(working_data, is.numeric)]
+}
+
 ### Exploratory data analysis 
 ## calculate by biological replicate
 # grouping by treatment calculates the mean/sd/etc. over all biological replicates
 calc_biol_rep <- function(input_df, funct){ 
   as.data.frame(
-    aggregate(input_df[-(1:3)], 
+    aggregate(dplyr::select_if(input_df, is.numeric), 
             by=list(input_df$treatment), 
             FUN=funct)
   )
@@ -48,7 +52,7 @@ calc_biol_rep <- function(input_df, funct){
 # grouping by biological replicate calculates the mean over all technical replicates
 calc_tech_rep <- function(input_df, funct){
   as.data.frame(
-    aggregate(input_df[-(1:3)], 
+    aggregate(dplyr::select_if(input_df, is.numeric), 
               by=list(input_df$biol_replicate), 
               FUN=funct)
   )
@@ -96,15 +100,60 @@ histogram_by_factor <- function(input_df, by_factor, out_path){
 }
 
 ## boxplot by factor
-boxplot_by_factor <- function(input_df, by_factor, out_path){
-    pdf(paste(plot_name, "_boxplot", ".pdf", sep = ""))
+boxplot_by_factor <- function(input_df, by_factor, out_path){ 
+  input_df <- 
+  pdf(paste(plot_name, "_boxplot", ".pdf", sep = ""))
   par(mfrow=c(3,3))
     for (i in 4:ncol(input_df[,1: ncol(input_df)])){
       col_name <- colnames(input_df)[i]
-      boxplot(working_data[,i] ~ working_data[[by_factor]], 
+      boxplot(input_df[,i] ~ input_df[[by_factor]], 
               main = col_name,
               cex.main = 0.8,
               xlab = NULL, 
               ylab = NULL)}
   dev.off()}
+
+## shapiro-wilk by factor
+shapiro_by_factor <- function(input_df, by_factor){
+  
+  shapiro_statistic <- aggregate(dplyr::select_if(input_df, is.numeric), 
+                                 by = list(input_df[[by_factor]]),
+                                 FUN = function(x) {y <- shapiro.test(x); c(y$statistic)})
+  
+  shapiro_statistic <- tibble::add_column(shapiro_statistic, 
+                                          value = "W", 
+                                          .before = 1)
+  
+  shapiro_pvalue <- aggregate(dplyr::select_if(input_df, is.numeric), 
+                              by = list(input_df[[by_factor]]),
+                              FUN = function(x) {y <- shapiro.test(x); c(y$p.value)})
+  
+  shapiro_pvalue <- tibble::add_column(shapiro_pvalue, 
+                                       value = "p-Value", 
+                                       .before = 1)
+  
+  shapiro_all <- rbind(shapiro_statistic, shapiro_pvalue)
+  shapiro_all[order(shapiro_all[,2]), ]
+}
+
+## test for correlation
+correlation_plot <- function(input_df, method){
+  panel.cor <- function(x, y){
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- round(cor(x, y, use = "pairwise.complete.obs", method = method), digits=2)
+    txt <- paste0("R = ", r)
+    text(0.5, 0.5, txt, cex = 1.5)
+  }
+  
+  mypanel <- function(x, y){
+    points(x, y, pch = 20)
+  }
+  
+  pairs(dplyr::select_if(input_df, is.numeric),
+        lower.panel = mypanel,
+        upper.panel = panel.cor)
+} # max 10 variables
+
+
 

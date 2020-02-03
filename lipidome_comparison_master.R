@@ -4,8 +4,11 @@
 # install.packages("tidyr")
 # install.packages("data.table")
 # install.packages("textshape")
-BiocManager::install("mixOmics")
-BiocManager::install("RVAideMemoire")
+# BiocManager::install("mixOmics")
+# BiocManager::install("RVAideMemoire")
+# install.packages("MASS")
+# install.packages("psych")
+# install.packages("dplyr")
 
 ### load packages
 library(gridExtra)
@@ -16,6 +19,9 @@ library(data.table)
 library(textshape)
 library(tibble)
 library(RVAideMemoire)
+library(MASS)
+library(psych)
+library(dplyr)
 
 source("lipidome_comparison_functions.R")
 
@@ -37,12 +43,16 @@ plot_name <- paste(plot_path, "/test_data", sep = "")
 
 
 ## load & transform data
-t_lipid_data <- read_transpose(input_path)
-t_test_data <- read_transpose(test_path)
+lipid_data <- read.csv(input_path, sep = ",", dec = ".", header = TRUE) #read data
+test_data <- read.csv(test_path, sep = ",", dec = ".", header = TRUE)
+
+t_lipid_data <- read_transpose(lipid_data)
+t_test_data <- read_transpose(test_data)
 
 working_data <- t_test_data
 
 working_data <- SID_to_metadata(working_data)
+
 
 
 ## summary biological & technical replicates
@@ -62,10 +72,18 @@ boxplot_by_factor(working_data, "treatment", plot_name)
 
 ## test for normal distribution
 ### Don't use with multi modal data --> check histogram and qq plots first
-# shapiro_all <- lapply(working_data[-(1:3)], shapiro.test)
-# shapiro_all <- sapply(shapiro_all, `[`, c("statistic","p.value"))
+shapiro_all <- lapply(working_data_numeric, shapiro.test)
+shapiro_all <- sapply(shapiro_all, `[`, c("statistic","p.value"))
 
-aggregate(working_data, by = list(working_data[[2]]),
-          FUN = function(x) {y <- shapiro.test(x); c(y$statistic, y$p.value)})
+shapiro_by_treatment <- shapiro_by_factor(working_data, "treatment")
 
-# RVAideMemoire::byf.shapiro(working_data$`5-HETE` ~ working_data$treatment, working_data)
+
+## check for correlations between lipids
+correlation_plot(working_data, "pearson") # for <= 10 variables
+
+
+### plots 
+## paralell plot 
+mycolors <- colors()[as.numeric(working_data$treatment)*11]
+MASS::parcoord(dplyr::select_if(working_data, is.numeric), col = mycolors)
+
