@@ -4,24 +4,34 @@
 # install.packages("tidyr")
 # install.packages("data.table")
 # install.packages("textshape")
-# BiocManager::install("mixOmics")
-# BiocManager::install("RVAideMemoire")
+## BiocManager::install("mixOmics")
+## BiocManager::install("RVAideMemoire") 
 # install.packages("MASS")
 # install.packages("psych")
 # install.packages("dplyr")
+# install.packages("devtools")
+# devtools::install_github("ricardo-bion/ggradar", dependencies=TRUE)
+# install.packages("fmsb")
+# install.packages("RColorBrewer")
+# install.packages("scales")
+
 
 ### load packages
-library(gridExtra)
-library(stringr)
-library(ggplot2)
-library(tidyr)
-library(data.table)
-library(textshape)
-library(tibble)
-library(RVAideMemoire)
-library(MASS)
-library(psych)
-library(dplyr)
+# library(gridExtra)
+library(stringr) # count separators
+library(ggplot2)#, # plots
+#library(ggradar, scales) # radar chart with ggplot
+# library(tidyr)
+library(data.table) # transpose data frame
+# library(textshape)
+library(tibble) # data frame manipulation
+# library(RVAideMemoire) 
+library(MASS) # for paralell plot 
+library(psych) # for correlation plot 
+library(dplyr) # select part of data
+library(fmsb) # spider chart
+library(RColorBrewer) # pretty color combinations
+library(scales) # scale opacity of filling (alpha)
 
 source("lipidome_comparison_functions.R")
 
@@ -35,55 +45,53 @@ theme_set(
 working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
 setwd(working_directory)
 
-
 input_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/Probe-Datensatz_lisa.csv"
 test_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/test2.csv"
 plot_path <- paste(working_directory, "/plots", sep = "")
 plot_name <- paste(plot_path, "/test_data", sep = "")
 
-
 ## load & transform data
 lipid_data <- read.csv(input_path, sep = ",", dec = ".", header = TRUE) #read data
 test_data <- read.csv(test_path, sep = ",", dec = ".", header = TRUE)
 
-t_lipid_data <- read_transpose(lipid_data)
-t_test_data <- read_transpose(test_data)
+t_lipid_data <- pretty_transpose(lipid_data)
+t_test_data <- pretty_transpose(test_data)
 
 working_data <- t_test_data
-
 working_data <- SID_to_metadata(working_data)
-
+working_data <- character_to_factor(working_data) 
 
 
 ## summary biological & technical replicates
+means_biol <- calc_by_replicate(working_data, "treatment", mean)
+means_tech <- calc_by_replicate(working_data, "biol_replicate", mean)
 
-means_biol <- calc_biol_rep(working_data, mean)
-means_tech <- calc_tech_rep(working_data, mean)
-
-sd_biol <- calc_biol_rep(working_data, sd)
-sd_tech <- calc_tech_rep(working_data, sd)
-
+sd_biol <- calc_by_replicate(working_data, "treatment", sd)
+sd_tech <- calc_by_replicate(working_data, "biol_replicate", sd)
 
 ## plots for normal distribution
 qqplot_by_factor(working_data, "treatment", plot_name)
 histogram_by_factor(working_data, "treatment", plot_name)
 boxplot_by_factor(working_data, "treatment", plot_name)
 
-
 ## test for normal distribution
 ### Don't use with multi modal data --> check histogram and qq plots first
-shapiro_all <- lapply(working_data_numeric, shapiro.test)
+shapiro_all <- lapply(dplyr::select_if(working_data, is.numeric), shapiro.test)
 shapiro_all <- sapply(shapiro_all, `[`, c("statistic","p.value"))
 
 shapiro_by_treatment <- shapiro_by_factor(working_data, "treatment")
 
-
 ## check for correlations between lipids
 correlation_plot(working_data, "pearson") # for <= 10 variables
 
-
 ### plots 
-## paralell plot 
-mycolors <- colors()[as.numeric(working_data$treatment)*11]
-MASS::parcoord(dplyr::select_if(working_data, is.numeric), col = mycolors)
+## paralell plot for <= 10 variables
+parallel_plot(working_data, "biol_replicate", plot_name) 
+
+## spider chart
+working_data <- SID_to_metadata(t_lipid_data) # calculate means so there is only one value per group
+working_data <- calc_by_replicate(working_data, "treatment", mean)
+
+spider_chart(working_data)
+
 
