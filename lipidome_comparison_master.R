@@ -57,7 +57,7 @@ test_data <- read.csv(test_path, sep = ",", dec = ".", header = TRUE)
 t_lipid_data <- pretty_transpose(lipid_data)
 t_test_data <- pretty_transpose(test_data)
 
-working_data <- t_test_data
+working_data <- t_lipid_data
 working_data <- SID_to_metadata(working_data)
 working_data <- character_to_factor(working_data) 
 
@@ -89,9 +89,18 @@ correlation_plot(working_data, "pearson") # for <= 10 variables
 parallel_plot(working_data, "biol_replicate", plot_name) 
 
 ## spider chart
-working_data <- SID_to_metadata(t_lipid_data) # calculate means so there is only one value per group
-working_data <- calc_by_replicate(working_data, "treatment", mean)
+spider_data <- SID_to_metadata(t_lipid_data) # calculate means so there is only one value per group
+spider_data <- calc_by_replicate(spider_data, "treatment", mean)
 
-spider_chart(working_data)
+spider_chart(spider_data)
 
 
+### PCA
+lipid_pca <- prcomp(select_if(working_data, is.numeric), scale = FALSE, center = TRUE)
+summary(lipid_pca)
+
+{plot(lipid_pca,
+      main = NULL)
+  title(main = NULL)}
+
+biplot(lipid_pca)
