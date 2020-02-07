@@ -235,19 +235,19 @@ spider_chart <- function(minimized_df, title="Spider chart", out_path){ # todo g
               cglwd=0.8,
               # custom labels
               vlcex=0.6, 
-              centerzero = FALSE, 
-              title = title
+             centerzero = FALSE, 
+             title = title
   )
 
   ## Add a legend
   legend(x=-2, 
-         y=1, 
+         y=1.1, 
          legend = rownames(spider_data[-(1:2),]), 
          bty = "n", 
          pch=20, 
-         col=colors_in, 
-         text.col = "grey", 
-         cex=1, pt.cex=1.5)
+         col=colors_border, 
+         text.col = "black", 
+         cex=0.7, pt.cex=1.3)
   # dev.off()
 }
 

@@ -1,46 +1,46 @@
 ### Install packages
-# install.packages("ggplot2")
+## general
+# install.packages("tibble")
 # install.packages("stringr")
-# install.packages("tidyr")
 # install.packages("data.table")
-# install.packages("textshape")
-## BiocManager::install("mixOmics")
-## BiocManager::install("RVAideMemoire") 
-
-# install.packages("psych")
 # install.packages("dplyr")
 # install.packages("devtools")
-# devtools::install_github("ricardo-bion/ggradar", dependencies=TRUE)
-# install.packages("fmsb")
-# install.packages("RColorBrewer")
+
+## graphs
+# install.packages("ggplot2")
 # install.packages("scales")
+# install.packages("viridis")
+
+## correlation plot 
+# install.packages("psych")
+
+## for spider chart
+# install.packages("fmsb")
 
 ## for paralell plot
 # install.packages("GGally")
-# install.packages("viridis")
+
 # install.packages("hrbrthemes")
-# install.packages("MASS") # alternative parallel plot
+
+## for PCA
+# install.packages("ggfortify")
+
 
 
 ### load packages
 # library(gridExtra)
 library(stringr) # count separators
 library(ggplot2)#, # plots
-#library(ggradar, scales) # radar chart with ggplot
-# library(tidyr)
 library(data.table) # transpose data frame
-# library(textshape)
 library(tibble) # data frame manipulation
-# library(RVAideMemoire) 
-library(MASS) # for paralell plot 
-library(GGally, viridis, hrbrthemes)
-
-
+library(viridis) # colorblind save color schemes
+library(GGally, hrbrthemes) # paralell plot
 library(psych) # for correlation plot 
 library(dplyr) # select part of data
 library(fmsb) # spider chart
-library(RColorBrewer) # pretty color combinations
 library(scales) # scale opacity of filling (alpha)
+library(devtools)
+library(ggfortify)
 
 source("lipidome_comparison_functions.R")
 
@@ -106,11 +106,22 @@ spider_chart(spider_data[1:10])
 
 
 ### PCA
-lipid_pca <- prcomp(select_if(working_data, is.numeric), scale = FALSE, center = TRUE)
+wd <- working_data
+lipid_pca <- prcomp(select_if(wd[1:30], is.numeric), scale = FALSE, center = TRUE)
 summary(lipid_pca)
+# 
+# {plot(lipid_pca,
+#       main = NULL)
+#   title(main = NULL)}
+# 
+# biplot(lipid_pca)
 
-{plot(lipid_pca,
-      main = NULL)
-  title(main = NULL)}
+autoplot(lipid_pca, data = wd, colour = 'treatment',
+         loadings = TRUE,
+         loadings.label = TRUE, 
+         loadings.label.size = 3, 
+         frame = TRUE, 
+         frame.type = "norm"
+         ) + scale_color_viridis(discrete=TRUE)
 
-biplot(lipid_pca)
+
