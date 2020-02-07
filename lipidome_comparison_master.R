@@ -6,7 +6,7 @@
 # install.packages("textshape")
 ## BiocManager::install("mixOmics")
 ## BiocManager::install("RVAideMemoire") 
-# install.packages("MASS")
+
 # install.packages("psych")
 # install.packages("dplyr")
 # install.packages("devtools")
@@ -14,6 +14,12 @@
 # install.packages("fmsb")
 # install.packages("RColorBrewer")
 # install.packages("scales")
+
+## for paralell plot
+# install.packages("GGally")
+# install.packages("viridis")
+# install.packages("hrbrthemes")
+# install.packages("MASS") # alternative parallel plot
 
 
 ### load packages
@@ -27,6 +33,9 @@ library(data.table) # transpose data frame
 library(tibble) # data frame manipulation
 # library(RVAideMemoire) 
 library(MASS) # for paralell plot 
+library(GGally, viridis, hrbrthemes)
+
+
 library(psych) # for correlation plot 
 library(dplyr) # select part of data
 library(fmsb) # spider chart
@@ -86,13 +95,14 @@ correlation_plot(working_data, "pearson") # for <= 10 variables
 
 ### plots 
 ## paralell plot for <= 10 variables
-parallel_plot(working_data, "biol_replicate", plot_name) 
+parallel_plot(working_data[1:10], "treatment", plot_name) 
 
 ## spider chart
 spider_data <- SID_to_metadata(t_lipid_data) # calculate means so there is only one value per group
 spider_data <- calc_by_replicate(spider_data, "treatment", mean)
+rownames(spider_data) <- spider_data$Group.1
 
-spider_chart(spider_data)
+spider_chart(spider_data[1:10])
 
 
 ### PCA

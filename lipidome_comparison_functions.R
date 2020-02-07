@@ -159,50 +159,95 @@ correlation_plot <- function(input_df, method){
 } # max 10 variables
 
 ## parallel coordinates plot 
-parallel_plot <- function(input_df, by_factor, out_path){
-  # pdf(paste(plot_name, "_ParallelPlot", ".pdf", sep = ""))
+parallel_plot <- function(input_df,  factor, out_path, 
+                          titles = c("Paralell Plot", "", ""), 
+                          scale = "center"){
+  # # pdf(paste(plot_name, "_ParallelPlot", ".pdf", sep = ""))
   par(mfrow=c(1,1))
-  mycolors <- colors()[as.numeric(input_df[[by_factor]])*11]
-  MASS::parcoord(dplyr::select_if(input_df, is.numeric), col = mycolors)
-  # dev.off()
+  
+  parallel_title <- titles[[1]]
+  x_axis_title <- titles[[2]]
+  y_axis_title <- titles[[3]]
+  x_labels <- substring(colnames(working_data),
+                        first = 1,
+                        last = 8)
+  y_labels <- NULL
+  
+  # Plot
+  ggparcoord(data,
+             columns = 1:10, 
+             groupColumn = ncol(data),
+             showPoints = TRUE, 
+             scale="center", # "center" is default
+             alphaLines = 0.3) + 
+    ggtitle(parallel_title) +
+    xlab(x_axis_title) + 
+    ylab(y_axis_title) +
+    scale_color_viridis(discrete=TRUE) +
+    theme_ipsum()+
+    theme( # font settings
+      plot.title = element_text(size=14, hjust = 0.5), 
+      axis.text.x = element_text(size = 8), 
+      axis.title = element_text(size = 10), 
+      axis.title.x = element_text(size = 10, hjust = 0.5),
+      axis.title.y = element_text(size = 10, hjust = 0.5),
+      legend.text = element_text(size = 8), 
+      legend.title = element_text(size = 10)) + 
+    scale_x_discrete(breaks = colnames(working_data), 
+                     labels = my_labels)
+  
+  # # dev.off()
 }
 
 ## spider chart (= radar chart, network plot, etc.)
-spider_chart <- function(minimized_df, title=""){ # todo get labels ot of the plot
-  # input_df <= 10 columns 
-  # minimized_df = dataframe with only one row per group (i.e. calculate means)
+spider_chart <- function(minimized_df, title="Spider chart", out_path){ # todo get labels ot of the plot
+  ## input_df <= 10 columns 
+  ## minimized_df = dataframe with only one row per group (i.e. calculate means)
   
-  row.names(minimized_df) <- minimized_df$Group.1 # set new row names 
-  spider_data <- minimized_df[-(1)] # remove column with rownames 
-  spider_labels <- substring(colnames(spider_data), 
-                             first = 1, 
-                             last = 10) # set max. label length to 10 characters
-  
-  ## Set graphic colors
-  # see RColorBrewer::display.brewer.all(colorblindFriendly = TRUE/FALSE) for more color options
-  colors_border <- RColorBrewer::brewer.pal(3, "Set1")
-  colors_in <- scales::alpha(colors_border,0.2)
-  
-  fmsb::radarchart( spider_data, # min. and max. value chosen automatically 
-                    axistype=0 , 
-                    maxmin=F,
-                    #custom polygon
-                    pcol=colors_border , pfcol=colors_in , plwd=1.5 , plty=1,
-                    #custom the grid
-                    cglcol="grey", cglty=1, axislabcol="black", cglwd=0.8, 
-                    #custom labels
-                    vlabels = spider_labels,
-                    vlcex=0.7, 
-                    title = title
+  # pdf(paste(plot_name, "_ParallelPlot", ".pdf", sep = ""))
+  spider_legend <- row.names(minimized_df) # set new row names 
+  spider_data <- dplyr::select_if(minimized_df, is.numeric) # remove column with rownames
+  spider_labels <- substring(colnames(spider_data), first = 1, last = 6) # set max. label length to 10 characters
+
+  spider_min <- floor(min(spider_data))
+  spider_max <- ceiling(max(spider_data))
+  spider_data <- as.data.frame(select_if(spider_data, is.numeric))
+
+  # add max and min to the dataframe to plot the grid
+  spider_data <- rbind(spider_min, spider_max, spider_data)
+
+  ## set colors
+  colors_border = as.vector(viridis(n = nrow(minimized_df), option = "viridis"))
+  colors_in = alpha(colors_border, alpha = 0.1)
+
+  ## radar chart
+  radarchart(spider_data,
+              axistype=0,
+              #custom polygon
+              pcol=colors_border,
+              pfcol=colors_in,
+              plwd=4,
+              plty=1,
+              # custom grid
+              cglcol="grey",
+              cglty=1,
+              axislabcol="grey",
+              cglwd=0.8,
+              # custom labels
+              vlcex=0.6, 
+              centerzero = FALSE, 
+              title = title
   )
-  
-  # Add a legend
-  legend(x=-2, y=1.4, 
-         legend = rownames(spider_data), 
-         bty = "n", pch=20, 
-         col=colors_border, 
-         # text.col = "grey", 
-         cex=0.7, 
-         pt.cex=1.3)
+
+  ## Add a legend
+  legend(x=-2, 
+         y=1, 
+         legend = rownames(spider_data[-(1:2),]), 
+         bty = "n", 
+         pch=20, 
+         col=colors_in, 
+         text.col = "grey", 
+         cex=1, pt.cex=1.5)
+  # dev.off()
 }
 
