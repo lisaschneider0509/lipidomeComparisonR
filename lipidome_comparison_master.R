@@ -74,9 +74,15 @@ working_data <- character_to_factor(working_data)
 ## summary biological & technical replicates
 means_biol <- calc_by_replicate(working_data, "treatment", mean)
 means_tech <- calc_by_replicate(working_data, "biol_replicate", mean)
+means_all <- apply(dplyr::select_if(working_data, is.numeric), 2, mean)
 
 sd_biol <- calc_by_replicate(working_data, "treatment", sd)
 sd_tech <- calc_by_replicate(working_data, "biol_replicate", sd)
+sd_all <- apply(dplyr::select_if(working_data, is.numeric), 2, sd)
+
+var_biol <- calc_by_replicate(working_data, "treatment", var)
+var_tech <- calc_by_replicate(working_data, "biol_replicate", var)
+var_all <- apply(dplyr::select_if(working_data, is.numeric), 2, var)
 
 ## plots for normal distribution
 qqplot_by_factor(working_data, "treatment", plot_name)
@@ -106,22 +112,51 @@ spider_chart(spider_data[1:10])
 
 
 ### PCA
+## 1. check variances if scaling is necessary 
+# (if there is a difference of > one potences between the variances)
 wd <- working_data
-lipid_pca <- prcomp(select_if(wd[1:30], is.numeric), scale = FALSE, center = TRUE)
-summary(lipid_pca)
-# 
-# {plot(lipid_pca,
-#       main = NULL)
-#   title(main = NULL)}
-# 
-# biplot(lipid_pca)
+var_all <- apply(dplyr::select_if(wd, is.numeric), 2, var); var_all
 
-autoplot(lipid_pca, data = wd, colour = 'treatment',
+lipid_pca <- prcomp(select_if(wd[1:30], is.numeric), scale = TRUE, center = TRUE)
+summary(lipid_pca)
+
+{plot(lipid_pca,
+      main = NULL)
+  title(main = NULL)}
+
+{ellipse_color <- as.vector(viridis(n = length(levels(wd$treatment))))
+autoplot(lipid_pca, data = wd, 
+         colour = 'treatment',
          loadings = TRUE,
-         loadings.label = TRUE, 
-         loadings.label.size = 3, 
-         frame = TRUE, 
-         frame.type = "norm"
-         ) + scale_color_viridis(discrete=TRUE)
+         loadings.colour =  "black",
+         loadings.label = TRUE,
+         loadings.label.size = 2,
+         loadings.label.colour = "black",
+         frame = TRUE,
+         frame.type = "norm",
+         frame.color = ellipse_color
+         ) + 
+  scale_fill_manual(values = ellipse_color) + 
+  scale_color_manual(values = ellipse_color) +
+  theme(text = element_text(colour = "black"))
+}
+
+# variance explained by each pc
+var_lipid_pca <- lipid_pca$sdev ^ 2
+
+# proportion of variance
+prop_of_variance <- var_lipid_pca / sum(var_lipid_pca)
+plot(prop_of_variance, # scree plot to decide which PCs are used 
+     xlab =" Principal Component ", 
+     ylab =" Proportion of Variance Explained ", 
+     ylim=c(0 ,1), 
+     type = "b", 
+     main = "Scree plot")
+plot(cumsum(prop_of_variance ), # scree plot to decide which PCs are used 
+     xlab =" Principal Component ", 
+     ylab ="Cumulative Proportion of Variance Explained ", 
+     ylim=c(0 ,1), 
+     type="b", 
+     main = "Cummulative scree plot") 
 
 
