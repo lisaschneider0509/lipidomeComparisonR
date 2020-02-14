@@ -24,7 +24,10 @@
 
 ## for PCA
 # install.packages("ggfortify")
+# install.packages("factoextra")
 
+## heatmap 
+# install.packages("plotly") # interactive heatmap
 
 
 ### load packages
@@ -41,13 +44,21 @@ library(fmsb) # spider chart
 library(scales) # scale opacity of filling (alpha)
 library(devtools)
 library(ggfortify)
+library(factoextra)
+library(plotly) # interactive heatmap
 
 source("lipidome_comparison_functions.R")
 
 # set ggplot theme
-theme_set(
+my_theme <- theme_set(
   theme_minimal() +
-    theme(legend.position = "top")
+    theme(plot.title = element_text(size=12, hjust = 0.5),
+        axis.text.x = element_text(size = 8),
+        # axis.title = element_text(size = 10),
+        axis.title.x = element_text(size = 10, hjust = 0.5),
+        axis.title.y = element_text(size = 10, hjust = 0.5),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10))
 )
 
 ## set variables
@@ -64,7 +75,9 @@ lipid_data <- read.csv(input_path, sep = ",", dec = ".", header = TRUE) #read da
 test_data <- read.csv(test_path, sep = ",", dec = ".", header = TRUE)
 
 t_lipid_data <- pretty_transpose(lipid_data)
+colnames(t_lipid_data) <- gsub(" ", "_", colnames(t_lipid_data), fixed = TRUE)
 t_test_data <- pretty_transpose(test_data)
+colnames(t_test_data) <- gsub(" ", "_", colnames(t_test_data), fixed = TRUE)
 
 working_data <- t_lipid_data
 working_data <- SID_to_metadata(working_data)
@@ -98,10 +111,12 @@ shapiro_by_treatment <- shapiro_by_factor(working_data, "treatment")
 
 ## check for correlations between lipids
 correlation_plot(working_data, "pearson") # for <= 10 variables
+## correlation heatmap --> for all variables
+correlation_heatmap(working_data, interactive = TRUE)
 
 ### plots 
 ## paralell plot for <= 10 variables
-parallel_plot(working_data[1:10], "treatment", plot_name) 
+parallel_plot(working_data, "treatment", plot_name) 
 
 ## spider chart
 spider_data <- SID_to_metadata(t_lipid_data) # calculate means so there is only one value per group
@@ -115,48 +130,19 @@ spider_chart(spider_data[1:10])
 ## 1. check variances if scaling is necessary 
 # (if there is a difference of > one potences between the variances)
 wd <- working_data
-var_all <- apply(dplyr::select_if(wd, is.numeric), 2, var); var_all
+groups <- wd$treatment
+var_all <- apply(dplyr::select_if(wd, is.numeric), 2, var)
 
 lipid_pca <- prcomp(select_if(wd[1:30], is.numeric), scale = TRUE, center = TRUE)
 summary(lipid_pca)
 
-{plot(lipid_pca,
-      main = NULL)
-  title(main = NULL)}
+var_lipid_pca <- lipid_pca$sdev ^ 2 # variance explained by each pc
+prop_of_variance <- var_lipid_pca / sum(var_lipid_pca) # proportion of variance
 
-{ellipse_color <- as.vector(viridis(n = length(levels(wd$treatment))))
-autoplot(lipid_pca, data = wd, 
-         colour = 'treatment',
-         loadings = TRUE,
-         loadings.colour =  "black",
-         loadings.label = TRUE,
-         loadings.label.size = 2,
-         loadings.label.colour = "black",
-         frame = TRUE,
-         frame.type = "norm",
-         frame.color = ellipse_color
-         ) + 
-  scale_fill_manual(values = ellipse_color) + 
-  scale_color_manual(values = ellipse_color) +
-  theme(text = element_text(colour = "black"))
-}
+scree_factoextra(lipid_pca)
+scree_base(lipid_pca)
 
-# variance explained by each pc
-var_lipid_pca <- lipid_pca$sdev ^ 2
+biplot_factoextra(lipid_pca, groups)
 
-# proportion of variance
-prop_of_variance <- var_lipid_pca / sum(var_lipid_pca)
-plot(prop_of_variance, # scree plot to decide which PCs are used 
-     xlab =" Principal Component ", 
-     ylab =" Proportion of Variance Explained ", 
-     ylim=c(0 ,1), 
-     type = "b", 
-     main = "Scree plot")
-plot(cumsum(prop_of_variance ), # scree plot to decide which PCs are used 
-     xlab =" Principal Component ", 
-     ylab ="Cumulative Proportion of Variance Explained ", 
-     ylim=c(0 ,1), 
-     type="b", 
-     main = "Cummulative scree plot") 
-
+### clustering and heatmap
 

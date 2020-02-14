@@ -168,34 +168,24 @@ parallel_plot <- function(input_df,  factor, out_path,
   parallel_title <- titles[[1]]
   x_axis_title <- titles[[2]]
   y_axis_title <- titles[[3]]
-  x_labels <- substring(colnames(working_data),
-                        first = 1,
-                        last = 8)
+  x_labels <- substring(colnames(input_df[4:ncol(input_df)]), first = 1, last = 6)
   y_labels <- NULL
   
   # Plot
-  ggparcoord(data,
-             columns = 1:10, 
-             groupColumn = ncol(data),
+  ggparcoord(input_df,
+             columns = 4:ncol(input_df),
+             groupColumn = 2,
              showPoints = TRUE, 
              scale="center", # "center" is default
-             alphaLines = 0.3) + 
+             alphaLines = 0.5)  +
     ggtitle(parallel_title) +
-    xlab(x_axis_title) + 
+    xlab(x_axis_title) +
     ylab(y_axis_title) +
     scale_color_viridis(discrete=TRUE) +
-    theme_ipsum()+
-    theme( # font settings
-      plot.title = element_text(size=14, hjust = 0.5), 
-      axis.text.x = element_text(size = 8), 
-      axis.title = element_text(size = 10), 
-      axis.title.x = element_text(size = 10, hjust = 0.5),
-      axis.title.y = element_text(size = 10, hjust = 0.5),
-      legend.text = element_text(size = 8), 
-      legend.title = element_text(size = 10)) + 
-    scale_x_discrete(breaks = colnames(working_data), 
-                     labels = my_labels)
-  
+    scale_x_discrete(breaks = colnames(input_df[4:ncol(input_df)]),
+                      labels = x_labels) + 
+    geom_point(shape = 20, size = 0.5) +
+    my_theme
   # # dev.off()
 }
 
@@ -222,22 +212,23 @@ spider_chart <- function(minimized_df, title="Spider chart", out_path){ # todo g
 
   ## radar chart
   radarchart(spider_data,
-              axistype=0,
-              #custom polygon
-              pcol=colors_border,
-              pfcol=colors_in,
-              plwd=4,
-              plty=1,
-              # custom grid
-              cglcol="grey",
-              cglty=1,
-              axislabcol="grey",
-              cglwd=0.8,
-              # custom labels
-              vlcex=0.6, 
-             centerzero = FALSE, 
-             title = title
+             axistype=0,
+             #custom polygon
+             pcol=colors_border,
+             pfcol=colors_in,
+             plwd=4,
+             plty=1,
+             # custom grid
+             cglcol="grey",
+             cglty=1,
+             axislabcol="grey",
+             cglwd=0.8,
+             # custom labels
+             vlcex=0.6, 
+             centerzero = FALSE
   )
+  
+  title(main = title, cex.main = 0.9, font.main = 1)
 
   ## Add a legend
   legend(x=-2, 
@@ -251,3 +242,114 @@ spider_chart <- function(minimized_df, title="Spider chart", out_path){ # todo g
   # dev.off()
 }
 
+### Principal component analysis
+
+## scree plot with factoextra
+scree_factoextra <- function(prcomp_element){
+  factoextra::fviz_eig(prcomp_element, 
+                       barfill = viridis(n = 2)[2], 
+                       barcolor = viridis(n = 2)[2], 
+                       linecolor = "grey40") +
+    # scale_shape_manual(values = rep(20, nlevels(wd$treatment), size = 1)) +
+    my_theme # sets general apperance, label size and justification
+}
+## biplot with factorextra
+biplot_factoextra <- function(prcomp_element, groups, ellipse = TRUE){
+  factoextra::fviz_pca_biplot(prcomp_element, 
+                              ## color by group
+                              habillage = groups, # a vector of groups by whicht to color
+                              ## labels
+                              label = "var", 
+                              labelsize = 2,
+                              repel = TRUE, # labels do not overlap
+                              col.var = "grey40",
+                              ## ellipses
+                              addEllipses = ellipse, 
+                              ellipse.type = "confidence",
+                              ## legend
+                              legend.title = "Groups"
+  ) +
+    scale_shape_manual(values = rep(20, nlevels(wd$treatment), size = 1)) +
+    scale_color_viridis(discrete = TRUE) + 
+    scale_fill_viridis(discrete = TRUE) +
+    my_theme
+}
+
+
+## scree ggplot2
+scree_base <- function(prcomp_element){
+# variance explained by each pc
+var_pca <- prcomp_element$sdev ^ 2
+prop_of_variance <- var_pca / sum(var_pca)
+
+par(mfrow=c(1,2))
+plot(prop_of_variance, # scree plot to decide which PCs are used
+     main = "", xlab ="", ylab ="",
+     ylim=c(0 ,1),
+     type = "b")
+title( main = "Scree plot", cex.main = 0.9, font.main = 1, 
+       cex.lab = 0.8, 
+       xlab =" Principal Component ", 
+       ylab =" Proportion of Variance Explained "
+       )
+
+plot(cumsum(prop_of_variance ), # scree plot to decide which PCs are used
+     main = "", xlab ="", ylab ="",
+     ylim=c(0 ,1),
+     type="b")
+title( main = "Cummulative scree plot", cex.main = 0.9, font.main = 1, 
+       cex.lab = 0.8, 
+       xlab ="Principal Component",
+       ylab ="Cumulative Proportion of Variance Explained")
+
+}
+
+
+## biplot with ggplot2
+biplot_ggplot2 <- function(input_df, groups){
+  prcomp_element <- prcomp(select_if(wd[1:30], is.numeric), scale = TRUE, center = TRUE)
+
+  ellipse_color <- as.vector(viridis(n = length(levels(input_df[[groups]]))))
+  
+  autoplot(prcomp_element, data = input_df,
+           colour = 'treatment',
+           loadings = TRUE,
+           loadings.colour =  "black",
+           loadings.label = TRUE,
+           loadings.label.size = 2,
+           loadings.label.colour = "black",
+           frame = TRUE,
+           frame.type = "norm",
+           frame.color = ellipse_color) +
+    ggtitle(title = "PCA - Biplot")
+    scale_fill_manual(values = ellipse_color) +
+    scale_color_manual(values = ellipse_color) +
+    my_theme
+}
+
+## heatmaps
+correlation_heatmap <- function(input_df, interactive = FALSE){
+  cor_matrix <- cor(select_if(input_df, is.numeric), method = "spearman")
+  melted_cor_matrix <- reshape::melt(cor_matrix)
+  # melted_cor_matrix$X1 <- substring(melted_cor_matrix$X1, first = 1, last = 10)
+  # melted_cor_matrix$X2 <- substring(melted_cor_matrix$X2, first = 1, last = 10)
+  names(melted_cor_matrix) <- c("x", "y", "correlation")
+  head(melted_cor_matrix)
+  
+  cor_heatmap <- ggplot(data = melted_cor_matrix, aes(x=x, y=y, fill=correlation)) +
+    geom_tile() +
+    ggtitle("Spearman correlation") +
+    scale_fill_viridis_c(option = "magma") +
+    my_theme +
+    theme(axis.title = element_blank(), 
+          axis.text.y = element_text(size = 6),
+          axis.text.x = element_text(angle = 90, size = 6, hjust = 1))
+  
+  
+  if (interactive == TRUE) {
+    plotly::ggplotly(cor_heatmap) # interactive heatmap
+  } else {
+    cor_heatmap # static heatmap
+  }
+  
+}
