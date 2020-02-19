@@ -2,7 +2,7 @@
 
 ### Data handelling ###
 
-#' Transpose data frame and save row- and column names correctly.
+#' Transpose data frame with sorrect row- and column names.
 #' 
 #' @description 
 #' `pretty_transpose` transposes a data frame to a new data frame
@@ -19,6 +19,7 @@ pretty_transpose <- function(input_df){
   row.names(t_input_df) <- colnames(input_df[-1])
   t_input_df
 }
+
 
 #' Takes a data frame with specific rownames and extracts meta data from it
 #' 
@@ -59,6 +60,7 @@ SID_to_metadata <- function(input_df){
   }
 }
 
+
 #' Transform all columns with caracters of a data frame to factor
 #' 
 #' @description 
@@ -82,6 +84,7 @@ character_to_factor <- function(input_df){
   new_df <- input_df
 }
 
+
 ### Exploratory data analysis  ###
 
 #' Aggregate function results by factor
@@ -89,7 +92,7 @@ character_to_factor <- function(input_df){
 #' @description 
 #' `calc_by_replicate` takes a data frame calculates the results of a fuction grouped by a factor
 #' @details 
-#' `calc_by_replicate` takes a data frame calculates the results of a fuction grouped by a factor
+#' Take a data frame and calculate the results of a fuction grouped by a given factor. 
 #' @param input_df a data frame with at least one factor column
 #' @param factor a string with the column name to group by
 #' @param funct a generic R function, that takes only one argument (e.g. mean(), summary(), etc.)
@@ -103,6 +106,7 @@ calc_by_replicate <- function(input_df, factor, funct){
   )
 }
 
+
 ### Graphical exploratory data analysis 
 #' Print one qqplot for each variable and group
 #' 
@@ -114,8 +118,10 @@ calc_by_replicate <- function(input_df, factor, funct){
 #' If out path is given, the generated plots are saved to a pdf document with the given name. 
 #' @example 
 #' qqplot_by_factor(iris, "Species")
-#' dir <- paste(getwd(), "/plots/iris", sep = "")
-#' qqplot_by_factor(iris, "Species", dir)
+#' \dontrun{
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' qqplot_by_factor(iris, "Species", dir)}
 qqplot_by_factor <- function(input_df, factor, out_path = 1){
   levels <- levels(input_df[[factor]]) 
   numeric_df <- dplyr::select_if(input_df, is.numeric)
@@ -148,70 +154,125 @@ qqplot_by_factor <- function(input_df, factor, out_path = 1){
   }
 }
 
-# if(out_path = ""){
-  #   
-  # }
-  # else{
-  #   for (i in 1:length(levels)){ 
-  #     # pdf(paste(out_path, "_qqplot_", levels[i], ".pdf", sep = "")) 
-  #     par(mfrow=c(3,3))
-  #     for (j in 1:ncol(numeric_df)){
-  #       col_name <- colnames(numeric_df)[j]
-  #       qqnorm(numeric_df[,j][input_df[[factor]] == levels[i]],
-  #              main = paste(col_name, levels[i], sep = " "),
-  #              cex.main = 0.8)
-  #       qqline(numeric_df[,j][input_df[[factor]] == levels[i]])}
-  #     # dev.off()
-  #   }
-  # }
 
-  
-  
-  
-  
+#' Print one histogram for each variable group. 
+#' 
+#' @description `histogram_by_factor` prints a histogram with density line
+#' for each group and variable of a data frame
+#' @details Generate a new grid/pdf dochument for each group of a data frame. 
+#' Generate one plot for each variable of this subset data frame. 
+#' @param input_df a data frame with at least one factor column
+#' @param factor a string with the column name to group by
+#' @param out_path optional string. 
+#' @example 
+#' histogram_by_factor(iris, "Species")
+#' \dontrun{
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' histogram_by_factor(iris, "Species", dir)}
+histogram_by_factor <- function(input_df, factor, out_path = 1){
+  levels <- levels(input_df[[factor]]) 
+  numeric_df <- dplyr::select_if(input_df, is.numeric)
     
-
-
-## histogram by factor
-# print one pdf document with histograms and density lines per factor for all lipids
-histogram_by_factor <- function(input_df, by_factor, out_path){
-  levels <- levels(input_df[[by_factor]])
-  for (i in 1:length(levels)){
-    # pdf(paste(plot_name, "_histogram_", levels[i], ".pdf", sep = ""))
-    par(mfrow=c(3,3))
-    for (j in 4:ncol(input_df[,1: ncol(input_df)])){
-      col_name <- colnames(input_df)[j]
-      
-      hist(input_df[,j][input_df[[by_factor]] == levels[i]],
-           main = col_name,
-           cex.main = 0.8,
-           xlab = NULL)
-      lines(density(input_df[,j][input_df[[by_factor]] == levels[i]]))
-      lines(density(input_df[,j][input_df[[by_factor]] == levels[i]], adjust = 1.5), lty = 2)
+    if(out_path == 1){
+      for (i in 1:length(levels)){ 
+        par(mfrow=c(3,3))
+        for (j in 1:ncol(numeric_df)){
+          col_name <- colnames(numeric_df)[j]
+          hist(numeric_df[,j][input_df[[factor]] == levels[i]],
+               main = paste(col_name, levels[i], sep = " "),
+               cex.main = 0.8,
+               xlab = NULL)
+          lines(density(numeric_df[,j][input_df[[factor]] == levels[i]]))
+          lines(density(numeric_df[,j][input_df[[factor]] == levels[i]], 
+                        adjust = 1.5), lty = 2)
+        }
+      }
     }
-    # dev.off()
+  else{
+    for (i in 1:length(levels)){ 
+      pdf(paste(out_path, "_hist_", levels[i], ".pdf", sep = ""))
+      par(mfrow=c(3,3))
+      for (j in 1:ncol(numeric_df)){
+        col_name <- colnames(numeric_df)[j]
+        hist(numeric_df[,j][input_df[[factor]] == levels[i]],
+             main = paste(col_name, levels[i], sep = " "),
+             cex.main = 0.8,
+             xlab = NULL)
+        lines(density(numeric_df[,j][input_df[[factor]] == levels[i]]))
+        lines(density(numeric_df[,j][input_df[[factor]] == levels[i]], 
+                      adjust = 1.5), lty = 2)
+      }
+      dev.off()
+    }
+    
   }
 }
 
-## boxplot by factor
-boxplot_by_factor <- function(input_df, by_factor, out_path){ 
-  # pdf(paste(plot_name, "_boxplot", ".pdf", sep = ""))
-  par(mfrow=c(3,3))
-    for (i in 4:ncol(input_df[,1: ncol(input_df)])){
+#' Print boxplot by factor
+#' 
+#' @description `boxplot_by_factor` generates plot with one boxplot per group for each variable
+#' @details A plot with one boxplot per group is generated for all variables of a data frame. 
+#' @param input_df a data frame with at least one factor column
+#' @param factor a string with the column name to group by
+#' @param out_path optional string. 
+#' @example 
+#' boxplot_by_factor(iris, "Species")
+#' \dontrun{
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' boxplot_by_factor(iris, "Species", dir)}
+boxplot_by_factor <- function(input_df, factor, out_path = 1){
+  numeric_df <- dplyr::select_if(input_df, is.numeric)
+  if(out_path == 1){
+    par(mfrow=c(3,3), 
+        cex.main = 1, 
+        cex.axis = 0.7)
+      for (i in 1:ncol(numeric_df)){
+          col_name <- colnames(input_df)[i]
+          boxplot(numeric_df[,i] ~ input_df[[factor]],
+                  main = col_name,
+                  xlab = NULL,
+                  ylab = NULL)
+      }
+  }
+  else{
+    pdf(paste(out_path, "_boxplot", ".pdf", sep = ""))
+    par(mfrow=c(3,3), 
+        cex.main = 1, 
+        cex.axis = 0.7)
+    for (i in 1:ncol(numeric_df)){
       col_name <- colnames(input_df)[i]
-      boxplot(input_df[,i] ~ input_df[[by_factor]], 
+      boxplot(numeric_df[,i] ~ input_df[[factor]],
               main = col_name,
-              cex.main = 0.8,
-              xlab = NULL, 
-              ylab = NULL)}
-  # dev.off()
+              xlab = NULL,
+              ylab = NULL)
+    }
+    dev.off()
+  }
 }
 
-## shapiro-wilk by factor
-shapiro_by_factor <- function(input_df, by_factor){
+#' Assess normality for each group
+#' 
+#' @description `shapiro_by_factor` takes a data frame and applies the shapiro-wilk test 
+#' to every group and variable
+#' @details Shapiro wilk test is applied to every group and variable of a data frame. 
+#' The results are aggregated and printed in a table. 
+#' @param input_df a data frame with at least one factor column
+#' @param factor a string with the column name to group by
+#' @param out_path optional string. 
+#' @example 
+#' shapiro_by_factor(iris, "Species")
+#' \dontrun{
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' shapiro_by_factor(iris, "Species", dir)}
+shapiro_by_factor <- function(input_df, factor, out_path = 1){
+  
+  print(out_path)
   
   shapiro_statistic <- aggregate(dplyr::select_if(input_df, is.numeric), 
-                                 by = list(input_df[[by_factor]]),
+                                 by = list(input_df[[factor]]),
                                  FUN = function(x) {y <- shapiro.test(x); c(y$statistic)})
   
   shapiro_statistic <- tibble::add_column(shapiro_statistic, 
@@ -219,7 +280,7 @@ shapiro_by_factor <- function(input_df, by_factor){
                                           .before = 1)
   
   shapiro_pvalue <- aggregate(dplyr::select_if(input_df, is.numeric), 
-                              by = list(input_df[[by_factor]]),
+                              by = list(input_df[[factor]]),
                               FUN = function(x) {y <- shapiro.test(x); c(y$p.value)})
   
   shapiro_pvalue <- tibble::add_column(shapiro_pvalue, 
@@ -227,7 +288,15 @@ shapiro_by_factor <- function(input_df, by_factor){
                                        .before = 1)
   
   shapiro_all <- rbind(shapiro_statistic, shapiro_pvalue)
-  shapiro_all[order(shapiro_all[,2]), ]
+  shapiro_all <- shapiro_all[order(shapiro_all[,2]), ]
+  
+  if(out_path == 1){
+    DT::datatable(shapiro_all)
+  } else {
+    DT::datatable(shapiro_all)
+    print(paste("Writing to", out_path, "_shapiro.csv", sep = ""))
+    write.csv(shapiro_all, paste(out_path, "_shapiro.csv", sep = ""))
+  }
 }
 
 ## test for correlation
@@ -250,6 +319,58 @@ correlation_plot <- function(input_df, method){
         upper.panel = panel.cor)
   # dev.off()
 } # max 10 variables
+
+#' Correlation heatmap 
+#' 
+#' @description `correlation_heatmap` calculates correlations of variables and displays them in a heatmap
+#' @details A heatmap displaying the correlations between the variables of a data frame is generated. 
+#' The heatmap is optionally interative. 
+#' @param input_df data frame. 
+#' @param method string. Method for calculating the correlation. 
+#' Options: "pearson", "kendall", "spearman" (default). 
+#' @param interactive logical. Print heatmap to device (FALSE, default) 
+#' or open interactive heatmap in browser (TRUE). 
+#' @param out_path string. Path to save heatmap to png. 
+#' If out_path is empty the heatmap is printed to the device. 
+#' @example 
+#' correlation_heatmap(iris)
+#' correlation_heatmap(iris, interactive = TRUE)
+#' \dontrun{
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' correlation_heatmap(iris, interactive = TRUE, out_path = dir)
+#' correlation_heatmap(iris, out_path = dir)
+#' }
+correlation_heatmap <- function(input_df, 
+                                method = "spearman", 
+                                interactive = FALSE, 
+                                out_path = 1){
+  cor_matrix <- cor(dplyr::select_if(input_df, is.numeric), method = method)
+  melted_cor_matrix <- reshape::melt(cor_matrix)
+  names(melted_cor_matrix) <- c("x", "y", "correlation")
+  head(melted_cor_matrix)
+  
+  cor_heatmap <- ggplot(data = melted_cor_matrix, aes(x=x, y=y, fill=correlation)) +
+    geom_tile() +
+    ggtitle("Spearman correlation") +
+    scale_fill_viridis_c(option = "magma") +
+    my_theme +
+    theme(axis.title = element_blank(), 
+          axis.text.y = element_text(size = 6),
+          axis.text.x = element_text(angle = 90, size = 6, hjust = 1))
+  
+  if(out_path != 1){
+    print(paste("Saving heatmap to ", out_path, "_cor_heatmap.png", sep = ""))
+    ggsave(paste(out_path, "_cor_heatmap.png", sep = ""))
+  }
+  
+  if (interactive == TRUE) {
+    plotly::ggplotly(cor_heatmap) # interactive heatmap
+  } else {
+    cor_heatmap # static heatmap
+  }
+  
+}
 
 ## parallel coordinates plot 
 parallel_plot <- function(input_df,  factor, out_path, 

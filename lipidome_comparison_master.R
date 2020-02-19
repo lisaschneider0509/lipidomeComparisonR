@@ -5,6 +5,7 @@
 # install.packages("data.table")
 # install.packages("dplyr")
 # install.packages("devtools")
+# install.packages(DT) # pretty print df (interactive)
 
 ## graphs
 # install.packages("ggplot2")
