@@ -121,34 +121,32 @@ calc_by_replicate <- function(input_df, factor, funct){
 #' \dontrun{
 #' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
 #' dir <- paste(getwd(), "/examples/iris", sep = "")
-#' qqplot_by_factor(iris, "Species", dir)}
+#' qqplot_by_factor(iris, "Species", dir)
+#' }
 qqplot_by_factor <- function(input_df, factor, out_path = 1){
   levels <- levels(input_df[[factor]]) 
   numeric_df <- dplyr::select_if(input_df, is.numeric)
   
+  func <- function(){
+    par(mfrow=c(3,3))
+    for (j in 1:ncol(numeric_df)){
+      col_name <- colnames(numeric_df)[j]
+      qqnorm(numeric_df[,j][input_df[[factor]] == levels[i]],
+             main = paste(col_name, levels[i], sep = " "),
+             cex.main = 0.8)
+      qqline(numeric_df[,j][input_df[[factor]] == levels[i]])
+      }
+    }
+  
   if(out_path == 1){
     for (i in 1:length(levels)){ 
-      # pdf(paste(out_path, "_qqplot_", levels[i], ".pdf", sep = ""))
-      par(mfrow=c(3,3))
-      for (j in 1:ncol(numeric_df)){
-        col_name <- colnames(numeric_df)[j]
-        qqnorm(numeric_df[,j][input_df[[factor]] == levels[i]],
-               main = paste(col_name, levels[i], sep = " "),
-               cex.main = 0.8)
-        qqline(numeric_df[,j][input_df[[factor]] == levels[i]])}
-      # dev.off()
-      }
+      func()
+    }
   }
   else{
     for (i in 1:length(levels)){ 
       pdf(paste(out_path, "_qqplot_", levels[i], ".pdf", sep = ""))
-      par(mfrow=c(3,3))
-      for (j in 1:ncol(numeric_df)){
-        col_name <- colnames(numeric_df)[j]
-        qqnorm(numeric_df[,j][input_df[[factor]] == levels[i]],
-               main = paste(col_name, levels[i], sep = " "),
-               cex.main = 0.8)
-        qqline(numeric_df[,j][input_df[[factor]] == levels[i]])}
+      func()
       dev.off()
     }
   }
@@ -169,40 +167,35 @@ qqplot_by_factor <- function(input_df, factor, out_path = 1){
 #' \dontrun{
 #' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
 #' dir <- paste(getwd(), "/examples/iris", sep = "")
-#' histogram_by_factor(iris, "Species", dir)}
+#' histogram_by_factor(iris, "Species", dir)
+#' }
 histogram_by_factor <- function(input_df, factor, out_path = 1){
   levels <- levels(input_df[[factor]]) 
   numeric_df <- dplyr::select_if(input_df, is.numeric)
+  
+  func <- function(){
+    par(mfrow=c(3,3))
+    for (j in 1:ncol(numeric_df)){
+      col_name <- colnames(numeric_df)[j]
+      hist(numeric_df[,j][input_df[[factor]] == levels[i]],
+           main = paste(col_name, levels[i], sep = " "),
+           cex.main = 0.8,
+           xlab = NULL)
+      lines(density(numeric_df[,j][input_df[[factor]] == levels[i]]))
+      lines(density(numeric_df[,j][input_df[[factor]] == levels[i]], 
+                    adjust = 1.5), lty = 2)
+    }
+  }
     
     if(out_path == 1){
       for (i in 1:length(levels)){ 
-        par(mfrow=c(3,3))
-        for (j in 1:ncol(numeric_df)){
-          col_name <- colnames(numeric_df)[j]
-          hist(numeric_df[,j][input_df[[factor]] == levels[i]],
-               main = paste(col_name, levels[i], sep = " "),
-               cex.main = 0.8,
-               xlab = NULL)
-          lines(density(numeric_df[,j][input_df[[factor]] == levels[i]]))
-          lines(density(numeric_df[,j][input_df[[factor]] == levels[i]], 
-                        adjust = 1.5), lty = 2)
-        }
+        func()
       }
     }
   else{
     for (i in 1:length(levels)){ 
       pdf(paste(out_path, "_hist_", levels[i], ".pdf", sep = ""))
-      par(mfrow=c(3,3))
-      for (j in 1:ncol(numeric_df)){
-        col_name <- colnames(numeric_df)[j]
-        hist(numeric_df[,j][input_df[[factor]] == levels[i]],
-             main = paste(col_name, levels[i], sep = " "),
-             cex.main = 0.8,
-             xlab = NULL)
-        lines(density(numeric_df[,j][input_df[[factor]] == levels[i]]))
-        lines(density(numeric_df[,j][input_df[[factor]] == levels[i]], 
-                      adjust = 1.5), lty = 2)
-      }
+      func()
       dev.off()
     }
     
@@ -221,26 +214,12 @@ histogram_by_factor <- function(input_df, factor, out_path = 1){
 #' \dontrun{
 #' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
 #' dir <- paste(getwd(), "/examples/iris", sep = "")
-#' boxplot_by_factor(iris, "Species", dir)}
+#' boxplot_by_factor(iris, "Species", dir)
+#' }
 boxplot_by_factor <- function(input_df, factor, out_path = 1){
   numeric_df <- dplyr::select_if(input_df, is.numeric)
-  if(out_path == 1){
-    par(mfrow=c(3,3), 
-        cex.main = 1, 
-        cex.axis = 0.7)
-      for (i in 1:ncol(numeric_df)){
-          col_name <- colnames(input_df)[i]
-          boxplot(numeric_df[,i] ~ input_df[[factor]],
-                  main = col_name,
-                  xlab = NULL,
-                  ylab = NULL)
-      }
-  }
-  else{
-    pdf(paste(out_path, "_boxplot", ".pdf", sep = ""))
-    par(mfrow=c(3,3), 
-        cex.main = 1, 
-        cex.axis = 0.7)
+  
+  func <- function(){
     for (i in 1:ncol(numeric_df)){
       col_name <- colnames(input_df)[i]
       boxplot(numeric_df[,i] ~ input_df[[factor]],
@@ -248,9 +227,24 @@ boxplot_by_factor <- function(input_df, factor, out_path = 1){
               xlab = NULL,
               ylab = NULL)
     }
+  }
+  
+  if(out_path == 1){
+    par(mfrow=c(3,3), 
+        cex.main = 1, 
+        cex.axis = 0.7)
+    func()
+  }
+  else{
+    pdf(paste(out_path, "_boxplot", ".pdf", sep = ""))
+    par(mfrow=c(3,3), 
+        cex.main = 1, 
+        cex.axis = 0.7)
+    func()
     dev.off()
   }
 }
+
 
 #' Assess normality for each group
 #' 
@@ -269,7 +263,6 @@ boxplot_by_factor <- function(input_df, factor, out_path = 1){
 #' shapiro_by_factor(iris, "Species", dir)}
 shapiro_by_factor <- function(input_df, factor, out_path = 1){
   
-  print(out_path)
   
   shapiro_statistic <- aggregate(dplyr::select_if(input_df, is.numeric), 
                                  by = list(input_df[[factor]]),
@@ -299,26 +292,52 @@ shapiro_by_factor <- function(input_df, factor, out_path = 1){
   }
 }
 
-## test for correlation
-correlation_plot <- function(input_df, method){
-  # pdf(paste(plot_name, "_correlations", ".pdf", sep = ""))
-  panel.cor <- function(x, y){
-    usr <- par("usr"); on.exit(par(usr))
-    par(usr = c(0, 1, 0, 1))
-    r <- round(cor(x, y, use = "pairwise.complete.obs", method = method), digits=2)
-    txt <- paste0("R = ", r)
-    text(0.5, 0.5, txt, cex = 1.5)
+#' Correlation plots 
+#' 
+#' @description `correlation_plot` calculates correlations of variables and displays them in a dotplot
+#' @details A grid of dotplots displaying the correlations between the variables of a data frame is generated. 
+#' Use with less than 10 variables ideally. 
+#' @param input_df data frame. 
+#' @param method string. Method for calculating the correlation. 
+#' Options: "pearson", "kendall", "spearman" (default). 
+#' @param out_path optional string. Path to save correlation plot to png. 
+#' If out_path is empty the correlation plot is printed to the device. 
+#' @example 
+#' correlation_plot(iris)
+#' \dontrun{
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' correlation_plot(iris, out_path = dir)
+#' }
+correlation_plot <- function(input_df, method = "spearman", out_path = 1){
+  out_name <- paste(out_path, "_correlations", ".png", sep = "")
+  
+  func <- function(){
+    par(cex.main = 1, cex.axis = 0.8, 
+        family = "sans", font = 1)
+    colour = viridis(n = 2)
+    pairs.panels(select_if(input_df, is.numeric),
+                 method = method,
+                 hist.col = colour[2], rug = FALSE,
+                 density = TRUE,  lm = TRUE, ci = FALSE, col = colour[1],
+                 ellipses = FALSE,
+                 pch = 20, cex = 0.7,
+                 cex.cor = 0.5, main = "Correlation plot")
   }
   
-  mypanel <- function(x, y){
-    points(x, y, pch = 20)
+  if(out_path != 1){
+    print(paste("Saving to ", out_name, sep = ""))
+    png(out_name)
+    func()
+    dev.off() 
+    func()
+  }
+  else{
+    func()
   }
   
-  pairs(dplyr::select_if(input_df, is.numeric),
-        lower.panel = mypanel,
-        upper.panel = panel.cor)
-  # dev.off()
-} # max 10 variables
+  
+}
 
 #' Correlation heatmap 
 #' 
