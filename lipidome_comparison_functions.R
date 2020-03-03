@@ -2,6 +2,18 @@
 
 ### Data handelling ###
 
+my_theme <- theme_set(
+  theme_minimal() +
+    theme(plot.title = element_text(size=12, hjust = 0.5),
+          axis.text.x = element_text(size = 8),
+          # axis.title = element_text(size = 10),
+          axis.title.x = element_text(size = 10, hjust = 0.5),
+          axis.title.y = element_text(size = 10, hjust = 0.5),
+          legend.text = element_text(size = 8),
+          legend.title = element_text(size = 10))
+)
+
+
 #' Transpose data frame with sorrect row- and column names.
 #' 
 #' @description 
@@ -292,6 +304,7 @@ shapiro_by_factor <- function(input_df, factor, out_path = 1){
   }
 }
 
+
 #' Correlation plots 
 #' 
 #' @description `correlation_plot` calculates correlations of variables and displays them in a dotplot
@@ -343,7 +356,7 @@ correlation_plot <- function(input_df, method = "spearman", out_path = 1){
 #' 
 #' @description `correlation_heatmap` calculates correlations of variables and displays them in a heatmap
 #' @details A heatmap displaying the correlations between the variables of a data frame is generated. 
-#' The heatmap is optionally interative. 
+#' The heatmap is optionally interactive. 
 #' @param input_df data frame. 
 #' @param method string. Method for calculating the correlation. 
 #' Options: "pearson", "kendall", "spearman" (default). 
@@ -380,7 +393,8 @@ correlation_heatmap <- function(input_df,
   
   if(out_path != 1){
     print(paste("Saving heatmap to ", out_path, "_cor_heatmap.png", sep = ""))
-    ggsave(paste(out_path, "_cor_heatmap.png", sep = ""))
+    ggsave(paste(out_path, "_cor_heatmap.png", sep = ""), 
+           plot = cor_heatmap)
   }
   
   if (interactive == TRUE) {
@@ -391,104 +405,233 @@ correlation_heatmap <- function(input_df,
   
 }
 
-## parallel coordinates plot 
-parallel_plot <- function(input_df,  factor, out_path, 
-                          titles = c("Paralell Plot", "", ""), 
-                          scale = "center"){
-  # # pdf(paste(plot_name, "_ParallelPlot", ".pdf", sep = ""))
-  par(mfrow=c(1,1))
-  
+#' Parallel coordinates plot
+#' 
+#' @description `parallel_plot` prints a paralell coordinates plot using a data frame
+#' @details This function takes a data frame with at least one factor variable and 
+#' displays #' it in a pralell coordinates plot, where the different groups are 
+#' color coded. This plot works best for <= 10 parameters. 
+#' @param input_df data frame. 
+#' @param groupColumn numeric. Column to sort by.  
+#' @param out_path string. Path to save parallel plot to png. 
+#' If out_path is empty the parallel plot is printed to the device.
+#' @param titles a vector of strings. 
+#' 1. Main Title. Default = "Parallel plot"
+#' 2. X-axis title. Default = ""
+#' 3. Y-axis title. Default = ""
+#' @param scale string. Method used to scale the variable. Default = "globalminmax". 
+#' Options: "std", "robust", "uniminmax", "globalminmax", "center", "centerObs". 
+#' For more information on the options see help(ggparcoord). 
+#' @example 
+#' parallel_plot(iris, 5)
+#' parallel_plot(iris, 5, scale = "center", titles = c("Centered parallel plot", "Parameters", "Univariate scale to standardize vertical height"))
+#' \dontrun
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' parallel_plot(iris, 5, out_path = dir)
+parallel_plot <- function(input_df,  groupColumn, out_path = 1, 
+                          titles = c("Parallel Plot", "", ""), 
+                          scale = "globalminmax"){
   parallel_title <- titles[[1]]
   x_axis_title <- titles[[2]]
   y_axis_title <- titles[[3]]
-  x_labels <- substring(colnames(input_df[4:ncol(input_df)]), first = 1, last = 6)
+  x_labels <- colnames(input_df[-groupColumn])
   y_labels <- NULL
-  
-  # Plot
-  ggparcoord(input_df,
-             columns = 4:ncol(input_df),
-             groupColumn = 2,
-             showPoints = TRUE, 
-             scale="center", # "center" is default
-             alphaLines = 0.5)  +
+  cols <- c(1:ncol(input_df))
+
+  par_plot <- ggparcoord(input_df,
+             columns = cols[-groupColumn],
+             groupColumn = groupColumn,
+             showPoints = TRUE,
+             scale = scale, # "globalminmax" is default
+             alphaLines = 0.5
+             )  +
     ggtitle(parallel_title) +
     xlab(x_axis_title) +
     ylab(y_axis_title) +
     scale_color_viridis(discrete=TRUE) +
-    scale_x_discrete(breaks = colnames(input_df[4:ncol(input_df)]),
-                      labels = x_labels) + 
+    scale_x_discrete(breaks = colnames(input_df[-groupColumn]),
+                     labels = x_labels) +
     geom_point(shape = 20, size = 0.5) +
     my_theme
-  # # dev.off()
+ 
+   if(out_path != 1){
+    print(paste("Saving parallel coordinates plot to ", out_path, "_parcoord.png", sep = ""))
+    ggsave(paste(out_path, "_parcoord.png", sep = ""),
+           plot = par_plot)
+   }
+  else{
+    par_plot
+  }
 }
 
-## spider chart (= radar chart, network plot, etc.)
-spider_chart <- function(minimized_df, title="Spider chart", out_path){ # todo get labels ot of the plot
-  ## input_df <= 10 columns 
-  ## minimized_df = dataframe with only one row per group (i.e. calculate means)
+
+#' Spider Chart
+#' 
+#' @description `spider chart` takes a minimized data frame (one value per group) and prints a spider chart
+#' @details This function takes a data frame of with one value per group (i.e. calculate mean groupwise). 
+#' This minimized data frame is used to draw a spider chart (also radar chart odr network plot). 
+#' The ideal numer of parameters for a spider chart is <= 10. Also the shape of the graph depends on 
+#' the order of parameters. If the data has large differences in size, normalizing or scaling the data is necessary.
+#' Doesn't work with non normal data.  
+#' @param minimized_df data frame. A data frame that contains only one value per group and variable. 
+#' Most often this will be a data frame of means calculated from another data frame. 
+#' @param tile string. Main title of the chart. Default = "Spider chart"
+#' @param out_path string. Path to save spider chart to png. 
+#' If out_path is empty, the spider chart is printed to the device.
+#' @example 
+#' minimized_iris <- aggregate(dplyr::select_if(iris, is.numeric), 
+#'                             by = list(iris$Species), 
+#'                             FUN = mean)
+#' rownames(minimized_iris) <- minimized_iris$Group.1
+#' spider_chart(minimized_iris, title = "Spider chart of iris")
+#' \dontrun
+#' minimized_iris <- aggregate(dplyr::select_if(iris, is.numeric), 
+#'                             by = list(iris$Species), 
+#'                             FUN = mean)
+#' rownames(minimized_iris) <- minimized_iris$Group.1
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' spider_chart(minimized_iris, out_path = dir)
+spider_chart <- function(minimized_df, title="Spider chart", out_path = 1){ # todo get labels ot of the plot
   
-  # pdf(paste(plot_name, "_ParallelPlot", ".pdf", sep = ""))
-  spider_legend <- row.names(minimized_df) # set new row names 
-  spider_data <- dplyr::select_if(minimized_df, is.numeric) # remove column with rownames
-  spider_labels <- substring(colnames(spider_data), first = 1, last = 6) # set max. label length to 10 characters
-
-  spider_min <- floor(min(spider_data))
-  spider_max <- ceiling(max(spider_data))
-  spider_data <- as.data.frame(select_if(spider_data, is.numeric))
-
-  # add max and min to the dataframe to plot the grid
-  spider_data <- rbind(spider_min, spider_max, spider_data)
-
-  ## set colors
-  colors_border = as.vector(viridis(n = nrow(minimized_df), option = "viridis"))
-  colors_in = alpha(colors_border, alpha = 0.1)
-
-  ## radar chart
-  radarchart(spider_data,
-             axistype=0,
-             #custom polygon
-             pcol=colors_border,
-             pfcol=colors_in,
-             plwd=4,
-             plty=1,
-             # custom grid
-             cglcol="grey",
-             cglty=1,
-             axislabcol="grey",
-             cglwd=0.8,
-             # custom labels
-             vlcex=0.6, 
-             centerzero = FALSE
-  )
+  out_name <- paste(out_path, "_spiderChart", ".png", sep = "")
   
-  title(main = title, cex.main = 0.9, font.main = 1)
-
-  ## Add a legend
-  legend(x=-2, 
-         y=1.1, 
-         legend = rownames(spider_data[-(1:2),]), 
-         bty = "n", 
-         pch=20, 
-         col=colors_border, 
-         text.col = "black", 
-         cex=0.7, pt.cex=1.3)
-  # dev.off()
+  func <- function(){
+    spider_legend <- row.names(minimized_df) # set new row names 
+    spider_data <- dplyr::select_if(minimized_df, is.numeric) # remove column with rownames
+    spider_labels <- substring(colnames(spider_data), first = 1, last = 6) # set max. label length to 10 characters
+  
+    spider_min <- floor(min(spider_data))
+    spider_max <- ceiling(max(spider_data))
+    spider_data <- as.data.frame(select_if(spider_data, is.numeric))
+  
+    # add max and min to the dataframe to plot the grid
+    spider_data <- rbind(spider_min, spider_max, spider_data)
+  
+    ## set colors
+    colors_border = as.vector(viridis(n = nrow(minimized_df), option = "viridis"))
+    colors_in = alpha(colors_border, alpha = 0.1)
+  
+    ## radar chart
+    radarchart(spider_data,
+               axistype=0,
+               #custom polygon
+               pcol=colors_border,
+               pfcol=colors_in,
+               plwd=4,
+               plty=1,
+               # custom grid
+               cglcol="grey",
+               cglty=1,
+               axislabcol="grey",
+               cglwd=0.8,
+               # custom labels
+               vlcex=0.6, 
+               centerzero = FALSE)
+    
+    title(main = title, cex.main = 0.9, font.main = 1)
+  
+    ## Add a legend
+    legend(x=-2, 
+           y=1.1, 
+           legend = rownames(spider_data[-(1:2),]), 
+           bty = "n", 
+           pch=20, 
+           col=colors_border, 
+           text.col = "black", 
+           cex=0.7, pt.cex=1.3)
+  }
+  
+  if(out_path != 1){
+    print(paste("Saving to ", out_name))
+    png(filename = out_name)
+    func()
+    dev.off()
+  }
+  else{
+    func()
+  }
+  
 }
+
 
 ### Principal component analysis
 
-## scree plot with factoextra
-scree_factoextra <- function(prcomp_element){
-  factoextra::fviz_eig(prcomp_element, 
+#' Scree plot woth factoextra
+#'
+#' @description `scree_factoextra` takes a prcomp element and diplays the percentage of variance 
+#' explained by the principal components in a barplot. 
+#' @details This function takes a prcom element (i.e. an element generated by the base::prcomp function), 
+#' and displays the percentage of variance explained by each principal component in a boxplot. 
+#' Additionally there is also a dot- and line graph. 
+#' @param prcomp_element object of class prcomp. The base::prcomp function performs a principal component analysis. 
+#' This is the object it returns. 
+#' @param out_path string. Path to save plot to png. 
+#' If out_path is empty, the plot is printed to the device.
+#' @examples 
+#' pca_iris <- prcomp(select_if(iris, is.numeric))
+#' scree_factoextra(pca_iris, title = "Scree plot iris")
+#' \dontrun
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' scree_factoextra(pca_iris, title = "Scree plot iris", out_path = dir)
+scree_factoextra <- function(prcomp_element, title = "Scree plot", out_path = 1){
+  
+  scree <- factoextra::fviz_eig(prcomp_element, 
                        barfill = viridis(n = 2)[2], 
                        barcolor = viridis(n = 2)[2], 
                        linecolor = "grey40") +
+    labs(title = title) +
     # scale_shape_manual(values = rep(20, nlevels(wd$treatment), size = 1)) +
     my_theme # sets general apperance, label size and justification
+  
+  if(out_path != 1){
+    print(paste("Saving plot to ", out_path, "_screePlot.png", sep = ""))
+    ggsave(paste(out_path, "_screePlot.png", sep = ""),
+           plot = scree)
+  }
+  else{
+    scree
+  }
 }
-## biplot with factorextra
-biplot_factoextra <- function(prcomp_element, groups, ellipse = TRUE){
-  factoextra::fviz_pca_biplot(prcomp_element, 
+
+
+#' Biplot with factorextra
+#' 
+#' @description `biplot_factoextra` prints a biplot from a prcomp element. 
+#' @details This function prints a biplot from a prcomp element. 
+#' The points can be colored by group. Loadings are optionally displayed. 
+#' @param prcomp_element object of class prcomp. The base::prcomp function performs a principal component analysis. 
+#' This is the object it returns. 
+#' @param groups vector. Groups to color by. Default = "none"
+#' @param ellipse bool. Draw confidence ellipse arount the clusters of groups. Default = FALSE. 
+#' @param loadings bool. Draw loadings arrows and labels. Default = FALSE
+#' @param out_path string. Path to save plot to png. 
+#' If out_path is empty, the plot is printed to the device.
+#' @examples 
+#' pca_iris <- prcomp(select_if(iris, is.numeric))
+#' iris_groups <- iris$Species
+#' biplot_factoextra(pca_iris)
+#' biplot_factoextra(pca_iris, 
+#'                   groups = iris_groups, 
+#'                   ellipse = TRUE, 
+#'                   loadings = FALSE)
+#' \dontrun
+#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+#' dir <- paste(getwd(), "/examples/iris", sep = "")
+#' biplot_factoextra(pca_iris, 
+#'                  groups = iris_groups, 
+#'                  ellipse = TRUE, 
+#'                  loadings = FALSE, 
+#'                  out_path = dir)
+biplot_factoextra <- function(prcomp_element, 
+                              groups = "none", 
+                              ellipse = FALSE, 
+                              loadings = TRUE, 
+                              out_path = 1){
+  
+  biplot <- factoextra::fviz_pca_biplot(prcomp_element, 
                               ## color by group
                               habillage = groups, # a vector of groups by whicht to color
                               ## labels
@@ -498,14 +641,21 @@ biplot_factoextra <- function(prcomp_element, groups, ellipse = TRUE){
                               col.var = "grey40",
                               ## ellipses
                               addEllipses = ellipse, 
-                              ellipse.type = "confidence",
+                              ellipse.type = "norm",
                               ## legend
-                              legend.title = "Groups"
-  ) +
-    scale_shape_manual(values = rep(20, nlevels(wd$treatment), size = 1)) +
-    scale_color_viridis(discrete = TRUE) + 
+                              legend.title = "Groups")   +
+    scale_color_viridis(discrete = TRUE) +
     scale_fill_viridis(discrete = TRUE) +
     my_theme
+  
+  if(out_path != 1){
+    print(paste("Saving plot to ", out_path, "_biplot.png", sep = ""))
+    ggsave(paste(out_path, "_biplot.png", sep = ""),
+           plot = biplot)
+  }
+  else{
+    biplot()
+  }
 }
 
 
@@ -539,7 +689,7 @@ title( main = "Cummulative scree plot", cex.main = 0.9, font.main = 1,
 
 
 ## biplot with ggplot2
-biplot_ggplot2 <- function(input_df, groups){
+biplot_ggplot2 <- function(input_df, groups, loadings = FALSE){
   prcomp_element <- prcomp(select_if(wd[1:30], is.numeric), scale = TRUE, center = TRUE)
 
   ellipse_color <- as.vector(viridis(n = length(levels(input_df[[groups]]))))
@@ -548,7 +698,7 @@ biplot_ggplot2 <- function(input_df, groups){
            colour = 'treatment',
            loadings = TRUE,
            loadings.colour =  "black",
-           loadings.label = TRUE,
+           loadings.label = loadings,
            loadings.label.size = 2,
            loadings.label.colour = "black",
            frame = TRUE,

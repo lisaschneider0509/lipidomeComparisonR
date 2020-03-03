@@ -143,7 +143,8 @@ prop_of_variance <- var_lipid_pca / sum(var_lipid_pca) # proportion of variance
 scree_factoextra(lipid_pca)
 scree_base(lipid_pca)
 
-biplot_factoextra(lipid_pca, groups)
+biplot_factoextra(lipid_pca, groups, ellipse = TRUE, loadings = FALSE)
 
 ### clustering and heatmap
+
 
