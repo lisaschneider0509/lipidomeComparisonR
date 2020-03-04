@@ -49,6 +49,9 @@ library(factoextra)
 library(plotly) # interactive heatmap
 
 source("lipidome_comparison_functions.R")
+source("lipidome_comparison_EDA.R")
+source("lipidome_comparison_pca.R")
+
 
 # set ggplot theme
 my_theme <- theme_set(
@@ -144,7 +147,10 @@ scree_factoextra(lipid_pca)
 scree_base(lipid_pca)
 
 biplot_factoextra(lipid_pca, groups, ellipse = TRUE, loadings = FALSE)
+biplot_ggplot2(input_df = wd, groups = "treatment", ellipse = TRUE, loadings = TRUE)
+
 
 ### clustering and heatmap
+
 
 
