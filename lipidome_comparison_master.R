@@ -29,7 +29,7 @@
 
 ## heatmap 
 # install.packages("plotly") # interactive heatmap
-
+# install.packages("gplots")
 
 ### load packages
 # library(gridExtra)
@@ -47,6 +47,7 @@ library(devtools)
 library(ggfortify)
 library(factoextra)
 library(plotly) # interactive heatmap
+library(gplots) # heatmap 
 
 source("lipidome_comparison_functions.R")
 source("lipidome_comparison_EDA.R")
@@ -148,9 +149,3 @@ scree_base(lipid_pca)
 
 biplot_factoextra(lipid_pca, groups, ellipse = TRUE, loadings = FALSE)
 biplot_ggplot2(input_df = wd, groups = "treatment", ellipse = TRUE, loadings = TRUE)
-
-
-### clustering and heatmap
-
-
-
