@@ -9,7 +9,6 @@ my_theme <- theme_set(
           legend.title = element_text(size = 10))
 )
 
-
 ### Principal component analysis
 
 #' Scree plot with factoextra
@@ -179,8 +178,7 @@ scree_base <- function(prcomp_element,
 #' @description `biplot_ggplot2` prints a biplot from a prcomp element. 
 #' @details This function prints a biplot from a prcomp element. 
 #' The points can be colored by group. Loadings are optionally displayed. 
-#' @param prcomp_element object of class prcomp. The base::prcomp function performs a principal component analysis. 
-#' This is the object it returns. 
+#' @param input_df a data frame with at least one factor column. 
 #' @param groups vector. Groups to color by. Default = "none"
 #' @param ellipse bool. Draw confidence ellipse arount the clusters of groups. Default = FALSE. 
 #' @param loadings bool. Draw loadings arrows and labels. Default = FALSE

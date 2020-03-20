@@ -1,3 +1,15 @@
+my_theme <- theme_set(
+  theme_minimal() +
+    theme(plot.title = element_text(size=12, hjust = 0.5, family="AvantGarde"),
+          axis.text.x = element_text(size = 8, colour = "grey40", family="AvantGarde"),
+          axis.text.y = element_text(size = 8, colour = "grey40", family="AvantGarde"),
+          # axis.title = element_text(size = 10, colour = "grey40", family="AvantGarde"),
+          axis.title.x = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
+          axis.title.y = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
+          legend.text = element_text(size = 8, colour = "grey40", family="AvantGarde"),
+          legend.title = element_text(size = 10, colour = "grey40", family="AvantGarde"))
+)
+
 ### Exploratory data analysis  ###
 
 #' Aggregate function results by factor
@@ -26,7 +38,7 @@ calc_by_replicate <- function(input_df, factor, funct){
 #' 
 #' @description `qqplot_by_factor` takes a data frame and prints a qq-plot for each group and varible
 #' @details Take a data frame and prints a qq-plot for each group and varible. 
-#' @param input_df a data frame with at least one factor column
+#' @param input_df a data frame with at least one factor column. 
 #' @param factor a string with the column name to group by
 #' @param out_path optional string. 
 #' If out path is given, the generated plots are saved to a pdf document with the given name. 
@@ -328,38 +340,44 @@ correlation_heatmap <- function(input_df,
 #' Options: "std", "robust", "uniminmax", "globalminmax", "center", "centerObs". 
 #' For more information on the options see help(ggparcoord). 
 #' @example 
-#' parallel_plot(iris, 5)
+#' parallel_plot(iris, iris$Species)
 #' parallel_plot(iris, 5, scale = "center", titles = c("Centered parallel plot", "Parameters", "Univariate scale to standardize vertical height"))
 #' \dontrun
 #' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
 #' dir <- paste(getwd(), "/examples/iris", sep = "")
 #' parallel_plot(iris, 5, out_path = dir)
-parallel_plot <- function(input_df,  groupColumn, out_path = "none", 
-                          titles = c("Parallel Plot", "", ""), 
+parallel_plot <- function(input_df,  group_vector, out_path = "none", 
+                          title = "Parallel Plot", 
+                          x_title = "", 
+                          y_title ="", 
+                          legend_title = "", 
+                          col_names = colnames(dplyr::select_if(input_df, is.numeric)), 
                           scale = "globalminmax"){
-  parallel_title <- titles[[1]]
-  x_axis_title <- titles[[2]]
-  y_axis_title <- titles[[3]]
-  x_labels <- colnames(input_df[-groupColumn])
-  y_labels <- NULL
-  cols <- c(1:ncol(input_df))
+
+  new_df <- dplyr::select_if(input_df, is.numeric)
+  new_df <- cbind(new_df, group_vector)
   
-  par_plot <- ggparcoord(input_df,
-                         columns = cols[-groupColumn],
-                         groupColumn = groupColumn,
-                         showPoints = TRUE,
+  par_plot <- ggparcoord(new_df,
+                         columns = 1:(ncol(new_df)-1),
+                         groupColumn = ncol(new_df),
+                         showPoints = FALSE,
                          scale = scale, # "globalminmax" is default
                          alphaLines = 0.5
-  )  +
-    ggtitle(parallel_title) +
-    xlab(x_axis_title) +
-    ylab(y_axis_title) +
+  ) +
+    ggtitle(title) + 
+    xlab(x_title) + 
+    ylab(y_title) +
+    labs(color = legend_title) +
     scale_color_viridis(discrete=TRUE) +
-    scale_x_discrete(breaks = colnames(input_df[-groupColumn]),
-                     labels = x_labels) +
     geom_point(shape = 20, size = 0.5) +
-    my_theme
-  
+    theme(plot.title = element_text(size=12, hjust = 0.5, family="AvantGarde"),
+          axis.text.x = element_text(angle = 90, size = 7, hjust = 1, colour = "grey40", family="AvantGarde"), 
+          axis.text.y = element_text(size = 7, colour = "grey40", family="AvantGarde"),
+          axis.title.x = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
+          axis.title.y = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
+          legend.text = element_text(size = 7, colour = "grey40", family="AvantGarde"),
+          legend.title = element_text(size = 8, colour = "grey40", family="AvantGarde")) 
+
   if(out_path != "none"){
     print(paste("Saving parallel coordinates plot to ", out_path, "_parcoord.png", sep = ""))
     ggsave(paste(out_path, "_parcoord.png", sep = ""),

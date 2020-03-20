@@ -1,36 +1,3 @@
-### Install packages
-## general
-# install.packages("tibble")
-# install.packages("stringr")
-# install.packages("data.table")
-# install.packages("dplyr")
-# install.packages("devtools")
-# install.packages(DT) # pretty print df (interactive)
-
-## graphs
-# install.packages("ggplot2")
-# install.packages("scales")
-# install.packages("viridis")
-
-## correlation plot 
-# install.packages("psych")
-
-## for spider chart
-# install.packages("fmsb")
-
-## for paralell plot
-# install.packages("GGally")
-
-# install.packages("hrbrthemes")
-
-## for PCA
-# install.packages("ggfortify")
-# install.packages("factoextra")
-
-## heatmap 
-# install.packages("plotly") # interactive heatmap
-# install.packages("gplots")
-
 ### load packages
 # library(gridExtra)
 library(stringr) # count separators
@@ -47,23 +14,28 @@ library(devtools)
 library(ggfortify)
 library(factoextra)
 library(plotly) # interactive heatmap
+library(heatmaply) # interactive heatmap
 library(gplots) # heatmap 
+library(dendextend)
+library(limma) # hypothesis testing
 
-source("lipidome_comparison_functions.R")
+source("lipidome_comparison_dataTransformaions.R")
 source("lipidome_comparison_EDA.R")
 source("lipidome_comparison_pca.R")
+source("lipidome_comparison_clustering.R")
 
 
 # set ggplot theme
 my_theme <- theme_set(
   theme_minimal() +
-    theme(plot.title = element_text(size=12, hjust = 0.5),
-        axis.text.x = element_text(size = 8),
-        # axis.title = element_text(size = 10),
-        axis.title.x = element_text(size = 10, hjust = 0.5),
-        axis.title.y = element_text(size = 10, hjust = 0.5),
-        legend.text = element_text(size = 8),
-        legend.title = element_text(size = 10))
+    theme(plot.title = element_text(size=12, hjust = 0.5, family="AvantGarde"),
+          axis.text.x = element_text(size = 8, colour = "grey40", family="AvantGarde"),
+          axis.text.y = element_text(size = 8, colour = "grey40", family="AvantGarde"),
+          # axis.title = element_text(size = 10, colour = "grey40", family="AvantGarde"),
+          axis.title.x = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
+          axis.title.y = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
+          legend.text = element_text(size = 8, colour = "grey40", family="AvantGarde"),
+          legend.title = element_text(size = 10, colour = "grey40", family="AvantGarde"))
 )
 
 ## set variables
@@ -121,7 +93,7 @@ correlation_heatmap(working_data, interactive = TRUE)
 
 ### plots 
 ## paralell plot for <= 10 variables
-parallel_plot(working_data, "treatment", plot_name) 
+parallel_plot(working_data, "treatment", plot_name) #todo Error in -groupColumn : invalid argument to unary operator 
 
 ## spider chart
 spider_data <- SID_to_metadata(t_lipid_data) # calculate means so there is only one value per group
@@ -149,3 +121,26 @@ scree_base(lipid_pca)
 
 biplot_factoextra(lipid_pca, groups, ellipse = TRUE, loadings = FALSE)
 biplot_ggplot2(input_df = wd, groups = "treatment", ellipse = TRUE, loadings = TRUE)
+
+### Clustering
+
+wd <- lipid_data
+hc_wd <- hclust(dist(select_if(wd, is.numeric), "euclidean"), method = "average")
+
+dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
+dir <- paste(getwd(), "/examples/lipComp", sep = "")
+
+hclust_methods(wd)
+hclust_performance_table(wd)
+hclust_performance_plot(wd)
+hclust_dendrogram(hc_wd)
+hclust_heatmap(wd, row_names = wd$X)
+hclust_heatmap_interactive(wd)
+
+
+## hypothesis testing and volcano plot
+wd_lps <- subset(working_data, working_data$treatment == "LPS")
+wd_con <- subset(working_data, working_data$treatment == "Con")
+
+t.test(wd_lps$`11-HETE_10.43`, wd_con$`11-HETE_10.43`)
+
