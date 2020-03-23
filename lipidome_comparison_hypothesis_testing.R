@@ -12,40 +12,91 @@ my_theme <- theme_set(
 )
 
 working_data
-wd <- lipid_data
-rownames(wd) <- wd$X
-wd_con <- subset(working_data, working_data$treatment == "Con")
-wd_lps <- subset(working_data, working_data$treatment == "LPS")
 
-t.test(wd_con$`11-HETE_10.43`, wd_lps$`11-HETE_10.43`)
-
-welch_ttest <- function(input_df, group1, group2){
-  x = input_df[group1]
-  y = input_df[group2]
-  x = as.numeric(x)
-  y = as.numeric(y)  
-  results = t.test(x, y)
-  results$p.value
+p_values_by_column <- function(input_df,
+                           test_method = t.test,
+                           alternative = "two.sided"){
+  
+  p_values <- apply(select_if(input_df, is.numeric), 2, 
+                    function(x) test_method(x ~ input_df$treatment, alternative = alternative)$p.value)
+  as.data.frame(p_values)
 }
 
-p_values <- apply(select_if(wd, is.numeric), 1, welch_ttest, group1 = c(1:6), group2= c(7:12))
-p_df <- as.data.frame(p_values)
-p_fdr <- p.adjust(p_df$p_values, method = "fdr")
+log2_foldchange <- function(input_df){
+  log2_df <- log2(select_if(input_df, is.numeric))
+  log2_df$treatment <- input_df$treatment
+  
+  means <- aggregate(select_if(log2_df, is.numeric), by = list(log2_df$treatment), FUN = mean)
+  rownames(means) <- means$Group.1
+  means <- as.data.frame(select_if(means, is.numeric))
+  log2_foldchange <- vector()
+  for(i in 1:ncol(means)){
+    log2_foldchange[i] <- means[1, i] - means[2, i]
+  }
+  
+  as.data.frame(log2_foldchange)
+}
 
-log2_wd <- log2(select_if(wd, is.numeric))
-mean_lps <- apply(log2_wd[, 1:6], 1, mean)
-mean_con <- apply(log2_wd[, 7:12], 1, mean)
-log2_foldchange <- mean_con - mean_lps
-log2_foldchange <- as.data.frame(log2_foldchange)
+p_vals <- p_values_by_column(working_data)
+adj_p_vals <- p.adjust(p_vals$p_values, method = "fdr")
+log2FC <- log2_foldchange(working_data)
 
-result_df <- cbind(log2_foldchange, p_df)
-result_df$p_fdr <- p_fdr
-rownames(result_df) <- rownames(wd)
+volcano_df <- cbind(p_vals, adj_p_vals, log2FC)
 
-threshold <- result_df$p_fdr < 0.05
-result_df$threshold <- threshold
+threshold_p <- volcano_df$p_values < 0.05
+threshold_adj <- volcano_df$adj_p_vals < 0.05
+new_volcano_df <- cbind(volcano_df, threshold_p, threshold_adj)
 
 
-volcano <- ggplot(data = result_df, aes(x = log2_foldchange, y = -1*log10(p_fdr)), fill = color)
-volcano + geom_point()
+volcano_plot <- function(volcano_df, 
+                         x, y, 
+                         significance = 0.05,
+                         foldchange = 0.05, 
+                         color_by = "significance",
+                         title = "Volcano plot", 
+                         x_lab = "log2Fold", y_lab = "-log10(p-value)"){
+
+  if(color_by == "significance"){
+    threshold_col <- y < significance
+    threshold_shape <- abs(x) < foldchange
+  } 
+  else if(color_by == "foldchange"){
+    threshold_col <- abs(x) < foldchange
+    threshold_shape <- y < significance
+  }
+
+  print(threshold_shape)
+  limits <- max(-1*min(x), max(x))
+  
+  new_volcano_df <- cbind(volcano_df, threshold_col)
+  
+  volcano <- ggplot(data = new_volcano_df, 
+                    aes(x = x, y = -1*log10(y), 
+                        col = threshold_col
+                        # shape = threshold_shape
+                        )) + 
+    geom_point() + 
+    geom_hline(yintercept = -1*log10(significance), 
+               linetype = "dashed", 
+               colour = "grey40") +
+    geom_vline(xintercept = -1*foldchange, 
+               linetype = "dashed", 
+               colour = "grey40") +
+    geom_vline(xintercept = foldchange, 
+               linetype = "dashed", 
+               colour = "grey40") +
+    labs(title = title) + 
+    xlab(x_lab) + ylab(y_lab) + 
+    scale_x_continuous(limits = c(-1*limits, limits)) + 
+    scale_color_viridis_d(begin = 0, 
+                          end = 0.8, 
+                          labels = c("not significant", "significant"), 
+                          name = "Significance")
+
+  volcano
+}
+
+volcano_plot(new_volcano_df, new_volcano_df$log2_foldchange, new_volcano_df$p_values, 0.05)
+
+
 
