@@ -22,14 +22,17 @@ my_theme <- theme_set(
 #' @param factor a string with the column name to group by
 #' @param funct a generic R function, that takes only one argument (e.g. mean(), summary(), etc.)
 #' @examples 
-#' calc_by_replicate(iris, "Species", mean)
+#' calc_by_replicate(iris, iris$Species, mean)
 calc_by_replicate <- function(input_df, factor, funct){ 
   as.data.frame(
     aggregate(dplyr::select_if(input_df, is.numeric), 
-              by=list(input_df[[factor]]), 
+              by=list(factor), 
               FUN=funct)
   )
 }
+
+
+
 
 
 ### Graphical exploratory data analysis
@@ -379,7 +382,7 @@ parallel_plot <- function(input_df,  group_vector, out_path = "none",
           legend.title = element_text(size = 8, colour = "grey40", family="AvantGarde")) 
 
   if(out_path != "none"){
-    print(paste("Saving parallel coordinates plot to ", out_path, "_parcoord.png", sep = ""))
+    print(paste("Saving plot to ", out_path, "_parcoord.png", sep = ""))
     ggsave(paste(out_path, "_parcoord.png", sep = ""),
            plot = par_plot)
   }

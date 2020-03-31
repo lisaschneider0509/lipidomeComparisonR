@@ -11,6 +11,7 @@
 # install.packages("ggplot2")
 # install.packages("scales")
 # install.packages("viridis")
+# install.packages("ggrepel")
 
 ## correlation plot 
 # install.packages("psych")
@@ -42,3 +43,5 @@ BiocManager::install('DESeq2')
 BiocManager::install("ALL")
 BiocManager::install("a4Base")
 
+## preprocessing
+# install.packages("imputeLCMD") # impute missing values (for left censored missing values)
