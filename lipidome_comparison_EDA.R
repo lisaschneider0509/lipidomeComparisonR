@@ -292,20 +292,6 @@ correlation_heatmap <- function(input_df,
   }
 }
 
-#' Correlation table 
-#' 
-#' @description `correlation_table` calculates the correlations between all numeric variables of a data frame and returns a table of r-values. 
-#' @param input_df data frame or subset of data frame. 
-#' @param method character string. "pearson", "kendall", or "spearman" (default). Can be abbreviated. 
-#' @examples 
-#' correlation_table(iris)
-#' correlation_table(iris[iris$Species == "setosa", ], method = "kendall")
-#' correlation_table(iris[iris$Species == "setosa", ], method = "p")
-correlation_table <- function(input_df, method = "spearman"){
-  cor_matrix <- cor(dplyr::select_if(input_df, is.numeric), method = method)
-  cor_matrix
-}
-
 #' Parallel coordinates plot
 #' 
 #' @description `parallel_plot` prints a paralell coordinates plot using a data frame

@@ -114,11 +114,18 @@ meat_tech <- calc_by_replicate(meat_numeric, meat_numeric$Biol_rep, mean)
 nmb <- paste_catecorical_variable(meat_biol, 2, meat_groups)
 nmt <- paste_catecorical_variable(meat_tech, 2, meat_groups)
 
-### exploratory data analysis
+### graphical exploratory data analysis
 qqplot_by_factor(meat_imputed, "Group", out_path = plot_name)
 histogram_by_factor(meat_imputed, "Group", out_path = plot_name)
 boxplot_by_factor(meat_imputed, "Group", out_path = plot_name)
 
+parallel_plot(meat_imputed, meat_imputed$Group, out_path = plot_name)
+meat_spider <- calc_by_replicate(meat_imputed, meat_imputed$Group, mean)
+spider_chart(meat_spider, legend_lab = meat_spider$Group.1, out_path = plot_name)
 
+### test for normality
+meat_normality <- shapiro_by_factor(meat_imputed, meat_imputed$Group)
 
-
+### test for correlation
+meat_correlation <- cor(select_if(meat_imputed, is.numeric), method = "spearman")
+correlation_heatmap(meat_imputed, interactive = TRUE, out_path = plot_name)
