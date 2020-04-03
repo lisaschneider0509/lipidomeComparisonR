@@ -2,3 +2,8 @@
 *.xlsx
 *.csv
 *scratch*
+*.Rhistory
+.Rproj.user
+packrat/lib*/
+plots/
+examples/
