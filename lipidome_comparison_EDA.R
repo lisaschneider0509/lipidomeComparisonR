@@ -31,10 +31,6 @@ calc_by_replicate <- function(input_df, factor, funct){
   )
 }
 
-
-
-
-
 ### Graphical exploratory data analysis
 
 #' Print one qqplot for each variable and group
@@ -217,13 +213,13 @@ shapiro_by_factor <- function(input_df, factor, out_path = "none"){
   shapiro_all <- rbind(shapiro_statistic, shapiro_pvalue)
   shapiro_all <- shapiro_all[order(shapiro_all[,2]), ]
   
-  if(out_path == "none"){
-    DT::datatable(shapiro_all)
-  } else {
-    DT::datatable(shapiro_all)
+  if(out_path != "none"){
     print(paste("Writing to", out_path, "_shapiro.csv", sep = ""))
     write.csv(shapiro_all, paste(out_path, "_shapiro.csv", sep = ""))
   }
+  shapiro_all
+  # DT::datatable(shapiro_all)
+  
 }
 
 
@@ -410,7 +406,7 @@ parallel_plot <- function(input_df,  group_vector, out_path = "none",
 #'                             by = list(iris$Species), 
 #'                             FUN = mean)
 #' rownames(minimized_iris) <- minimized_iris$Group.1
-#' spider_chart(minimized_iris, title = "Spider chart of iris")
+#' spider_chart(minimized_iris, title = "Spider chart of iris", legend_lab = c(1, 2, 3))
 #' \dontrun
 #' minimized_iris <- aggregate(dplyr::select_if(iris, is.numeric), 
 #'                             by = list(iris$Species), 
@@ -419,14 +415,16 @@ parallel_plot <- function(input_df,  group_vector, out_path = "none",
 #' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
 #' dir <- paste(getwd(), "/examples/iris", sep = "")
 #' spider_chart(minimized_iris, out_path = dir)
-spider_chart <- function(minimized_df, title="Spider chart", out_path = "none"){ # todo get labels ot of the plot
+spider_chart <- function(minimized_df, 
+                         title = "Spider chart", 
+                         legend_lab = rownames(minimized_df),
+                         out_path = "none"){ # todo get labels ot of the plot
   
   out_name <- paste(out_path, "_spiderChart", ".png", sep = "")
   
   func <- function(){
-    spider_legend <- row.names(minimized_df) # set new row names 
     spider_data <- dplyr::select_if(minimized_df, is.numeric) # remove column with rownames
-    spider_labels <- substring(colnames(spider_data), first = 1, last = 6) # set max. label length to 10 characters
+    spider_labels <- substring(colnames(spider_data), first = 1, last = 10) # set max. label length to 10 characters
     
     spider_min <- floor(min(spider_data))
     spider_max <- ceiling(max(spider_data))
@@ -454,6 +452,7 @@ spider_chart <- function(minimized_df, title="Spider chart", out_path = "none"){
                cglwd=0.8,
                # custom labels
                vlcex=0.6, 
+               vlabels = spider_labels,
                centerzero = FALSE)
     
     title(main = title, cex.main = 0.9, font.main = 1)
@@ -461,7 +460,7 @@ spider_chart <- function(minimized_df, title="Spider chart", out_path = "none"){
     ## Add a legend
     legend(x=-2, 
            y=1.1, 
-           legend = rownames(spider_data[-(1:2),]), 
+           legend = legend_lab, 
            bty = "n", 
            pch=20, 
            col=colors_border, 

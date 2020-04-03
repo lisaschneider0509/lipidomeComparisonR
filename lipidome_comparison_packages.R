@@ -34,14 +34,5 @@
 # install.packages("heatmaply")
 # install.packages("dendextend") # find the best clustering parameters
 
-## hypothesis testing
-# if (!requireNamespace('BiocManager', quietly = TRUE))
-#   install.packages('BiocManager')
-# BiocManager::install('EnhancedVolcano', 'limma')
-BiocManager::install("airway")
-BiocManager::install('DESeq2')
-BiocManager::install("ALL")
-BiocManager::install("a4Base")
-
 ## preprocessing
-# install.packages("imputeLCMD") # impute missing values (for left censored missing values)
+install.packages("imputeLCMD") # impute missing values (for left censored missing values)

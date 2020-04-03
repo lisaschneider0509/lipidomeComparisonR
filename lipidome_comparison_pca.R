@@ -83,7 +83,7 @@ biplot_factoextra <- function(prcomp_element,
                               loadings = TRUE, 
                               out_path = "none"){
   
-  biplot <- factoextra::fviz_pca_biplot(prcomp_element, 
+  biplot <- fviz_pca_biplot(prcomp_element, 
                                         ## color by group
                                         habillage = groups, # a vector of groups by whicht to color
                                         ## labels

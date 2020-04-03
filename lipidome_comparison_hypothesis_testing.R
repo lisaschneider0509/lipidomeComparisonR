@@ -166,14 +166,3 @@ volcano_plot <- function(volcano_df,
 
 
 
-# p_vals <- ttest_by_column(working_data, working_data$treatment)
-# adj_p_vals <- p.adjust(p_vals$p_values, method = "fdr")
-# log2FC <- log2_foldchange(working_data, working_data$treatment)
-# myvolcano_df <- cbind(p_vals, adj_p_vals, log2FC)
-# myvolcano_df$log2_foldchange[3] <- 0.1
-volcano_plot(myvolcano_df, 
-             significance_col = myvolcano_df$p_values, 
-             foldchange_col = myvolcano_df$log2_foldchange, 
-             foldchange = 0.05, 
-             labels = 1:nrow(myvolcano_df))
-

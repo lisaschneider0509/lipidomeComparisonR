@@ -1,19 +1,20 @@
 ### load packages
+library(dplyr) # select part of data
+library(stringr) # count separators
+library(data.table) # transpose data frame
 library(impute)
 library(imputeLCMD)
 
+library(ggplot2)#, # plots
+library(tibble) # data frame manipulation
+library(viridis) # colorblind save color schemes
+library(GGally) # paralell plot
+library(fmsb) # spider chart
+library(scales) # scale opacity of filling (alpha)
+
+# library(psych) # for correlation plot 
 
 # library(gridExtra)
-# library(stringr) # count separators
-# library(ggplot2)#, # plots
-# library(data.table) # transpose data frame
-# library(tibble) # data frame manipulation
-# library(viridis) # colorblind save color schemes
-# library(GGally, hrbrthemes) # paralell plot
-# library(psych) # for correlation plot 
-# library(dplyr) # select part of data
-# library(fmsb) # spider chart
-# library(scales) # scale opacity of filling (alpha)
 # library(devtools)
 # library(ggfortify)
 # library(factoextra)
@@ -100,34 +101,40 @@ meat_imputed <- as.data.frame(meat_QRILC[[1]])
 meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
  
 
+meat_groups <- generate_categorical_table(meat_imputed$Group)
+meat_treatment <- generate_categorical_table(meat_imputed$Treatment)
 
-### reduce replicates
-meat_biol <- calc_by_replicate(meat_imputed, meat_imputed$Sample_nr, mean)
-meat_grouped <- calc_by_replicate(meat_imputed, meat_imputed$Group, mean)
+meat_numeric <- meat_imputed
+meat_numeric$Group <- as.numeric(meat_numeric$Group)
+meat_biol <- calc_by_replicate(meat_numeric, meat_numeric$Sample_nr, mean)
+meat_tech <- calc_by_replicate(meat_numeric, meat_numeric$Biol_rep, mean)
+
+nmb <- paste_catecorical_variable(meat_biol, 2, meat_groups)
+nmt <- paste_catecorical_variable(meat_tech, 2, meat_groups)
 
 
 
 ## test data
 {### load & transform data
-{
-lipid_data <- read.csv(test_path, sep = ",", dec = ".", header = TRUE) #read data
-t_lipid_data <- pretty_transpose(lipid_data)
-lipid_data <- SID_to_metadata(t_lipid_data)
-lipid_data <- character_to_factor(lipid_data) 
-}
-### summary biological & technical replicates
-{
-means_biol <- calc_by_replicate(lipid_data, "treatment", mean)
-means_tech <- calc_by_replicate(lipid_data, "biol_replicate", mean)
-means_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, mean)
 
-sd_biol <- calc_by_replicate(lipid_data, "treatment", sd)
-sd_tech <- calc_by_replicate(lipid_data, "biol_replicate", sd)
-sd_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, sd)
+# lipid_data <- read.csv(test_path, sep = ",", dec = ".", header = TRUE) #read data
+# t_lipid_data <- pretty_transpose(lipid_data)
+# lipid_data <- SID_to_metadata(t_lipid_data)
+# lipid_data <- character_to_factor(lipid_data) 
+# 
+# ### summary biological & technical replicates
+# 
+# means_biol <- calc_by_replicate(lipid_data, "treatment", mean)
+# means_tech <- calc_by_replicate(lipid_data, "biol_replicate", mean)
+# means_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, mean)
+# 
+# sd_biol <- calc_by_replicate(lipid_data, "treatment", sd)
+# sd_tech <- calc_by_replicate(lipid_data, "biol_replicate", sd)
+# sd_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, sd)
+# 
+# var_biol <- calc_by_replicate(lipid_data, "treatment", var)
+# var_tech <- calc_by_replicate(lipid_data, "biol_replicate", var)
+# var_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, var)
 
-var_biol <- calc_by_replicate(lipid_data, "treatment", var)
-var_tech <- calc_by_replicate(lipid_data, "biol_replicate", var)
-var_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, var)
-}
 }
 
