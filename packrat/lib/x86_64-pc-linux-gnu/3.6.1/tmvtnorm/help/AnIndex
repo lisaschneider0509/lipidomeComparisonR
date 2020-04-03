@@ -1,0 +1,17 @@
+dtmvnorm	tmvnorm
+dtmvnorm.marginal	dmvnorm.marginal
+dtmvnorm.marginal2	dtmvnorm.marginal2
+dtmvt	dtmvt
+gmm.tmvnorm	gmm.tmvnorm
+mle.tmvnorm	mle.tmvnorm
+moments	mtmvnorm
+mtmvnorm	mtmvnorm
+ptmvnorm	ptmvnorm
+ptmvnorm.marginal	ptmvnorm.marginal
+ptmvt	ptmvt
+ptmvt.marginal	ptmvnorm.marginal
+qtmvnorm.marginal	qtmvnorm-marginal
+rtmvnorm	rtmvnorm
+rtmvnorm.sparseMatrix	rtmvnorm
+rtmvnorm2	rtmvnorm2
+rtmvt	rtmvt

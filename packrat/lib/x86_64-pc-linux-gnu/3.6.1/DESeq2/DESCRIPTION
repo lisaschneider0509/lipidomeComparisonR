@@ -1,0 +1,44 @@
+Package: DESeq2
+Type: Package
+Title: Differential gene expression analysis based on the negative
+        binomial distribution
+Version: 1.26.0
+Authors@R: c(
+    person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
+    person("Constantin", "Ahlmann-Eltze", role = c("ctb")),
+    person("Simon", "Anders", role = c("aut","ctb")),
+    person("Wolfgang", "Huber", role = c("aut","ctb")))
+Maintainer: Michael Love <michaelisaiahlove@gmail.com>
+Description: Estimate variance-mean dependence in count data from
+    high-throughput sequencing assays and test for differential
+    expression based on a model using the negative binomial
+    distribution.
+License: LGPL (>= 3)
+VignetteBuilder: knitr, rmarkdown
+Imports: BiocGenerics (>= 0.7.5), Biobase, BiocParallel, genefilter,
+        methods, stats4, locfit, geneplotter, ggplot2, Hmisc, Rcpp (>=
+        0.11.0)
+Depends: S4Vectors (>= 0.23.18), IRanges, GenomicRanges,
+        SummarizedExperiment (>= 1.1.6)
+Suggests: testthat, knitr, rmarkdown, vsn, pheatmap, RColorBrewer, IHW,
+        apeglm, ashr, tximport, tximeta, tximportData, readr, pbapply,
+        airway, pasilla (>= 0.2.10)
+LinkingTo: Rcpp, RcppArmadillo
+URL: https://github.com/mikelove/DESeq2
+biocViews: Sequencing, RNASeq, ChIPSeq, GeneExpression, Transcription,
+        Normalization, DifferentialExpression, Bayesian, Regression,
+        PrincipalComponent, Clustering, ImmunoOncology
+RoxygenNote: 6.1.1
+Encoding: UTF-8
+git_url: https://git.bioconductor.org/packages/DESeq2
+git_branch: RELEASE_3_10
+git_last_commit: 8221895
+git_last_commit_date: 2019-10-29
+Date/Publication: 2019-10-29
+NeedsCompilation: yes
+Packaged: 2019-10-30 00:39:01 UTC; biocbuild
+Author: Michael Love [aut, cre],
+  Constantin Ahlmann-Eltze [ctb],
+  Simon Anders [aut, ctb],
+  Wolfgang Huber [aut, ctb]
+Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-03-19 13:31:38 UTC; unix

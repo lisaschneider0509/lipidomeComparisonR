@@ -1,0 +1,21 @@
+Package: a4Preproc
+Type: Package
+Title: Automated Affymetrix Array Analysis Preprocessing Package
+Version: 1.34.0
+Date: 2011-04-07
+Author: Willem Talloen, Tobias Verbeke
+Maintainer: Tobias Verbeke <tobias.verbeke@openanalytics.eu>, Willem
+ Ligtenberg <willem.ligtenberg@openanalytics.eu>
+Description: Automated Affymetrix Array Analysis Preprocessing Package
+Depends: methods, AnnotationDbi
+Suggests: ALL, hgu95av2.db
+License: GPL-3
+biocViews: Microarray
+git_url: https://git.bioconductor.org/packages/a4Preproc
+git_branch: RELEASE_3_10
+git_last_commit: bfe8262
+git_last_commit_date: 2019-10-29
+Date/Publication: 2019-10-29
+NeedsCompilation: no
+Packaged: 2019-10-30 00:09:25 UTC; biocbuild
+Built: R 3.6.1; ; 2020-03-19 13:57:21 UTC; unix

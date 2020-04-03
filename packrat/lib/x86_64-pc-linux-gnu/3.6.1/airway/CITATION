@@ -1,0 +1,10 @@
+citEntry(entry="article",
+         Author="Himes, B. E.  and Jiang, X.  and Wagner, P.  and Hu, R.  and Wang, Q.  and Klanderman, B.  and Whitaker, R. M.  and Duan, Q.  and Lasky-Su, J.  and Nikolos, C.  and Jester, W.  and Johnson, M.  and Panettieri, R. A.  and Tantisira, K. G.  and Weiss, S. T.  and Lu, Q. ",
+         Title="{{R}{N}{A}-{S}eq {T}ranscriptome {P}rofiling {I}dentifies {C}{R}{I}{S}{P}{L}{D}2 as a {G}lucocorticoid {R}esponsive {G}ene that {M}odulates {C}ytokine {F}unction in {A}irway {S}mooth {M}uscle {C}ells}",
+         Journal="PLoS ONE",
+         Year="2014",
+         Volume="9",
+         Number="6",
+         Pages="e99625",
+         url = "http://www.ncbi.nlm.nih.gov/pubmed/24926665",
+         textVersion="Himes BE, Jiang X, Wagner P, Hu R, Wang Q, Klanderman B, Whitaker RM, Duan Q, Lasky-Su J, Nikolos C, Jester W, Johnson M, Panettieri R Jr, Tantisira KG, Weiss ST, Lu Q. 'RNA-Seq Transcriptome Profiling Identifies CRISPLD2 as a Glucocorticoid Responsive Gene that Modulates Cytokine Function in Airway Smooth Muscle Cells.' PLoS One. 2014 Jun 13;9(6):e99625. PMID: 24926665.")

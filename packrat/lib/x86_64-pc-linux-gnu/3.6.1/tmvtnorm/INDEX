@@ -1,0 +1,27 @@
+dtmvnorm                Truncated Multivariate Normal Density
+dtmvnorm.marginal       One-dimensional marginal density functions from
+                        a Truncated Multivariate Normal distribution
+dtmvnorm.marginal2      Bivariate marginal density functions from a
+                        Truncated Multivariate Normal distribution
+dtmvt                   Truncated Multivariate Student t Density
+gmm.tmvnorm             GMM Estimation for the Truncated Multivariate
+                        Normal Distribution
+mle.tmvnorm             Maximum Likelihood Estimation for the Truncated
+                        Multivariate Normal Distribution
+mtmvnorm                Computation of Mean Vector and Covariance
+                        Matrix For Truncated Multivariate Normal
+                        Distribution
+ptmvnorm                Truncated Multivariate Normal Distribution
+ptmvnorm.marginal       One-dimensional marginal CDF function for a
+                        Truncated Multivariate Normal and Student t
+                        distribution
+ptmvt                   Truncated Multivariate Student t Distribution
+qtmvnorm.marginal       Quantiles of the Truncated Multivariate Normal
+                        Distribution in one dimension
+rtmvnorm                Sampling Random Numbers From The Truncated
+                        Multivariate Normal Distribution
+rtmvnorm2               Sampling Random Numbers From The Truncated
+                        Multivariate Normal Distribution With Linear
+                        Constraints
+rtmvt                   Sampling Random Numbers From The Truncated
+                        Multivariate Student t Distribution

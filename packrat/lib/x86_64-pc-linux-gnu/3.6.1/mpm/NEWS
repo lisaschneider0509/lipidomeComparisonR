@@ -1,0 +1,42 @@
+1.0-22
+    o further fix in plot.mpm in the presence of label.tol.col
+1.0-21
+    o fix bug in plot.mpm that occurred when specifying col.group
+1.0-20
+    o trivial fix in .onAttach
+    o small documentation improvements
+1.0-19
+    o fix in plot.mpm to allow depiction of spectral maps with negative numbers
+    o add option to only label a limited number of columns (label.col.tol)
+1.0-18
+    o rename dump.summary.mpm to export.summary.mpm and add generic function
+1.0-17
+    o compress data files better and move to Roxygen-based documentation
+1.0-16
+    o remove dependency on geneplotter for plot.mpm with do.smoothScatter = TRUE and replace with dependency 
+      on recommended package KernSmooth
+    o add legend argument
+1.0-15
+    o extend the sampleNames argument to allow to specify the labels to be used on
+      the plot as a character vector (alternatively to the use of a logical of length
+      one as introduced in 1.0-14)
+1.0-14
+    o introduce sampleNames argument to display sample names (TRUE) or not (FALSE)
+1.0-13
+    o modification of default colors for smoothScatter
+1.0-12
+    o return invisibly for plot.mpm
+    o introduce tests directory and script
+    o introduce NAMESPACE
+    o display package version on loading package
+1.0-11
+    o added dump.summary.mpm function to package
+    o fix sub title 
+1.0-10
+    o introduction of labels argument for plot.mpm in order to allow
+      labels to be different from the row names
+1.0-9
+    o clarification plot.mpm documentation
+    o removed (less flexible) `title' argument in favor of classical 
+      main / sub titles	which can be passed to eqscplot via `...' 
+      instead

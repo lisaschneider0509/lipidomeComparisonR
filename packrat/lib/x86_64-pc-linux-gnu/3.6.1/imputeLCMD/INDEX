@@ -1,0 +1,25 @@
+generate.ExpressionData
+                        Generate Peptide/Protein Expression Data
+generate.RollUpMap      Generates peptide to protein map.
+impute.MAR              Generic function for the imputation of MAR/MCAR
+                        missing data
+impute.MAR.MNAR         Hybrid imputation method
+impute.MinDet           Imputation of left-censored missing data using
+                        a deterministic minimal value approach.
+impute.MinProb          Imputation of left-censored missing data using
+                        stochastic minimal value approach.
+impute.QRILC            Imputation of left-censored missing data using
+                        QRILC method.
+impute.ZERO             Imputation of missing entries by '0'.
+impute.wrapper.KNN      Wrapper function for KNN imputation.
+impute.wrapper.MLE      MLE-based imputation of missing data.
+impute.wrapper.SVD      SVD-based imputation.
+insertMVs               Generates missing data in a complete data
+                        matrix.
+intensity_PXD000022     Dataset PXD000022 from ProteomeXchange.
+intensity_PXD000052     Dataset PXD000052 from ProteomeXchange.
+intensity_PXD000438     Dataset PXD000438 from ProteomeXchange.
+intensity_PXD000501     Dataset PXD000501 from ProteomeXchange.
+model.Selector          Model selector for hybrid missing data
+                        imputation
+pep2prot                Peptide to protein mapping.

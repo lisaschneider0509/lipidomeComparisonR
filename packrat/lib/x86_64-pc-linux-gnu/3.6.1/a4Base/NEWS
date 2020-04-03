@@ -1,0 +1,130 @@
+1.4.1
+    o plot1gene now coerces the 'groups' variable to a factor in plot1gene
+1.4.0
+    o release for BioC 2.10
+1.2.4
+    o throw error in case 'group' variable contains missing values in spectalMap
+1.2.3
+    o circumvent build issues on certain versions of windows
+1.2.2
+    o more appropriate handling of the dots argument in plot1gene
+1.2.1
+    o fix in legend for spectralMap
+1.2.0
+    o release for BioC 2.9  
+1.1.4
+    o fix in limmaTwoLevels 
+1.1.3
+    o update for revised glmnet package
+1.1.1
+    o on BioConductor
+0.0-26
+    o better argument handling for mpm
+0.0-25
+    o fix histPvalue for limma objects
+    o add histPvalue method for MArrayLM objects
+0.0-24
+    o add proper support for the main argument in histPvalue methods.
+0.0-23
+    o add support for cex, cex.lab, cex.main to plot1gene
+0.0-22
+    o allow for specifying xlab and ylab in histPvalue
+0.0-21
+    o move annotationTable tests to the a4Reporting package
+    o complete documentation for histpvalue plotter
+    o added heatmap.expressionSet
+    o fix legend for spectralMap
+0.0-20
+    o topTable method for limma objects gains default setting for n (n=10) and looses
+       default for coef (in order to force people to make the right choice instead 
+       of the previous default of 2)
+    o removed nlcv dependency to speed up loading a4
+    o remove RColorBrewer dependency (speed up loading)
+    o changed column names of featureData to be concordant with BioConductor nomenclature
+    o split off a4Core, a4Preproc and a4Classif packages and become a4Base
+0.0-19
+    o move $SRC_PKG/etc to $SRC_PKG/inst/etc as tooltip.script (plotLogRatio) needs
+      to be available at $INSTALLED_PKG/etc
+0.0-18
+    o add varEqual argument to tTest (defaults to FALSE)
+    o improved y axis annotation for volcanoPlot
+0.0-17
+    o remove confusionMatrix generic as it is defined already in nlcv; 
+      otherwise the one in nlcv is masked
+0.0-16
+    o fix colors of groups in spectralMap (now uses a4palette)
+    o redefine topTable method for MArrayLM objects (is overwritten in nlcv)
+    o add gene argument (as alternative to probeset) for plot1gene function
+    o add default pointLabels in case pointLabels for volcanoPlot and its
+      numeric,numeric,missing-method
+0.0-15
+    o fix plot1gene (respect order of factor levels in phenoData of ExpressionSet)
+0.0-14
+    o bug in volcanoPlot (lods values should be sorted in increasing order, 
+      contrary to P values)
+    o add probe2gene argument to plot1gene
+    o add topTable method for tTest objects
+    o set default sub for spectralMap to sub=""
+    o fix pamClass and corresponding topTable (silence it)
+    o added xtable for topTable of pamClass
+    o add nlcvTT data to package
+    o expose a4palette function to user and document
+    o add histPvalue for limmaResult object
+    o turned propDEgenes into generic
+    o expose volcanoplotter to user and document
+    o add probe2gene argument to tTest, pamClass, rfClass (defaults to TRUE)
+    o significant improvements to documentation
+0.0-13
+    o fix seemingly inverted logic of topPValues and topLogRatios in volcanoPlot
+    o reduce space between left 'wing' of volcanoPlot and y axis
+    o extended volcanoPlot documentation
+    o integrate annotationTable package into a4
+    o improve topTable for rfClass and fix xtable method accordingly
+    o adapt rfClass to improved varSelRF 0.7-1 which now has a verbose=FALSE
+        option that also silences gc() output (patches Tobias Verbeke)
+    o add documentation for topTable methods
+    o fix typo print.topTablePam 
+0.0-12
+    o volcanoPlot made generic, methods for 'limma', 'tTest' and numeric vectors
+      'x' and 'y'
+0.0-11
+    o add varSelRF wrapper rfClass
+    o add new addGeneInfo function to produce ExpressionSet objects similar to the pipeline
+    o topTable method (and corresponding print and xtable methods) for lasso models
+    o topTable method (and corresponding print and xtable methods) for rfClass models
+    o topTable method (and corresponding print and xtable methods) for pamClass models
+0.0-10
+	o add lassoClass
+	o extract probe2gene function out of spectralMap.R into probe2gene.R
+	o improve display of sample names in spectralMap
+0.0-9
+    o fix pamr error handling mess
+	o documentation fix in spectralMap
+	o added mpm.args argument to set arguments for mpm
+	  (rationale: allow for PCA)
+0.0-8
+	o fixed volcanoPlot (used two devices)
+0.0-7
+	o split up again into separate nlcv and a4 packages
+0.0-6
+	o updated vignettes
+0.0-5
+	o merged nlcv 0.1-72 into the a4 package
+0.0-4
+	o added limmaTwoGroups function
+	o removed dependency on nlcv (to avoid circular dependencies)
+0.0-3
+
+	o insert (basic) vignette on comparison of two groups
+	o fix new page (grid) for volcanoPlot
+	o improved y-axis annotation for volcanoPlot
+	o add probe2gene argument to spectralMap for alternative labeling
+	  of points (needs mpm >= 1.0-10)
+	o added name space to hide probe2gene function
+	o explicited makeLognormal argument for spectralMap
+	o changed selection of points to label in volcanoPlot
+	  (union of topPvalues and topLogRatios)
+0.0-2
+	o spectralMap added
+0.0-1
+	o volcanoPlot added

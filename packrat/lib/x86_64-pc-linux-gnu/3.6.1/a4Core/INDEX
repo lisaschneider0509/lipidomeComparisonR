@@ -1,0 +1,6 @@
+confusionMatrix         Generic function to produce a confusion matrix
+                        (related to a classification problem)
+simulateData            Simulate Data for Package Testing and
+                        Demonstration Purposes
+topTable                S4 Generic for obtaining a top table
+topTable-methods        Methods for topTable

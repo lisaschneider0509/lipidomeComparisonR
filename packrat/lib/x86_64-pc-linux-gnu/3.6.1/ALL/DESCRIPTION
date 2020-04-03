@@ -1,0 +1,19 @@
+Package: ALL
+Title: A data package
+Version: 1.28.0
+Date: 2009-07-22
+Author: Xiaochun Li
+Description: Data of T- and B-cell Acute Lymphocytic Leukemia from the Ritz Laboratory at the DFCI (includes Apr 2004 versions)
+Maintainer: Robert Gentleman <rgentlem@gmail.com>
+License: Artistic-2.0
+Depends: R (>= 2.10), Biobase (>= 2.5.5)
+Suggests: rpart
+biocViews: ExperimentData, CancerData, LeukemiaCancerData
+git_url: https://git.bioconductor.org/packages/ALL
+git_branch: RELEASE_3_10
+git_last_commit: 567528d
+git_last_commit_date: 2019-10-29
+Date/Publication: 2019-11-05
+NeedsCompilation: no
+Packaged: 2019-11-05 16:26:29 UTC; biocbuild
+Built: R 3.6.1; ; 2020-03-23 16:05:56 UTC; unix

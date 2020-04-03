@@ -1,0 +1,4 @@
+if test -n "-L/home/lisa/miniconda3/lib -lxml2 -L/home/lisa/miniconda3/lib -lz -L/home/lisa/miniconda3/lib -llzma -lpthread -L/home/lisa/miniconda3/lib -lm -ldl" ; then
+ LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:-L/home/lisa/miniconda3/lib -lxml2 -L/home/lisa/miniconda3/lib -lz -L/home/lisa/miniconda3/lib -llzma -lpthread -L/home/lisa/miniconda3/lib -lm -ldl
+ export LD_LIBRARY_PATH 
+fi

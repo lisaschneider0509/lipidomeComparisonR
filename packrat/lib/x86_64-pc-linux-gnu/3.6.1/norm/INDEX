@@ -1,0 +1,20 @@
+.code.to.na             Changes missing value code to NA 
+da.norm                 Data augmentation for incomplete multivariate
+                        normal data 
+em.norm                 EM algorithm for incomplete normal data 
+getparam.norm           Extract normal parameters from packed storage 
+imp.norm                Impute missing multivariate normal data 
+loglik.norm             Observed-data loglikelihood for normal data 
+logpost.norm            Observed-data log-posterior for normal data 
+makeparam.norm          Convert normal parameters to packed storage 
+mda.norm                Monotone data augmentation for incomplete
+                        multivariate normal data 
+mdata                   Dataset with missing values to illustrate use
+                        of package norm 
+mi.inference            Multiple imputation inference 
+.na.to.snglcode         Changes NA's to single precision missing value
+                        code 
+ninvwish                Random normal-inverted Wishart variate 
+prelim.norm             Preliminary manipulations for a matrix of
+                        incomplete continuous data. 
+rngseed                 Initialize random number generator seed 

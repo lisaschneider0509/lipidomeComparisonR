@@ -1,0 +1,50 @@
+import("AnnotationDbi")
+importClassesFrom("Biobase", "AssayData")
+importMethodsFrom(DBI, dbGetQuery)
+
+exportPattern("^aaf")
+
+export(selectorWidget,is.annpkg)
+
+S3method("$", aafTable)
+S3method(dim, aafTable)
+S3method(merge, aafTable)
+S3method(rbind, aafTable)
+
+exportClasses(
+              "aafChromLoc",
+              "aafChromosome",
+              "aafCytoband",
+              "aafDescription",
+              "aafGenBank",
+              "aafGO",
+              "aafGOItem",
+              "aafIntensity",
+              "aafList",
+              "aafLocusLink",
+              "aafPathway",
+              "aafPathwayItem",
+              "aafProbe",
+              "aafPubMed",
+              "aafSigned",
+              "aafSymbol",
+              "aafTable",
+              "aafUniGene"
+              )
+
+exportMethods(
+              "colnames",
+              "colnames<-",
+              "getCSS",
+              "getHTML",
+              "getTD",
+              "getText",
+              "getURL",
+              "probeids",
+              "probeids<-",
+              "saveHTML",
+              "saveText",
+              "show",
+              "[",
+              "[["
+              )
