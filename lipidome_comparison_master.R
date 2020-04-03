@@ -29,6 +29,7 @@ source("lipidome_comparison_dataTransformaions.R")
 source("lipidome_comparison_EDA.R")
 source("lipidome_comparison_pca.R")
 source("lipidome_comparison_clustering.R")
+source("lipidome_comparison_hypothesis_testing.R")
 
 # set ggplot theme
 my_theme <- theme_set(
@@ -51,7 +52,7 @@ test_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/Probe-Datensatz
 meat_data_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_fish_final_raw.csv"
 
 plot_path <- paste(working_directory, "/plots", sep = "")
-plot_name <- paste(plot_path, "/test_data", sep = "")
+plot_name <- paste(plot_path, "/meat_data", sep = "")
 
 ## meat data
 ### data processing
@@ -99,6 +100,7 @@ impute_meat <- as.matrix(select_if(impute_meat, is.numeric))
 meat_QRILC = impute.QRILC(impute_meat)
 meat_imputed <- as.data.frame(meat_QRILC[[1]])
 meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
+meat_imputed <- droplevels(meat_imputed) # remove unused levels from factors
  
 
 meat_groups <- generate_categorical_table(meat_imputed$Group)
@@ -112,29 +114,11 @@ meat_tech <- calc_by_replicate(meat_numeric, meat_numeric$Biol_rep, mean)
 nmb <- paste_catecorical_variable(meat_biol, 2, meat_groups)
 nmt <- paste_catecorical_variable(meat_tech, 2, meat_groups)
 
+### exploratory data analysis
+qqplot_by_factor(meat_imputed, "Group", out_path = plot_name)
+histogram_by_factor(meat_imputed, "Group", out_path = plot_name)
+boxplot_by_factor(meat_imputed, "Group", out_path = plot_name)
 
 
-## test data
-{### load & transform data
 
-# lipid_data <- read.csv(test_path, sep = ",", dec = ".", header = TRUE) #read data
-# t_lipid_data <- pretty_transpose(lipid_data)
-# lipid_data <- SID_to_metadata(t_lipid_data)
-# lipid_data <- character_to_factor(lipid_data) 
-# 
-# ### summary biological & technical replicates
-# 
-# means_biol <- calc_by_replicate(lipid_data, "treatment", mean)
-# means_tech <- calc_by_replicate(lipid_data, "biol_replicate", mean)
-# means_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, mean)
-# 
-# sd_biol <- calc_by_replicate(lipid_data, "treatment", sd)
-# sd_tech <- calc_by_replicate(lipid_data, "biol_replicate", sd)
-# sd_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, sd)
-# 
-# var_biol <- calc_by_replicate(lipid_data, "treatment", var)
-# var_tech <- calc_by_replicate(lipid_data, "biol_replicate", var)
-# var_all <- apply(dplyr::select_if(lipid_data, is.numeric), 2, var)
-
-}
 

@@ -50,7 +50,7 @@ calc_by_replicate <- function(input_df, factor, funct){
 #' }
 qqplot_by_factor <- function(input_df, factor, out_path = "none"){
   levels <- levels(input_df[[factor]]) 
-  numeric_df <- dplyr::select_if(input_df, is.numeric)
+  numeric_df <- select_if(input_df, is.numeric)
   
   func <- function(){
     par(mfrow=c(3,3))
@@ -149,14 +149,14 @@ boxplot_by_factor <- function(input_df, factor, out_path = "none"){
   
   func <- function(){
     for (i in 1:ncol(numeric_df)){
-      col_name <- colnames(input_df)[i]
+      col_name <- colnames(numeric_df)[i]
       boxplot(numeric_df[,i] ~ input_df[[factor]],
               main = col_name,
               xlab = NULL,
               ylab = NULL)
     }
   }
-  
+
   if(out_path == "none"){
     par(mfrow=c(3,3), 
         cex.main = 1, 
@@ -177,49 +177,21 @@ boxplot_by_factor <- function(input_df, factor, out_path = "none"){
 
 #' Assess normality for each group
 #' 
-#' @description `shapiro_by_factor` takes a data frame and applies the shapiro-wilk test 
-#' to every group and variable
-#' @details Shapiro wilk test is applied to every group and variable of a data frame. 
-#' The results are aggregated and printed in a table. 
+#' @description `shapiro_by_factor` takes a data frame, applies the shapiro-wilk test 
+#' to every group and variable and returns a table of p-values. 
 #' @param input_df a data frame with at least one factor column
 #' @param factor a string with the column name to group by
-#' @param out_path optional string. 
 #' @example 
-#' shapiro_by_factor(iris, "Species")
-#' \dontrun{
-#' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
-#' dir <- paste(getwd(), "/examples/iris", sep = "")
-#' shapiro_by_factor(iris, "Species", dir)
-#' }
-shapiro_by_factor <- function(input_df, factor, out_path = "none"){
-  
-  
-  shapiro_statistic <- aggregate(dplyr::select_if(input_df, is.numeric), 
-                                 by = list(input_df[[factor]]),
-                                 FUN = function(x) {y <- shapiro.test(x); c(y$statistic)})
-  
-  shapiro_statistic <- tibble::add_column(shapiro_statistic, 
-                                          value = "W", 
-                                          .before = 1)
-  
+#' shapiro_by_factor(iris, iris$Species)
+shapiro_by_factor <- function(input_df, factor){
+
   shapiro_pvalue <- aggregate(dplyr::select_if(input_df, is.numeric), 
-                              by = list(input_df[[factor]]),
+                              by = list(factor),
                               FUN = function(x) {y <- shapiro.test(x); c(y$p.value)})
   
-  shapiro_pvalue <- tibble::add_column(shapiro_pvalue, 
-                                       value = "p-Value", 
-                                       .before = 1)
   
-  shapiro_all <- rbind(shapiro_statistic, shapiro_pvalue)
-  shapiro_all <- shapiro_all[order(shapiro_all[,2]), ]
-  
-  if(out_path != "none"){
-    print(paste("Writing to", out_path, "_shapiro.csv", sep = ""))
-    write.csv(shapiro_all, paste(out_path, "_shapiro.csv", sep = ""))
-  }
-  shapiro_all
-  # DT::datatable(shapiro_all)
-  
+  print("p < 0.05 ... no normal distribution; p > 0.05 ... normal distribution")
+  shapiro_pvalue
 }
 
 
@@ -318,7 +290,20 @@ correlation_heatmap <- function(input_df,
   } else {
     cor_heatmap # static heatmap
   }
-  
+}
+
+#' Correlation table 
+#' 
+#' @description `correlation_table` calculates the correlations between all numeric variables of a data frame and returns a table of r-values. 
+#' @param input_df data frame or subset of data frame. 
+#' @param method character string. "pearson", "kendall", or "spearman" (default). Can be abbreviated. 
+#' @examples 
+#' correlation_table(iris)
+#' correlation_table(iris[iris$Species == "setosa", ], method = "kendall")
+#' correlation_table(iris[iris$Species == "setosa", ], method = "p")
+correlation_table <- function(input_df, method = "spearman"){
+  cor_matrix <- cor(dplyr::select_if(input_df, is.numeric), method = method)
+  cor_matrix
 }
 
 #' Parallel coordinates plot
