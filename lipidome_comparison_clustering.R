@@ -62,13 +62,17 @@ hclust_performance_table <- function(input_df,
 hclust_performance_plot <- function(input_df, 
                                      out_path = "none"){
   
-  buffer <- dendextend::dend_expend(USArrests, 
+  numeric_df <- select_if(input_df, is.numeric)
+  
+  buffer <- dendextend::dend_expend(numeric_df, 
                                     dist_methods = c("euclidean", "manhattan"), 
                                     hclust_methods = c("average", "single", "complete"))
+  
   performance <- buffer$performance
   
   myplot <- ggplot(data=performance, aes(x=hclust_methods, y=optim, fill = dist_methods)) +
     geom_bar(stat="identity", position=position_dodge()) +
+    geom_hline(yintercept = max(performance$optim), colour = "grey40", size = 0.3, linetype = "dashed") +
     scale_fill_viridis(discrete = TRUE, name = "Distance function") + 
     labs(title="Hierarchical clustering methods - performance", 
          subtitle = "", #todo set margins properly and remove empty subtitle
@@ -301,7 +305,7 @@ hclust_heatmap <- function(input_df,
 #' @param title string. Plot title. Default = "Hierarchical clustering". 
 #' @param out_path string. Path to save plot to png. 
 #' @examples 
-#' hclust_heatmap_interactive(iris)
+#' hclust_heatmap_interactive(iris, iris$Species)
 #' hclust_heatmap_interactive(USArrests,
 #'                            col_names = c("M", "A", "UP", "R"), 
 #'                            row_names = 1:50, 
@@ -326,7 +330,7 @@ hclust_heatmap_interactive <- function(input_df,
                             scale = "row", # = c("none","row", "column")
                             hide_colorbar = FALSE,
                             branches_lwd = 0.2,
-                            plot_method = "ggplot", # = c("ggplot", "plotly"),
+                            plot_method = "plotly", # = c("ggplot", "plotly"),
                             dist_method = dist_method, 
                             hclust_method = hclust_method,
                             

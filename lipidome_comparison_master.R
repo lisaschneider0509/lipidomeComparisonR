@@ -12,12 +12,15 @@ library(GGally) # paralell plot
 library(fmsb) # spider chart
 library(scales) # scale opacity of filling (alpha)
 
+library(factoextra)
+library(ggfortify) # biplot with ggplot
+
 # library(psych) # for correlation plot 
 
 # library(gridExtra)
 # library(devtools)
-# library(ggfortify)
-# library(factoextra)
+
+
 # library(plotly) # interactive heatmap
 # library(heatmaply) # interactive heatmap
 # library(gplots) # heatmap 
@@ -30,6 +33,9 @@ source("lipidome_comparison_EDA.R")
 source("lipidome_comparison_pca.R")
 source("lipidome_comparison_clustering.R")
 source("lipidome_comparison_hypothesis_testing.R")
+
+# set options
+options(scipen=999)
 
 # set ggplot theme
 my_theme <- theme_set(
@@ -86,23 +92,32 @@ meta_info$Biol_rep <- paste(meta_info$Sample_nr, meta_info$Biol_rep, sep = "_")
 meta_info$Tech_rep <- paste(meta_info$Biol_rep, meta_info$Tech_rep, sep = "_")
 
 meat_target <- cbind(meat_target$SID, meta_info, meat_target[, -1])
+meat_target <- droplevels(meat_target)
+levels(meat_target$Group)[levels(meat_target$Group) == "fleisch"] <- "meat"
+levels(meat_target$Group)[levels(meat_target$Group) == "wild"] <- "game"
+levels(meat_target$Group)[levels(meat_target$Group) == "FISCH"] <- "fish"
 colnames(meat_target) <- c("SID", colnames(meat_target[-1]))
 meat_N <- subset(meat_target, Treatment == "N")
 meat_AS <- subset(meat_target, Treatment == "AS")
 
+
+levels(meat_N$Group)
+
+## Exploratory data analysis
+
 ### impute missing values
 #### remove columns where all values are missing
-impute_meat <- meat_N[, which(colMeans(!is.na(meat_N)) > 0.5)] #todo find out which percentage of missing values still works for imputation
-
+impute_meat <- meat_N[, which(colMeans(!is.na(meat_N)) > 0.8)] 
 impute_meat <- as.matrix(select_if(impute_meat, is.numeric))
 
-# perform missing data imputation
+#### perform missing data imputation
 meat_QRILC = impute.QRILC(impute_meat)
 meat_imputed <- as.data.frame(meat_QRILC[[1]])
 meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
 meat_imputed <- droplevels(meat_imputed) # remove unused levels from factors
- 
 
+#### calculate the means for the replicates
+{
 meat_groups <- generate_categorical_table(meat_imputed$Group)
 meat_treatment <- generate_categorical_table(meat_imputed$Treatment)
 
@@ -113,6 +128,7 @@ meat_tech <- calc_by_replicate(meat_numeric, meat_numeric$Biol_rep, mean)
 
 nmb <- paste_catecorical_variable(meat_biol, 2, meat_groups)
 nmt <- paste_catecorical_variable(meat_tech, 2, meat_groups)
+}
 
 ### graphical exploratory data analysis
 qqplot_by_factor(meat_imputed, "Group", out_path = plot_name)
@@ -129,3 +145,33 @@ meat_normality <- shapiro_by_factor(meat_imputed, meat_imputed$Group)
 ### test for correlation
 meat_correlation <- cor(select_if(meat_imputed, is.numeric), method = "spearman")
 correlation_heatmap(meat_imputed, interactive = TRUE, out_path = plot_name)
+
+### PCA
+meat_pca <- prcomp(select_if(meat_imputed, is.numeric))
+
+meat_pca_var <- meat_pca$sdev ^ 2
+prop_var_meat <- round(meat_pca_var / sum(meat_pca_var) * 100, 2)
+cum_prop_var_meat <- cumsum(prop_of_variance_meat * 100)
+proportion_of_variance_table <- data.frame(Proportion_of_variance = prop_var_meat, Cummulative_proportion_of_variance = cum_prop_var_meat)
+
+scree_base(meat_pca)
+scree_factoextra(meat_pca)
+biplot_ggplot2(meat_imputed, "Group", loadings = FALSE, ellipse = TRUE)
+biplot_factoextra(meat_pca, meat_imputed$Group, ellipse = TRUE)
+
+### Clustering 
+meat_clust <- data.frame(Group = meat_imputed$Group)
+meat_clust <- cbind(meat_clust, select_if(meat_imputed, is.numeric))
+
+hclust_performance_table(meat_clust)
+hclust_performance_plot(meat_clust)
+
+meat_dist <- dist(select_if(meat_clust, is.numeric), method = "manhattan")
+meat_hclust <- hclust(meat_dist, method = "average")
+hclust_dendrogram(meat_hclust, labs = meat_clust$Group)
+
+hclust_heatmap(meat_clust, dist_method = "manhattan", hclust_method = "average", row_names = meat_clust$Group)
+hclust_heatmap_interactive(meat_clust, dist_method = "manhattan", hclust_method = "average", row_names = meat_clust$Group)
+#todo fix location of colorbar in hclust_heatmap_interactive
+
+

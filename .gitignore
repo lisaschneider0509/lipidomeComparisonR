@@ -5,3 +5,4 @@ plots/
 examples/
 .Rhistory
 .Rprofile
+packrat/lib*/

@@ -58,7 +58,7 @@ scree_factoextra <- function(prcomp_element, title = "Scree plot", out_path = "n
 #' This is the object it returns. 
 #' @param groups vector. Groups to color by. Default = "none"
 #' @param ellipse bool. Draw confidence ellipse arount the clusters of groups. Default = FALSE. 
-#' @param loadings bool. Draw loadings arrows and labels. Default = FALSE
+#' @param loadings string / vector of strings. Draw loadings arrows and labels. c("arrow", "text"), "text", "none" (default). 
 #' @param out_path string. Path to save plot to png. 
 #' If out_path is empty, the plot is printed to the device.
 #' @examples 
@@ -68,34 +68,33 @@ scree_factoextra <- function(prcomp_element, title = "Scree plot", out_path = "n
 #' biplot_factoextra(pca_iris, 
 #'                   groups = iris_groups, 
 #'                   ellipse = TRUE, 
-#'                   loadings = FALSE)
+#'                   loadings = c("arrow", "text"))
 #' \dontrun
 #' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
 #' dir <- paste(getwd(), "/examples/iris", sep = "")
 #' biplot_factoextra(pca_iris, 
 #'                  groups = iris_groups, 
 #'                  ellipse = TRUE, 
-#'                  loadings = FALSE, 
+#'                  loadings = "none", 
 #'                  out_path = dir)
 biplot_factoextra <- function(prcomp_element, 
                               groups = "none", 
                               ellipse = FALSE, 
-                              loadings = TRUE, 
+                              loadings = "none", 
                               out_path = "none"){
   
   biplot <- fviz_pca_biplot(prcomp_element, 
-                                        ## color by group
-                                        habillage = groups, # a vector of groups by whicht to color
-                                        ## labels
-                                        label = "var", 
-                                        labelsize = 2,
-                                        repel = TRUE, # labels do not overlap
-                                        col.var = "grey40",
-                                        ## ellipses
-                                        addEllipses = ellipse, 
-                                        ellipse.type = "norm",
-                                        ## legend
-                                        legend.title = "Groups")   +
+                            habillage = groups, # a vector of groups by whicht to color   
+                            label = "var", 
+                            labelsize = 2,
+                            repel = TRUE, # labels do not overlap
+                            col.var = "grey40",
+                            ## ellipses
+                            addEllipses = ellipse, 
+                            ellipse.type = "norm",
+                            ## legend
+                            legend.title = "Groups", 
+                            geom.var = loadings)   +
     scale_color_viridis(discrete = TRUE) +
     scale_fill_viridis(discrete = TRUE) +
     my_theme
@@ -136,27 +135,30 @@ scree_base <- function(prcomp_element,
   
   # variance explained by each pc
   var_pca <- prcomp_element$sdev ^ 2
-  prop_of_variance <- var_pca / sum(var_pca)
+  prop_of_variance <- round(var_pca / sum(var_pca), 5) * 100
+  cummulative_prop_of_variance <- cumsum(prop_of_variance)
+  proportion_of_variance_table <- data.frame(Proportion_of_variance = prop_of_variance, 
+                                             Cummulative_proportion_of_variance = cummulative_prop_of_variance)
   
   func <- function(){
     par(mfrow=c(1,2))
     plot(prop_of_variance, # scree plot to decide which PCs are used
          main = "", xlab ="", ylab ="",
-         ylim=c(0 ,1),
+         ylim=c(0 ,100),
          type = "b")
     title( main = title[1], cex.main = 0.9, font.main = 1, 
            cex.lab = 0.8, 
            xlab =" Principal Component ", 
-           ylab =" Proportion of Variance Explained")
+           ylab =" Proportion of Variance Explained [%]")
     
-    plot(cumsum(prop_of_variance ), # scree plot to decide which PCs are used
+    plot(cummulative_prop_of_variance, # scree plot to decide which PCs are used
          main = "", xlab ="", ylab ="",
-         ylim=c(0 ,1),
+         ylim=c(0 ,100),
          type="b")
     title( main = title[2], cex.main = 0.9, font.main = 1, 
            cex.lab = 0.8, 
            xlab ="Principal Component",
-           ylab ="Cumulative Proportion of Variance Explained")
+           ylab ="Cumulative Proportion of Variance Explained [%]")
   }
   
   if(out_path != "none"){
@@ -210,8 +212,6 @@ biplot_ggplot2 <- function(input_df,
     group_by <- groups
   }
   
-  
-  
   biplot <- autoplot(prcomp(dplyr::select_if(input_df, is.numeric)), data = input_df, 
                      colour = group_by, 
                      loadings = loadings,
@@ -225,9 +225,10 @@ biplot_ggplot2 <- function(input_df,
     my_theme
   
   if(groups != "none"){
-    ellipse_color <- as.vector(viridis(n = length(levels(input_df[[group_by]]))))
-    biplot <- biplot + scale_fill_manual(values = ellipse_color) +
-      scale_color_manual(values = ellipse_color)
+    group_color <- as.vector(viridis(n = length(levels(input_df[[group_by]])), alpha = 1))
+    biplot <- biplot + 
+      scale_fill_manual(values = group_color) +
+      scale_color_manual(values = group_color)
   }
   
   if(out_path != "none"){
@@ -238,3 +239,5 @@ biplot_ggplot2 <- function(input_df,
     biplot
   }
 }
+
+

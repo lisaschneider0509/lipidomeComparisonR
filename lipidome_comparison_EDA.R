@@ -21,13 +21,19 @@ my_theme <- theme_set(
 #' @param input_df a data frame with at least one factor column
 #' @param factor a string with the column name to group by
 #' @param funct a generic R function, that takes only one argument (e.g. mean(), summary(), etc.)
+#' @param na_action function. Indcates what should happen if there are NA values in the data. c(NULL (default), na.omit).
 #' @examples 
 #' calc_by_replicate(iris, iris$Species, mean)
-calc_by_replicate <- function(input_df, factor, funct){ 
+calc_by_replicate <- function(input_df, 
+                              factor, 
+                              funct, 
+                              na_action = na.omit
+                              ){ 
   as.data.frame(
     aggregate(dplyr::select_if(input_df, is.numeric), 
               by=list(factor), 
-              FUN=funct)
+              FUN=funct, 
+              na.action = na_action)
   )
 }
 
@@ -56,6 +62,7 @@ qqplot_by_factor <- function(input_df, factor, out_path = "none"){
     par(mfrow=c(3,3))
     for (j in 1:ncol(numeric_df)){
       col_name <- colnames(numeric_df)[j]
+      new_df <- na.omit(numeric_df)[,j]
       qqnorm(numeric_df[,j][input_df[[factor]] == levels[i]],
              main = paste(col_name, levels[i], sep = " "),
              cex.main = 0.8)
