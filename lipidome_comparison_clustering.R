@@ -324,28 +324,36 @@ hclust_heatmap_interactive <- function(input_df,
   
   out_file <- paste(out_path, "_interactive_hcheatmap.png", sep = "")
   
-  hheatmap <- heatmaply::heatmaply(input_df,
-                            ## heatmap and dendrogram settings
-                            dendrogram = "both", # = c("both", "row", "column", "none")
-                            scale = "row", # = c("none","row", "column")
-                            hide_colorbar = FALSE,
-                            branches_lwd = 0.2,
-                            plot_method = "plotly", # = c("ggplot", "plotly"),
-                            dist_method = dist_method, 
-                            hclust_method = hclust_method,
-                            
-                            ## Labels
-                            main = title,
-                            # sub = paste(dist_method, hclust_method, sep = "/"), #todo find out if and how subtitles work in heatmaply
-                            xlab = "", 
-                            ylab = "",
-                            labCol = col_names, # defaults to colnames; only takes the names of numeric colums as colnames
-                            labRow = row_names, # defaults to rownames
-                            
-                            ## general appearance
-                            margins = c(60,100,40,20),
-                            fontsize_row = 10, fontsize_col = 10,
-                            heatmap_layers = theme(axis.line=element_blank())
+  hheatmap <- heatmaply(input_df,
+                        ## clustering settings
+                        dist_method = dist_method, 
+                        hclust_method = hclust_method,
+                        
+                        ## display method
+                        plot_method = "plotly", # = c("ggplot", "plotly"),
+                        
+                        ## heatmap and dendrogram settings
+                        dendrogram = "both", # = c("both", "row", "column", "none")
+                        scale = "row", # = c("none","row", "column")
+                        branches_lwd = 0.2,
+                        
+                        ## colorbar & legend
+                        hide_colorbar = FALSE,
+                        colorbar_xpos = 1.02,
+                        colorbar_ypos = 0.09,
+                        
+                        ## Labels
+                        main = title,
+                        # sub = paste(dist_method, hclust_method, sep = "/"), #todo find out if and how subtitles work in heatmaply
+                        xlab = "", 
+                        ylab = "",
+                        labCol = col_names, # defaults to colnames; only takes the names of numeric colums as colnames
+                        labRow = row_names, # defaults to rownames
+                        
+                        ## general appearance
+                        margins = c(60,100,40,20),
+                        fontsize_row = 10, fontsize_col = 10,
+                        heatmap_layers = theme(axis.line=element_blank())
   )
   
   if(out_path != "none"){

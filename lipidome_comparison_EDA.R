@@ -30,7 +30,7 @@ calc_by_replicate <- function(input_df,
                               na_action = na.omit
                               ){ 
   as.data.frame(
-    aggregate(dplyr::select_if(input_df, is.numeric), 
+    aggregate(select_if(input_df, is.numeric), 
               by=list(factor), 
               FUN=funct, 
               na.action = na_action)

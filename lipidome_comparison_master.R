@@ -12,30 +12,26 @@ library(GGally) # paralell plot
 library(fmsb) # spider chart
 library(scales) # scale opacity of filling (alpha)
 
+library(ggrepel)
 library(factoextra)
 library(ggfortify) # biplot with ggplot
 
-# library(psych) # for correlation plot 
+library(heatmaply) # interactive heatmap
+library(gplots) # heatmap
+library(plotly) # interactive heatmap
 
+# library(psych) # for correlation plot 
 # library(gridExtra)
 # library(devtools)
-
-
-# library(plotly) # interactive heatmap
-# library(heatmaply) # interactive heatmap
-# library(gplots) # heatmap 
 # library(dendextend)
 # library(limma) # hypothesis testing
-# library(ggrepel)
+
 
 source("lipidome_comparison_dataTransformaions.R")
 source("lipidome_comparison_EDA.R")
 source("lipidome_comparison_pca.R")
 source("lipidome_comparison_clustering.R")
 source("lipidome_comparison_hypothesis_testing.R")
-
-# set options
-options(scipen=999)
 
 # set ggplot theme
 my_theme <- theme_set(
@@ -111,10 +107,15 @@ impute_meat <- meat_N[, which(colMeans(!is.na(meat_N)) > 0.8)]
 impute_meat <- as.matrix(select_if(impute_meat, is.numeric))
 
 #### perform missing data imputation
-meat_QRILC = impute.QRILC(impute_meat)
+meat_QRILC <- impute.QRILC(impute_meat, tune.sigma = 1)
 meat_imputed <- as.data.frame(meat_QRILC[[1]])
 meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
 meat_imputed <- droplevels(meat_imputed) # remove unused levels from factors
+
+# meat_zero <- impute.ZERO(impute_meat)
+# meat_imputed <- as.data.frame(meat_zero)
+# meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
+# meat_imputed <- droplevels(meat_imputed) # remove unused levels from factors
 
 #### calculate the means for the replicates
 {
@@ -131,13 +132,13 @@ nmt <- paste_catecorical_variable(meat_tech, 2, meat_groups)
 }
 
 ### graphical exploratory data analysis
-qqplot_by_factor(meat_imputed, "Group", out_path = plot_name)
-histogram_by_factor(meat_imputed, "Group", out_path = plot_name)
-boxplot_by_factor(meat_imputed, "Group", out_path = plot_name)
-
-parallel_plot(meat_imputed, meat_imputed$Group, out_path = plot_name)
-meat_spider <- calc_by_replicate(meat_imputed, meat_imputed$Group, mean)
-spider_chart(meat_spider, legend_lab = meat_spider$Group.1, out_path = plot_name)
+# qqplot_by_factor(meat_imputed, "Group", out_path = plot_name)
+# histogram_by_factor(meat_imputed, "Group", out_path = plot_name)
+# boxplot_by_factor(meat_imputed, "Group", out_path = plot_name)
+# 
+# parallel_plot(meat_imputed, meat_imputed$Group, out_path = plot_name)
+# meat_spider <- calc_by_replicate(meat_imputed, meat_imputed$Group, mean)
+# spider_chart(meat_spider, legend_lab = meat_spider$Group.1, out_path = plot_name)
 
 ### test for normality
 meat_normality <- shapiro_by_factor(meat_imputed, meat_imputed$Group)
@@ -151,7 +152,7 @@ meat_pca <- prcomp(select_if(meat_imputed, is.numeric))
 
 meat_pca_var <- meat_pca$sdev ^ 2
 prop_var_meat <- round(meat_pca_var / sum(meat_pca_var) * 100, 2)
-cum_prop_var_meat <- cumsum(prop_of_variance_meat * 100)
+cum_prop_var_meat <- cumsum(prop_var_meat * 100)
 proportion_of_variance_table <- data.frame(Proportion_of_variance = prop_var_meat, Cummulative_proportion_of_variance = cum_prop_var_meat)
 
 scree_base(meat_pca)
@@ -162,6 +163,7 @@ biplot_factoextra(meat_pca, meat_imputed$Group, ellipse = TRUE)
 ### Clustering 
 meat_clust <- data.frame(Group = meat_imputed$Group)
 meat_clust <- cbind(meat_clust, select_if(meat_imputed, is.numeric))
+rownames(meat_clust) <- meat_imputed$SID
 
 hclust_performance_table(meat_clust)
 hclust_performance_plot(meat_clust)
@@ -171,7 +173,23 @@ meat_hclust <- hclust(meat_dist, method = "average")
 hclust_dendrogram(meat_hclust, labs = meat_clust$Group)
 
 hclust_heatmap(meat_clust, dist_method = "manhattan", hclust_method = "average", row_names = meat_clust$Group)
-hclust_heatmap_interactive(meat_clust, dist_method = "manhattan", hclust_method = "average", row_names = meat_clust$Group)
-#todo fix location of colorbar in hclust_heatmap_interactive
+hclust_heatmap_interactive(meat_clust, dist_method = "manhattan", hclust_method = "average")
+
+### hypothesis testing & volcano plot
+meat_vs_fish <- subset(meat_imputed, Group == "fish" | Group == "meat")
+meat_vs_fish <- droplevels(meat_vs_fish)
+
+p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = wilcox.test)
+adj_meat_vs_fish <- p.adjust(p_meat_vs_fish$p_values, method = "fdr")
+fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, meat_vs_fish$Group)
+
+meat_volcano <- data.frame(p_value = p_meat_vs_fish, adj_p_value = adj_meat_vs_fish, log2_foldchange = fc_meat_vs_fish)
+meat_volcano <-  meat_volcano[complete.cases(meat_volcano), ] 
+
+volcano_plot(meat_volcano, 
+             foldchange_col = meat_volcano$log2_foldchange, 
+             significance_col = meat_volcano$p_values, 
+             foldchange = 2, 
+             significance = 0.5)
 
 

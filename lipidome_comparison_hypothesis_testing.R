@@ -18,17 +18,20 @@ my_theme <- theme_set(
 #' @param input_df data frame. Contains at least one numeric variable. 
 #' @param group_vector vector. Vector containing the groups to be compared. group_vector = input_df$group (or other vector of length nrow(input_df))
 #' @param alternative string. Specifies the alternative hypothesis. c("two.sided" (default), "greater", "less")
+#' @param method function. Options: t.test (default), wilcox.test
 #' @param confidence_level numeric. Confidence level of the interval. Default = 0.95
 #' @example 
 #' my_iris <- subset(x = iris, Species == "setosa" | Species == "versicolor")
-#' ttest_by_column(my_iris, my_iris$Species)
-ttest_by_column <- function(input_df,
+#' one_sample_test_by_col(my_iris, my_iris$Species)
+#' one_sample_test_by_col(my_iris, my_iris$Species, method = wilcox.test)
+one_sample_test_by_col <- function(input_df,
                             group_vector,
                             alternative = "two.sided", 
+                            method = t.test,
                             confidence_level = 0.95){
   
   p_values <- apply(select_if(input_df, is.numeric), 2, 
-                    function(x) t.test(x ~ group_vector, 
+                    function(x) method(x ~ group_vector, 
                                        alternative = alternative, 
                                        conf.level = confidence_level)$p.value)
   as.data.frame(p_values)
@@ -103,7 +106,7 @@ log2_foldchange <- function(input_df,
 volcano_plot <- function(volcano_df,
                          foldchange_col, significance_col,
                          significance = 0.05,
-                         foldchange, #todo = 0.05
+                         foldchange = 2,
                          title = "Volcano plot",
                          x_lab = "log2Fold", y_lab = "-log10(p-value)", 
                          labels = vector(),
