@@ -11,7 +11,7 @@ my_theme <- theme_set(
           legend.title = element_text(size = 10, colour = "grey40", family="AvantGarde"))
 )
 
-#' Calculate p-values by column
+#' Perform one sample test by column
 #' 
 #' @description `p_values_by_column` takes a data frame and a grouping vector and returns a data frame with the p-values of a given method. 
 #' @details This function takes a data frame ans a grouping vector and performs a given hypothesis test on all numeric variables. The results are returned in a new data frame. 
@@ -36,6 +36,87 @@ one_sample_test_by_col <- function(input_df,
                                        conf.level = confidence_level)$p.value)
   as.data.frame(p_values)
 }
+
+#' One way ANOVA by column
+#' 
+#' @description `one_way_anova_by_col` performs an ANOVA for each numeric column of a data frame and returns f-statistic and p-value in a data frame. 
+#' @param input_df data frame. Has multiple columns with numerical variables and at least one column with a factor variable. 
+#' @param factor_col string. Gives the name of the column, where the groups between which the anova is performed are stored. 
+#' @param print_all bool. Prints a summary of each anova. Default = FALSE
+#' @example 
+#' one_way_anova_by_col(iris, "Species")
+#' one_way_anova_by_col(iris, "Species", print_all = TRUE)
+one_way_anova_by_col <- function(input_df, factor_col, print_all = FALSE){
+  numeric_df <- data.frame(Group = input_df[[factor_col]])
+  numeric_df <- cbind(numeric_df, select_if(input_df, is.numeric))
+  
+  anova_df <- data.frame()
+  for(i in 2:ncol(numeric_df)){
+    anova <- aov(numeric_df[[colnames(numeric_df)[i]]] ~ numeric_df$Group, 
+                 data = numeric_df)
+    
+    a <- as.data.frame(unlist(summary(anova)))
+    a_t <- transpose(a)
+    colnames(a_t) <- rownames(a)
+    
+    p_value <- a_t$`Pr(>F)1`
+    f_value <- a_t$`F value1`
+    buffer <- cbind(f_value, p_value)
+    anova_df <- rbind(anova_df, buffer)
+    
+    if(print_all){
+      cat("\n-----\n\n")
+      cat(colnames(numeric_df)[i])
+      cat("\n")
+      print(summary(anova))
+      cat("\n")
+    }
+    
+  }
+  rownames(anova_df) <- colnames(numeric_df[, -1])
+  colnames(anova_df) <- c("f_value", "p_value")
+  anova_df
+}
+
+#' Kruskal.test by column
+#' 
+#' @description `one_way_anova_by_col` performs an ANOVA for each numeric column of a data frame and returns f-statistic and p-value in a data frame. 
+#' @param input_df data frame. Has multiple columns with numerical variables and at least one column with a factor variable. 
+#' @param factor_col string. Gives the name of the column, where the groups between which the anova is performed are stored. 
+#' @param print_all bool. Prints a summary of each anova. Default = FALSE
+#' @example 
+#' kruskal_test_by_col(iris, "Species")
+#' kruskal_test_by_col(iris, "Species", print_all = TRUE)
+kruskal_test_by_col <- function(input_df, factor_col, print_all = FALSE){
+  numeric_df <- data.frame(Group = input_df[[factor_col]])
+  numeric_df <- cbind(numeric_df, select_if(input_df, is.numeric))
+  
+  kruskal_df <- data.frame()
+  for(i in 2:ncol(numeric_df)){
+    kruskal <- kruskal.test(numeric_df[[colnames(numeric_df)[i]]] ~ numeric_df$Group, 
+                 data = numeric_df)
+    
+    statistic <- kruskal$statistic
+    df <- kruskal$parameter
+    p_value <- kruskal$p.value
+    buffer <- cbind(statistic, df, p_value)
+    kruskal_df <- rbind(kruskal_df, buffer)
+    
+    
+    # if(print_all){
+    #   cat("\n-----\n\n")
+    #   cat(colnames(numeric_df)[i])
+    #   cat("\n")
+    #   print(kruskal)
+    #   cat("\n")
+    # }
+    
+  }
+  rownames(kruskal_df) <- colnames(numeric_df[, -1])
+  colnames(kruskal_df) <- c("kruskal-wallis_chi-squared", "df", "p_value")
+  kruskal_df
+}
+
 
 #' Calculate log2 foldchange
 #' 
@@ -148,23 +229,22 @@ volcano_plot <- function(volcano_df,
     geom_point(aes(color = as.factor(threshold)), shape = 20) +
     geom_hline(yintercept = -1*log10(significance),
                linetype = "dashed",
-               colour = "grey40") +
+               colour = "grey60") +
     geom_vline(xintercept = -1*foldchange,
                linetype = "dashed",
-               colour = "grey40") +
+               colour = "grey60") +
     geom_vline(xintercept = foldchange,
                linetype = "dashed",
-               colour = "grey40") +
+               colour = "grey60") +
     geom_text_repel(aes(x = foldchange_col,
                         y = -1*log10(significance_col),
                         label = `mylabel`),
-                    size = 2, 
-                    colour = "grey40") +
+                    size = 2) +
     labs(title = title) +
     xlab(x_lab) + ylab(y_lab) +
     scale_x_continuous(limits = c(-1*limits, limits)) +
     scale_color_manual(name = "Threshold",
-                       values = c("up" = mycolors[1], "down" = mycolors[2], "not_sig" = "grey"),
+                       values = c("up" = mycolors[1], "down" = mycolors[2], "not_sig" = "grey60"),
                        labels = c("Down-regulated", "Not significant FC", "Up-regulated")) +
     theme(legend.position = "right")
 

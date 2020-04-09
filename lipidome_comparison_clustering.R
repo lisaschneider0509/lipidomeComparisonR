@@ -358,7 +358,7 @@ hclust_heatmap_interactive <- function(input_df,
   
   if(out_path != "none"){
     print(paste("Saving to ", out_file, sep = ""))
-    plotly::orca(hheatmap, file = out_file)
+    orca(hheatmap, file = out_file, width = 16 * 96, height = 8 * 96)
   }
   
   hheatmap
