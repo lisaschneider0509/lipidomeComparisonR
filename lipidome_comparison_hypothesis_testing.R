@@ -79,8 +79,7 @@ log2_foldchange <- function(input_df,
 #' @param title string. Main title. Default = "Volcano plot"
 #' @param x_lab string. x-axix title. Default = "log2Fold"
 #' @param y_lab string. y-axis title- Default = "-log10(p-value)"
-#' @param labels vector of length nrow(volcano_df). Default = "none". If lables is set, points above the threshold are labelled. 
-#' @param out_path string. Path to save volcano plot do png. Default = "none". 
+#' @param labels boolean. Should the points over the threshold be labelled. Options: TRUE (default), FALSE
 #' If "none", the plot is either printed or saved to a variabe. 
 #' @example 
 #' set.seed(100)
@@ -106,58 +105,69 @@ log2_foldchange <- function(input_df,
 volcano_plot <- function(volcano_df,
                          foldchange_col, significance_col,
                          significance = 0.05,
-                         foldchange = 2,
+                         foldchange = 1,
                          title = "Volcano plot",
-                         x_lab = "log2Fold", y_lab = "-log10(p-value)", 
-                         labels = vector(),
+                         x_lab = "log2Foldchange", y_lab = "-log10(p-value)",
+                         labels = TRUE,
                          out_path = "none"){
 
+  # volcano_df <- volcano_df[with(volcano_df, order(significance_col)), ]
+
   is_significant <- significance_col < significance
-  
+
   threshold <- vector()
+  mylabel <- vector()
   for(i in 1:length(is_significant)){
     if(is_significant[i] == TRUE && foldchange_col[i] < -1*foldchange){
-      buffer <- "down"
+      t <- "down"
+      l <- rownames(volcano_df)[i]
     }
     else if(is_significant[i] == TRUE && foldchange_col[i] > foldchange){
-      buffer <- "up"
+      t <- "up"
+      l <- rownames(volcano_df)[i]
     }
     else{
-      buffer <- "not_sig"
+      t <- "not_sig"
+      l <- ""
     }
-    threshold <- c(threshold, buffer)
+    threshold <- c(threshold, t)
+    mylabel <- c(mylabel, l)
   }
 
-  volcano_df <- cbind(volcano_df, threshold)
+  volcano_df <- cbind(volcano_df, threshold, mylabel)
+
+  if(labels == FALSE){
+    volcano_df$mylabel <- ""
+  }
 
   limits <- max(-1*min(foldchange_col), max(foldchange_col))
   mycolors <- viridis(n = 2, begin = 0, end = 0.9)
 
-  volcano <- ggplot(data = volcano_df, 
-                    aes(x = foldchange_col, y = -1*log10(significance_col))) + 
-    geom_point(aes(color = as.factor(threshold)), shape = 20) + 
-    geom_hline(yintercept = -1*log10(significance), 
-               linetype = "dashed", 
+  volcano <- ggplot(data = volcano_df,
+                    aes(x = foldchange_col, y = -1*log10(significance_col))) +
+    geom_point(aes(color = as.factor(threshold)), shape = 20) +
+    geom_hline(yintercept = -1*log10(significance),
+               linetype = "dashed",
                colour = "grey40") +
-    geom_vline(xintercept = -1*foldchange, 
-               linetype = "dashed", 
+    geom_vline(xintercept = -1*foldchange,
+               linetype = "dashed",
                colour = "grey40") +
-    geom_vline(xintercept = foldchange, 
-               linetype = "dashed", 
+    geom_vline(xintercept = foldchange,
+               linetype = "dashed",
                colour = "grey40") +
-    labs(title = title) + 
-    xlab(x_lab) + ylab(y_lab) + 
+    geom_text_repel(aes(x = foldchange_col,
+                        y = -1*log10(significance_col),
+                        label = `mylabel`),
+                    size = 2, 
+                    colour = "grey40") +
+    labs(title = title) +
+    xlab(x_lab) + ylab(y_lab) +
     scale_x_continuous(limits = c(-1*limits, limits)) +
     scale_color_manual(name = "Threshold",
-                       values = c("up" = mycolors[1], "down" = mycolors[2], "not_sig" = "grey"), 
-                       labels = c("Down-regulated", "Not significant FC", "Up-regulated")) + 
+                       values = c("up" = mycolors[1], "down" = mycolors[2], "not_sig" = "grey"),
+                       labels = c("Down-regulated", "Not significant FC", "Up-regulated")) +
     theme(legend.position = "right")
-  
-  if (length(labels) != 0){
-    volcano <- volcano + geom_text_repel(aes(label=ifelse(threshold != "not_sig", as.character(labels),'')),
-                                   hjust=0, vjust=0,
-                                   size = 3)
-  }
+
 
   if(out_path != "none"){
     print(paste("Saving plot to ", out_path, "_volcano.png", sep = ""))
@@ -168,4 +178,78 @@ volcano_plot <- function(volcano_df,
 }
 
 
-
+# volcano_plot <- function(volcano_df,
+#                          foldchange_col, significance_col,
+#                          significance = 0.05,
+#                          foldchange = 1,
+#                          title = "Volcano plot",
+#                          x_lab = "log2Foldchange", y_lab = "-log10(p-value)", 
+#                          labels = "all",
+#                          out_path = "none"){
+#   
+#   options(warn = -1)
+#   is_significant <- volcano_df[[significance_col]] < significance
+#   
+#   threshold <- vector()
+#   mylabel <- vector()
+#   for(i in 1:length(is_significant)){
+#     if(is_significant[i] == TRUE && volcano_df[[foldchange_col]][i] < -1*foldchange){
+#       t <- "down"
+#       l <- rownames(volcano_df)[i]
+#     }
+#     else if(is_significant[i] == TRUE && volcano_df[[foldchange_col]][i] > foldchange){
+#       t <- "up"
+#       l <- rownames(volcano_df)[i]
+#     }
+#     else{
+#       t <- "not_sig"
+#       l <- ""
+#     }
+#     threshold <- c(threshold, t)
+#     mylabel <- c(mylabel, l)
+#   }
+#   
+#   volcano_df <- cbind(volcano_df, threshold, mylabel)
+#   volcano_df <- volcano_df[with(volcano_df, order(volcano_df[[significance_col]])), ]
+#   
+#   if(labels == "none"){
+#     volcano_df$mylabel <- ""
+#   }
+#   
+#   limits <- max(-1*min(volcano_df[[foldchange_col]]), max(volcano_df[[foldchange_col]]))
+#   mycolors <- viridis(n = 2, begin = 0, end = 0.9)
+#   
+#   volcano <- ggplot(data = volcano_df, 
+#                     aes(x = volcano_df[[foldchange_col]], y = -1*log10(volcano_df[[significance_col]]))) + 
+#     geom_point(aes(color = as.factor(threshold)), shape = 20) + 
+#     geom_hline(yintercept = -1*log10(significance), 
+#                linetype = "dashed", 
+#                colour = "grey40") +
+#     geom_vline(xintercept = -1*foldchange, 
+#                linetype = "dashed", 
+#                colour = "grey40") +
+#     geom_vline(xintercept = foldchange, 
+#                linetype = "dashed", 
+#                colour = "grey40") +
+#     geom_text_repel(aes(x = volcano_df[[foldchange_col]],
+#                         y = -1*log10(volcano_df[[significance_col]]),
+#                         label = `mylabel`),
+#                     size = 2, 
+#                     colour = "grey40") +
+#     labs(title = title) + 
+#     xlab(x_lab) + ylab(y_lab) + 
+#     scale_x_continuous(limits = c(-1*limits, limits)) +
+#     scale_color_manual(name = "Threshold",
+#                        values = c("up" = mycolors[1], "down" = mycolors[2], "not_sig" = "grey"), 
+#                        labels = c("Down-regulated", "Not significant FC", "Up-regulated")) + 
+#     theme(legend.position = "right")
+#   
+#   
+#   
+#   if(out_path != "none"){
+#     print(paste("Saving plot to ", out_path, "_volcano.png", sep = ""))
+#     ggsave(paste(out_path, "_volcano.png", sep = ""),
+#            plot = volcano)
+#   }
+#   volcano
+# }

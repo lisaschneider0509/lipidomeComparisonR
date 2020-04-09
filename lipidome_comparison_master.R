@@ -101,21 +101,19 @@ levels(meat_N$Group)
 
 ## Exploratory data analysis
 
-### impute missing values
+### impute missing values #todo find option to avoid imputation of negative values
 #### remove columns where all values are missing
 impute_meat <- meat_N[, which(colMeans(!is.na(meat_N)) > 0.8)] 
 impute_meat <- as.matrix(select_if(impute_meat, is.numeric))
 
 #### perform missing data imputation
 meat_QRILC <- impute.QRILC(impute_meat, tune.sigma = 1)
+# meat_MinDet <- impute.MinDet(impute_meat)
+
+# meat_imputed <- meat_MinDet
 meat_imputed <- as.data.frame(meat_QRILC[[1]])
 meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
 meat_imputed <- droplevels(meat_imputed) # remove unused levels from factors
-
-# meat_zero <- impute.ZERO(impute_meat)
-# meat_imputed <- as.data.frame(meat_zero)
-# meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
-# meat_imputed <- droplevels(meat_imputed) # remove unused levels from factors
 
 #### calculate the means for the replicates
 {
@@ -184,7 +182,10 @@ adj_meat_vs_fish <- p.adjust(p_meat_vs_fish$p_values, method = "fdr")
 fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, meat_vs_fish$Group)
 
 meat_volcano <- data.frame(p_value = p_meat_vs_fish, adj_p_value = adj_meat_vs_fish, log2_foldchange = fc_meat_vs_fish)
-meat_volcano <-  meat_volcano[complete.cases(meat_volcano), ] 
+# meat_volcano$log2_foldchange[is.nan(meat_volcano$log2_foldchange)] <- NA
+meat_volcano <- meat_volcano[complete.cases(meat_volcano),]
+# meat_volcano$log2_foldchange[is.na(meat_volcano$log2_foldchange)] <- median(meat_volcano$log2_foldchange, na.rm = TRUE)
+
 
 volcano_plot(meat_volcano, 
              foldchange_col = meat_volcano$log2_foldchange, 
