@@ -80,7 +80,7 @@ one_way_anova_by_col <- function(input_df, factor_col, print_all = FALSE){
 
 #' Kruskal.test by column
 #' 
-#' @description `one_way_anova_by_col` performs an ANOVA for each numeric column of a data frame and returns f-statistic and p-value in a data frame. 
+#' @description `kruskal_test_by_col` performs a Kruskal-Wallis-Test for each numeric column of a data frame and returns a data frame. 
 #' @param input_df data frame. Has multiple columns with numerical variables and at least one column with a factor variable. 
 #' @param factor_col string. Gives the name of the column, where the groups between which the anova is performed are stored. 
 #' @param print_all bool. Prints a summary of each anova. Default = FALSE
@@ -127,22 +127,27 @@ kruskal_test_by_col <- function(input_df, factor_col, print_all = FALSE){
 #' @param group_vector vector. Vctor containing the grouping variabe. group_vector = input_df$group (or any vector of length nrow(input_df))
 #' @example 
 #' my_iris <- subset(x = iris, Species == "setosa" | Species == "versicolor")
-#' log2_foldchange(my_iris, my_iris$Species)
-log2_foldchange <- function(input_df, 
-                            group_vector){
+#' log2_foldchange(my_iris, my_iris$Species, control_group = "versicolor", test_group = "setosa")
+log2_foldchange <- function(input_df, group_vector, control_group, test_group){
   log2_df <- log2(select_if(input_df, is.numeric))
   log2_df$group <- group_vector
   
   means <- aggregate(select_if(log2_df, is.numeric), by = list(log2_df$group), FUN = mean)
   rownames(means) <- means$Group.1
-  means <- as.data.frame(select_if(means, is.numeric))
+  # means <- as.data.frame(select_if(means, is.numeric))
+  means <- means[, -1]
+  
+  control_group <- subset(means, rownames(means) == control_group)
+  test_group <- subset(means, rownames(means) == test_group)
+  
   log2_foldchange <- vector()
   for(i in 1:ncol(means)){
-    log2_foldchange[i] <- means[1, i] - means[2, i]
+    log2_foldchange[i] <- control_group[i] - test_group[i]
   }
   
-  out_df <- as.data.frame(log2_foldchange)
-  rownames(out_df) <- colnames(select_if(input_df, is.numeric))
+  out_df <- t(as.data.frame(log2_foldchange))
+  rownames(out_df) <- colnames(means)
+  colnames(out_df) <- c("log2_foldchange")
   out_df
 }
 
@@ -169,7 +174,9 @@ log2_foldchange <- function(input_df,
 #' volcano_test <- as.data.frame(cbind(fold_changes, pvalues))
 #' volcano_plot(volcano_test, 
 #'              foldchange_col = volcano_test$fold_changes, 
-#'              significance_col = volcano_test$pvalues, foldchange = 1)
+#'              significance_col = volcano_test$pvalues, 
+#'              significance = 0.001,
+#'              foldchange = 2)
 #' volcano_plot(volcano_test, 
 #'              foldchange_col = volcano_test$fold_changes, 
 #'              significance_col = volcano_test$pvalues, 
@@ -208,7 +215,7 @@ volcano_plot <- function(volcano_df,
       l <- rownames(volcano_df)[i]
     }
     else{
-      t <- "not_sig"
+      t <- "not significant"
       l <- ""
     }
     threshold <- c(threshold, t)
@@ -221,7 +228,8 @@ volcano_plot <- function(volcano_df,
     volcano_df$mylabel <- ""
   }
 
-  limits <- max(-1*min(foldchange_col), max(foldchange_col))
+  x_limits <- max(-1*min(foldchange_col), max(foldchange_col))
+  y_limits <- max(-1*log10(significance_col)) +1
   mycolors <- viridis(n = 2, begin = 0, end = 0.9)
 
   volcano <- ggplot(data = volcano_df,
@@ -240,12 +248,14 @@ volcano_plot <- function(volcano_df,
                         y = -1*log10(significance_col),
                         label = `mylabel`),
                     size = 2) +
-    labs(title = title) +
+    labs(title = title, subtitle = paste(foldchange, "x log2-Foldchange, Significance = ", significance, sep = "")) +
     xlab(x_lab) + ylab(y_lab) +
-    scale_x_continuous(limits = c(-1*limits, limits)) +
+    scale_x_continuous(limits = c(-1*x_limits, x_limits)) +
+    scale_y_continuous(limits = c(0, y_limits)) +
     scale_color_manual(name = "Threshold",
-                       values = c("up" = mycolors[1], "down" = mycolors[2], "not_sig" = "grey60"),
-                       labels = c("Down-regulated", "Not significant FC", "Up-regulated")) +
+                       values = c("up" = mycolors[1], "down" = mycolors[2], "not significant" = "grey60")
+                       # labels = c("down" = "Down", "non significant", "Up")
+                       ) +
     theme(legend.position = "right")
 
 
@@ -257,79 +267,3 @@ volcano_plot <- function(volcano_df,
   volcano
 }
 
-
-# volcano_plot <- function(volcano_df,
-#                          foldchange_col, significance_col,
-#                          significance = 0.05,
-#                          foldchange = 1,
-#                          title = "Volcano plot",
-#                          x_lab = "log2Foldchange", y_lab = "-log10(p-value)", 
-#                          labels = "all",
-#                          out_path = "none"){
-#   
-#   options(warn = -1)
-#   is_significant <- volcano_df[[significance_col]] < significance
-#   
-#   threshold <- vector()
-#   mylabel <- vector()
-#   for(i in 1:length(is_significant)){
-#     if(is_significant[i] == TRUE && volcano_df[[foldchange_col]][i] < -1*foldchange){
-#       t <- "down"
-#       l <- rownames(volcano_df)[i]
-#     }
-#     else if(is_significant[i] == TRUE && volcano_df[[foldchange_col]][i] > foldchange){
-#       t <- "up"
-#       l <- rownames(volcano_df)[i]
-#     }
-#     else{
-#       t <- "not_sig"
-#       l <- ""
-#     }
-#     threshold <- c(threshold, t)
-#     mylabel <- c(mylabel, l)
-#   }
-#   
-#   volcano_df <- cbind(volcano_df, threshold, mylabel)
-#   volcano_df <- volcano_df[with(volcano_df, order(volcano_df[[significance_col]])), ]
-#   
-#   if(labels == "none"){
-#     volcano_df$mylabel <- ""
-#   }
-#   
-#   limits <- max(-1*min(volcano_df[[foldchange_col]]), max(volcano_df[[foldchange_col]]))
-#   mycolors <- viridis(n = 2, begin = 0, end = 0.9)
-#   
-#   volcano <- ggplot(data = volcano_df, 
-#                     aes(x = volcano_df[[foldchange_col]], y = -1*log10(volcano_df[[significance_col]]))) + 
-#     geom_point(aes(color = as.factor(threshold)), shape = 20) + 
-#     geom_hline(yintercept = -1*log10(significance), 
-#                linetype = "dashed", 
-#                colour = "grey40") +
-#     geom_vline(xintercept = -1*foldchange, 
-#                linetype = "dashed", 
-#                colour = "grey40") +
-#     geom_vline(xintercept = foldchange, 
-#                linetype = "dashed", 
-#                colour = "grey40") +
-#     geom_text_repel(aes(x = volcano_df[[foldchange_col]],
-#                         y = -1*log10(volcano_df[[significance_col]]),
-#                         label = `mylabel`),
-#                     size = 2, 
-#                     colour = "grey40") +
-#     labs(title = title) + 
-#     xlab(x_lab) + ylab(y_lab) + 
-#     scale_x_continuous(limits = c(-1*limits, limits)) +
-#     scale_color_manual(name = "Threshold",
-#                        values = c("up" = mycolors[1], "down" = mycolors[2], "not_sig" = "grey"), 
-#                        labels = c("Down-regulated", "Not significant FC", "Up-regulated")) + 
-#     theme(legend.position = "right")
-#   
-#   
-#   
-#   if(out_path != "none"){
-#     print(paste("Saving plot to ", out_path, "_volcano.png", sep = ""))
-#     ggsave(paste(out_path, "_volcano.png", sep = ""),
-#            plot = volcano)
-#   }
-#   volcano
-# }

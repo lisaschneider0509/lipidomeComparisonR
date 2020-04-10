@@ -280,11 +280,12 @@ correlation_heatmap <- function(input_df,
   cor_heatmap <- ggplot(data = melted_cor_matrix, aes(x=x, y=y, fill=correlation)) +
     geom_tile() +
     ggtitle("Spearman correlation") +
-    scale_fill_viridis_c(option = "magma") +
+    scale_fill_viridis_c() +
     my_theme +
-    theme(axis.title = element_blank(), 
-          axis.text.y = element_text(size = 6),
-          axis.text.x = element_text(angle = 90, size = 6, hjust = 1))
+    theme(axis.title.x = element_blank(), 
+          axis.title.y = element_blank(),
+          axis.text.y = element_text(size = 4),
+          axis.text.x = element_text(angle = 90, size = 4, hjust = 1))
   
   if(out_path != "none"){
     print(paste("Saving heatmap to ", out_path, "_cor_heatmap.png", sep = ""))
@@ -345,7 +346,7 @@ parallel_plot <- function(input_df,  group_vector, out_path = "none",
     xlab(x_title) + 
     ylab(y_title) +
     labs(color = legend_title) +
-    scale_color_viridis(discrete=TRUE) +
+    scale_color_viridis(discrete=TRUE, end = 0.9) +
     geom_point(shape = 20, size = 0.5) +
     theme(plot.title = element_text(size=12, hjust = 0.5, family="AvantGarde"),
           axis.text.x = element_text(angle = 90, size = 7, hjust = 1, colour = "grey40", family="AvantGarde"), 

@@ -15,6 +15,8 @@ library(scales) # scale opacity of filling (alpha)
 library(ggrepel)
 library(factoextra)
 library(ggfortify) # biplot with ggplot
+library(corrplot)
+library(FactoMineR)
 
 library(heatmaply) # interactive heatmap
 library(gplots) # heatmap
@@ -37,9 +39,9 @@ source("lipidome_comparison_hypothesis_testing.R")
 my_theme <- theme_set(
   theme_minimal() +
     theme(plot.title = element_text(size=12, hjust = 0.5, family="AvantGarde"),
+          plot.subtitle = element_text(size = 8, hjust = 0.5, family = "AvantGarde", colour = "grey40"),
           axis.text.x = element_text(size = 8, colour = "grey40", family="AvantGarde"),
           axis.text.y = element_text(size = 8, colour = "grey40", family="AvantGarde"),
-          # axis.title = element_text(size = 10, colour = "grey40", family="AvantGarde"),
           axis.title.x = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
           axis.title.y = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
           legend.text = element_text(size = 8, colour = "grey40", family="AvantGarde"),
@@ -96,8 +98,6 @@ colnames(meat_target) <- c("SID", colnames(meat_target[-1]))
 meat_N <- subset(meat_target, Treatment == "N")
 meat_AS <- subset(meat_target, Treatment == "AS")
 
-
-
 levels(meat_N$Group)
 
 ## Exploratory data analysis
@@ -147,17 +147,28 @@ meat_correlation <- cor(select_if(meat_imputed, is.numeric), method = "spearman"
 correlation_heatmap(meat_imputed, interactive = TRUE, out_path = plot_name)
 
 ### PCA
-meat_pca <- prcomp(select_if(meat_imputed, is.numeric))
-
-meat_pca_var <- meat_pca$sdev ^ 2
-prop_var_meat <- round(meat_pca_var / sum(meat_pca_var) * 100, 2)
-cum_prop_var_meat <- cumsum(prop_var_meat * 100)
-proportion_of_variance_table <- data.frame(Proportion_of_variance = prop_var_meat, Cummulative_proportion_of_variance = cum_prop_var_meat)
-
-scree_base(meat_pca)
+meat_pca <- PCA(select_if(meat_imputed, is.numeric), scale.unit = TRUE, graph = FALSE)
+meat_eigenvalue <- get_eigenvalue(meat_pca)
 scree_factoextra(meat_pca)
-biplot_ggplot2(meat_imputed, "Group", loadings = FALSE, ellipse = TRUE)
+scree_base(select_if(meat_imputed, is.numeric))
+biplot_ggplot2(meat_imputed, "Group", loadings = FALSE, ellipse = TRUE, scale = TRUE)
 biplot_factoextra(meat_pca, meat_imputed$Group, ellipse = TRUE)
+
+plot_contrib_to_pc(meat_pca, out_path = plot_name)
+
+fviz_contrib(meat_pca, choice = "var", axes = 1, top = 10, 
+             fill = viridis(n = 1, begin = 0.3), color = viridis(n = 1, begin = 0.3), 
+             ggtheme = my_theme)
+fviz_contrib(meat_pca, choice = "var", axes = 2, top = 10, 
+             fill = viridis(n = 1, begin = 0.3), color = viridis(n = 1, begin = 0.3), 
+             ggtheme = my_theme, 
+             linecolor = "black")
+
+
+
+
+
+
 
 ### Clustering 
 meat_clust <- data.frame(Group = meat_imputed$Group)
@@ -203,7 +214,10 @@ meat_vs_fish <- droplevels(meat_vs_fish)
 
 p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = wilcox.test)
 adj_meat_vs_fish <- p.adjust(p_meat_vs_fish$p_values, method = "fdr")
-fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, meat_vs_fish$Group)
+fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, 
+                                   meat_vs_fish$Group, 
+                                   control_group = "fish", 
+                                   test_group = "meat")
 
 meat_fish_volcano <- data.frame(p_value = p_meat_vs_fish, adj_p_value = adj_meat_vs_fish, log2_foldchange = fc_meat_vs_fish)
 meat_fish_volcano <- meat_fish_volcano[complete.cases(meat_fish_volcano),]
@@ -211,8 +225,8 @@ meat_fish_volcano <- meat_fish_volcano[complete.cases(meat_fish_volcano),]
 volcano_plot(meat_fish_volcano, 
              foldchange_col = meat_fish_volcano$log2_foldchange, 
              significance_col = meat_fish_volcano$adj_p_value, 
-             foldchange = 2, 
-             significance = 0.5,
+             foldchange = 1, 
+             significance = 0.05,
              out_path = plot_name)
 }
 
@@ -222,7 +236,10 @@ volcano_plot(meat_fish_volcano,
   
   p_meat_vs_game <- one_sample_test_by_col(meat_vs_game, meat_vs_game$Group, method = wilcox.test)
   adj_meat_vs_game <- p.adjust(p_meat_vs_game$p_values, method = "fdr")
-  fc_meat_vs_game <- log2_foldchange(meat_vs_game, meat_vs_game$Group)
+  fc_meat_vs_game <- log2_foldchange(meat_vs_game, 
+                                     meat_vs_game$Group, 
+                                     control_group = "meat", 
+                                     test_group = "game")
   
   meat_game_volcano <- data.frame(p_value = p_meat_vs_game, adj_p_value = adj_meat_vs_game, log2_foldchange = fc_meat_vs_game)
   meat_game_volcano <- meat_game_volcano[complete.cases(meat_game_volcano),]
@@ -231,7 +248,6 @@ volcano_plot(meat_fish_volcano,
                foldchange_col = meat_game_volcano$log2_foldchange, 
                significance_col = meat_game_volcano$adj_p_value, 
                foldchange = 1, 
-               significance = 0.5,
                out_path = plot_name)
 }
 
@@ -241,7 +257,10 @@ volcano_plot(meat_fish_volcano,
   
   p_game_vs_fish <- one_sample_test_by_col(game_vs_fish, game_vs_fish$Group, method = wilcox.test)
   adj_game_vs_fish <- p.adjust(p_game_vs_fish$p_values, method = "fdr")
-  fc_game_vs_fish <- log2_foldchange(game_vs_fish, game_vs_fish$Group)
+  fc_game_vs_fish <- log2_foldchange(game_vs_fish, 
+                                     game_vs_fish$Group, 
+                                     control_group = "fish", 
+                                     test_group = "game")
   
   game_fish_volcano <- data.frame(p_value = p_game_vs_fish, adj_p_value = adj_game_vs_fish, log2_foldchange = fc_game_vs_fish)
   game_fish_volcano <- game_fish_volcano[complete.cases(game_fish_volcano),]
@@ -250,6 +269,7 @@ volcano_plot(meat_fish_volcano,
                foldchange_col = game_fish_volcano$log2_foldchange, 
                significance_col = game_fish_volcano$adj_p_value, 
                foldchange = 1, 
-               significance = 0.5,
+               significance = 0.05,
+               title = "Fish vs. vension",
                out_path = plot_name)
 }
