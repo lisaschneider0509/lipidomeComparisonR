@@ -248,7 +248,9 @@ volcano_plot <- function(volcano_df,
                         y = -1*log10(significance_col),
                         label = `mylabel`),
                     size = 2) +
-    labs(title = title, subtitle = paste(foldchange, "x log2-Foldchange, Significance = ", significance, sep = "")) +
+    labs(title = title
+         # subtitle = paste(foldchange, "x log2-Foldchange, Significance = ", significance, sep = "")
+         ) +
     xlab(x_lab) + ylab(y_lab) +
     scale_x_continuous(limits = c(-1*x_limits, x_limits)) +
     scale_y_continuous(limits = c(0, y_limits)) +

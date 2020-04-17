@@ -181,8 +181,8 @@ scree_base <- function(input_df,
 #' The points can be colored by group. Loadings are optionally displayed. 
 #' @param input_df a data frame with at least one factor column. 
 #' @param groups vector. Groups to color by. Default = "none"
-#' @param ellipse bool. Draw confidence ellipse arount the clusters of groups. Default = FALSE. 
-#' @param loadings bool. Draw loadings arrows and labels. Default = FALSE
+#' @param ellipse logical. Draw confidence ellipse arount the clusters of groups. Default = FALSE. 
+#' @param loadings logical. Draw loadings arrows and labels. Default = FALSE
 #' @param out_path string. Path to save plot to png. 
 #' If out_path is empty, the plot is printed to the device.
 #' @examples 
@@ -263,7 +263,7 @@ plot_contrib_to_pc <- function(pca_element,
   
   func <- function(){
     
-    par(family = "AvantGarde", col.main = "grey40", cex.main = 0.8, col.axis = "grey40", mar = c(1, 1, 1, 1))
+    par(mar = c(1, 1, 10, 1), mfrow = c(1, 1), family = "AvantGarde", col.main = "grey40", cex.main = 0.8, col.axis = "grey40")
     mycolors <- as.vector(viridis(n = 10, direction = -1))
     corrplot(t(pca_contrib_ordered), 
              method = "circle",
@@ -288,4 +288,5 @@ plot_contrib_to_pc <- function(pca_element,
   else{
     func()
   }
+  par(mar = c(1, 1, 1, 1))
 }

@@ -64,7 +64,7 @@ plot_name <- paste(plot_path, "/meat_data", sep = "")
 meat_data <- read.csv(meat_data_path, sep = ",", dec = ".", header = TRUE)
 meat_data <- subset(meat_data, select = c(Compound, Type, Filename, Status, Group, Area))
 meat_data <- subset(meat_data, Status == "Processed")
-meat_data[meat_data==''] <- NA
+# meat_data[meat_data==''] <- NA
 meat_data[meat_data=='N/F'] <- NA
 meat_data$Area <- as.numeric(meat_data$Area)
 meat_target <- subset(meat_data, Type == "Target Compound")
@@ -72,15 +72,15 @@ meat_standard <- subset(meat_data, Type == "Internal Standard")
 
 meat_target <- flip_df(meat_target)
 
-
-meat_target <- subset(meat_target, !is.na(Group))
 meat_target$SID <- sub(".*probe","sample", meat_target$SID)
 meat_target$SID <- sub("\\.*pos2","2", meat_target$SID)
 meat_target$SID <- sub("\\.*pos","1", meat_target$SID)
 
-meat_AS <- meat_target$SID[str_detect(meat_target$SID, "AS") == TRUE] 
+meat_target <- subset(meat_target, str_detect(meat_target$SID, "sample") == TRUE)
+
+meat_AS <- meat_target$SID[str_detect(meat_target$SID, "AS") == TRUE]
 meat_target$SID[str_detect(meat_target$SID, "AS") == TRUE] <- sub(".*sample","AS_sample", meat_AS)
-meat_N <- meat_target$SID[str_detect(meat_target$SID, "AS") == FALSE] 
+meat_N <- meat_target$SID[str_detect(meat_target$SID, "AS") == FALSE]
 meat_target$SID[str_detect(meat_target$SID, "AS") == FALSE] <- sub(".*sample","N_sample", meat_N)
 meat_target$SID <- str_remove(meat_target$SID, "_AS")
 
@@ -91,70 +91,116 @@ meta_info$Tech_rep <- paste(meta_info$Biol_rep, meta_info$Tech_rep, sep = "_")
 
 meat_target <- cbind(meat_target$SID, meta_info, meat_target[, -1])
 meat_target <- droplevels(meat_target)
-levels(meat_target$Group)[levels(meat_target$Group) == "fleisch"] <- "meat"
-levels(meat_target$Group)[levels(meat_target$Group) == "wild"] <- "game"
-levels(meat_target$Group)[levels(meat_target$Group) == "FISCH"] <- "fish"
-colnames(meat_target) <- c("SID", colnames(meat_target[-1]))
-meat_N <- subset(meat_target, Treatment == "N")
-meat_AS <- subset(meat_target, Treatment == "AS")
 
-levels(meat_N$Group)
+map <- data.frame(Sample_nr=c("sample1","sample2","sample3", "sample4", "sample5", "sample6", "sample7"), 
+                  Group_new=c("meat", "meat", "meat", "game", "game", "fish", "meat"))
+meat_target <- left_join(meat_target, map, by="Sample_nr")
+meat_target$Group <- meat_target$Group_new
+meat_target <- meat_target[-ncol(meat_target)]
+
+# levels(meat_target$Group)[levels(meat_target$Group) == "fleisch"] <- "meat"
+# levels(meat_target$Group)[levels(meat_target$Group) == "wild"] <- "game"
+# levels(meat_target$Group)[levels(meat_target$Group) == "FISCH"] <- "fish"
+# colnames(meat_target) <- c("SID", colnames(meat_target[-1]))
+# meat_N <- subset(meat_target, Treatment == "N")
+# meat_AS <- subset(meat_target, Treatment == "AS")
+
+meat_data <- meat_target
 
 ## Exploratory data analysis
 
 ### impute missing values #todo find option to avoid imputation of negative values
 #### remove columns where all values are missing
-impute_meat <- meat_N[, which(colMeans(!is.na(meat_N)) > 0.8)] 
+impute_meat <- meat_data[, which(colMeans(!is.na(meat_data)) > 0.8)] 
 impute_meat <- as.matrix(select_if(impute_meat, is.numeric))
 
 #### perform missing data imputation
-meat_QRILC <- impute.QRILC(impute_meat, tune.sigma = 1)
-# meat_MinDet <- impute.MinDet(impute_meat)
-
-# meat_imputed <- meat_MinDet
-meat_imputed <- as.data.frame(meat_QRILC[[1]])
-meat_imputed <- cbind(meat_N[, 1:6], meat_imputed)
+# meat_imputed <- as.data.frame(impute.QRILC(impute_meat, tune.sigma = 1)[[1]])
+meat_imputed <- as.data.frame(impute.MinDet(impute_meat))
+meat_imputed <- cbind(meat_data[, 1:6], meat_imputed)
 meat_imputed <- droplevels(meat_imputed) # remove unused levels from factors
 
 #### calculate the means for the replicates
-{
 meat_groups <- generate_categorical_table(meat_imputed$Group)
-meat_treatment <- generate_categorical_table(meat_imputed$Treatment)
 
 meat_numeric <- meat_imputed
+meat_numeric$Sample_nr <- as.numeric(meat_numeric$Sample_nr)
 meat_numeric$Group <- as.numeric(meat_numeric$Group)
-meat_biol <- calc_by_replicate(meat_numeric, meat_numeric$Sample_nr, mean)
-meat_tech <- calc_by_replicate(meat_numeric, meat_numeric$Biol_rep, mean)
+# meat_by_sample <- calc_by_replicate(meat_numeric, meat_numeric$Sample_nr, mean)
+meat_by_replicate <- calc_by_replicate(meat_numeric, meat_numeric$Biol_rep, mean)
 
-nmb <- paste_catecorical_variable(meat_biol, 2, meat_groups)
-nmt <- paste_catecorical_variable(meat_tech, 2, meat_groups)
-}
+meat_data <- paste_catecorical_variable(meat_by_replicate, 3, meat_groups)
+colnames(meat_data)[1] <- "Bio_replicate"
+meat_data$Sample_nr <- paste("sample", meat_data$Sample_nr, sep = "")
 
 ### graphical exploratory data analysis
-# qqplot_by_factor(meat_imputed, "Group", out_path = plot_name)
-# histogram_by_factor(meat_imputed, "Group", out_path = plot_name)
-# boxplot_by_factor(meat_imputed, "Group", out_path = plot_name)
+# qqplot_by_factor(meat_data, "Group", out_path = plot_name)
+# histogram_by_factor(meat_data, "Group", out_path = plot_name)
+# boxplot_by_factor(meat_data, "Group", out_path = plot_name)
 # 
-# parallel_plot(meat_imputed, meat_imputed$Group, out_path = plot_name)
-# meat_spider <- calc_by_replicate(meat_imputed, meat_imputed$Group, mean)
+# parallel_plot(meat_data, meat_data$Group, out_path = plot_name)
+# meat_spider <- calc_by_replicate(meat_data, meat_data$Group, mean)
 # spider_chart(meat_spider, legend_lab = meat_spider$Group.1, out_path = plot_name)
 
 ### test for normality
-meat_normality <- shapiro_by_factor(meat_imputed, meat_imputed$Group)
+meat_normality <- shapiro_by_factor(meat_data, meat_data$Group)
 
 ### test for correlation
-meat_correlation <- cor(select_if(meat_imputed, is.numeric), method = "spearman")
-correlation_heatmap(meat_imputed, interactive = TRUE, out_path = plot_name)
+meat_correlation <- cor(select_if(meat_data, is.numeric), method = "spearman")
+correlation_heatmap(meat_data, interactive = FALSE)
 
 ### PCA
-meat_pca <- PCA(select_if(meat_imputed, is.numeric), scale.unit = TRUE, graph = FALSE)
+meat_pca <- PCA(select_if(meat_data, is.numeric), scale.unit = TRUE, graph = FALSE)
 meat_eigenvalue <- get_eigenvalue(meat_pca)
 scree_factoextra(meat_pca)
-scree_base(select_if(meat_imputed, is.numeric))
-biplot_ggplot2(meat_imputed, "Group", loadings = FALSE, ellipse = TRUE, scale = TRUE)
-biplot_factoextra(meat_pca, meat_imputed$Group, ellipse = TRUE)
+scree_base(select_if(meat_data, is.numeric))
+biplot_ggplot2(meat_data, "Group", loadings = FALSE, ellipse = TRUE, scale = TRUE)
+biplot_factoextra(meat_pca, meat_data$Group, ellipse = TRUE)
 
-plot_contrib_to_pc(meat_pca, out_path = plot_name)
+fviz_pca_var(meat_pca, 
+             geom = c("point"), 
+             col.var = "contrib", 
+             gradient.cols = viridis(n = 3, direction = -1), 
+             repel = TRUE)
+
+x <- meat_pca$var
+loadings <- as.data.frame(x$coord)
+loadings <- data.frame(loadings, x$contrib)
+
+loadings$mylabel <- rep("", nrow(loadings))
+loadings <- loadings[order(loadings$Dim.1.1, decreasing = TRUE),]
+loadings$mylabel[1:10] <- rownames(loadings)[1:10]
+loadings <- loadings[order(loadings$Dim.2.1, decreasing = TRUE),]
+loadings$mylabel[1:10] <- rownames(loadings)[1:10]
+
+ggplot(loadings, aes(x=Dim.1, y=Dim.2, colour = Dim.1.1)) + 
+  geom_point(size=1) +
+  geom_hline(yintercept = 0,
+             linetype = "dashed",
+             colour = "grey60") +
+  geom_vline(xintercept = 0,
+             linetype = "dashed",
+             colour = "grey60") +
+  geom_text_repel(aes(x = Dim.1,
+                      y = Dim.2,
+                      label = mylabel),
+                  size = 2) +
+  scale_color_viridis_c(direction = -1) +
+  my_theme
+
+
+
+
+  
+
+
+fviz_pca_var(res.pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)
+
+plot_contrib_to_pc(meat_pca)
 
 fviz_contrib(meat_pca, choice = "var", axes = 1, top = 10, 
              fill = viridis(n = 1, begin = 0.3), color = viridis(n = 1, begin = 0.3), 
@@ -165,15 +211,10 @@ fviz_contrib(meat_pca, choice = "var", axes = 2, top = 10,
              linecolor = "black")
 
 
-
-
-
-
-
 ### Clustering 
-meat_clust <- data.frame(Group = meat_imputed$Group)
-meat_clust <- cbind(meat_clust, select_if(meat_imputed, is.numeric))
-rownames(meat_clust) <- meat_imputed$SID
+meat_clust <- data.frame(Group = meat_data$Group)
+meat_clust <- cbind(meat_clust, select_if(meat_data, is.numeric))
+rownames(meat_clust) <- meat_data$SID
 
 hclust_performance_table(meat_clust)
 hclust_performance_plot(meat_clust)
@@ -181,7 +222,7 @@ hclust_performance_plot(meat_clust)
 meat_dist <- dist(select_if(meat_clust, is.numeric), method = "manhattan")
 meat_hclust <- hclust(meat_dist, method = "average")
 hclust_dendrogram(meat_hclust, 
-                  labs = paste(meat_imputed$Sample_nr, 
+                  labs = paste(meat_data$Sample_nr, 
                                meat_clust$Group, sep = "-"), 
                   out_path = plot_name)
 
@@ -198,18 +239,18 @@ hclust_heatmap_interactive(meat_clust,
 ### hypothesis testing & volcano plot
 
 # kruskal-wallis 
-meat_kruskal <- kruskal_test_by_col(meat_imputed, "Group")
+meat_kruskal <- kruskal_test_by_col(meat_data, "Group")
 meat_kruskal$p_adj <- p.adjust(meat_kruskal$p_value, method = "fdr")
 meat_significant_k <- subset(meat_kruskal, meat_kruskal$p_value <= 0.05)
 
 # anova
-meat_anova <- one_way_anova_by_col(meat_imputed, "Group")
+meat_anova <- one_way_anova_by_col(meat_data, "Group")
 meat_anova$p_adj <- p.adjust(meat_anova$p_value, method = "fdr")
 meat_significant_a <- subset(meat_anova, meat_anova$p_value <= 0.05)
 
 
 { # meat vs fish volcano plot
-meat_vs_fish <- subset(meat_imputed, Group == "fish" | Group == "meat")
+meat_vs_fish <- subset(meat_data, Group == "fish" | Group == "meat")
 meat_vs_fish <- droplevels(meat_vs_fish)
 
 p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = wilcox.test)
@@ -231,7 +272,7 @@ volcano_plot(meat_fish_volcano,
 }
 
 { # meat vs game volcano plot
-  meat_vs_game <- subset(meat_imputed, Group == "game" | Group == "meat")
+  meat_vs_game <- subset(meat_data, Group == "game" | Group == "meat")
   meat_vs_game <- droplevels(meat_vs_game)
   
   p_meat_vs_game <- one_sample_test_by_col(meat_vs_game, meat_vs_game$Group, method = wilcox.test)
@@ -252,7 +293,8 @@ volcano_plot(meat_fish_volcano,
 }
 
 { # game vs fish volcano plot
-  game_vs_fish <- subset(meat_imputed, Group == "fish" | Group == "game")
+  # game vs fish volcano plot
+  game_vs_fish <- subset(meat_data, Group == "fish" | Group == "game")
   game_vs_fish <- droplevels(game_vs_fish)
   
   p_game_vs_fish <- one_sample_test_by_col(game_vs_fish, game_vs_fish$Group, method = wilcox.test)
@@ -262,14 +304,14 @@ volcano_plot(meat_fish_volcano,
                                      control_group = "fish", 
                                      test_group = "game")
   
-  game_fish_volcano <- data.frame(p_value = p_game_vs_fish, adj_p_value = adj_game_vs_fish, log2_foldchange = fc_game_vs_fish)
-  game_fish_volcano <- game_fish_volcano[complete.cases(game_fish_volcano),]
+  volcano_df <- data.frame(p_value = p_game_vs_fish, adj_p_value = adj_game_vs_fish, log2_foldchange = fc_game_vs_fish)
+  volcano_df <- volcano_df[complete.cases(volcano_df),]
   
-  volcano_plot(game_fish_volcano, 
-               foldchange_col = game_fish_volcano$log2_foldchange, 
-               significance_col = game_fish_volcano$adj_p_value, 
+  volcano_plot(volcano_df, 
+               foldchange_col = volcano_df$log2_foldchange, 
+               significance_col = volcano_df$adj_p_value, 
                foldchange = 1, 
                significance = 0.05,
-               title = "Fish vs. vension",
+               title = "Fish vs. game",
                out_path = plot_name)
 }

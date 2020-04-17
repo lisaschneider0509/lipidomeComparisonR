@@ -21,6 +21,7 @@ install_packages_lipidome_comparison <- function(){
   install.packages("viridis") # color blind and printer save color schemes
   install.packages("ggrepel") # avoids overlapping lables in ggplot
   install.packages("plotly") # interactive ggplots
+  install.packages("ggpubr") # arrange ggplots in grid
   ## PCA
   install.packages("FactoMineR")
   install.packages("ggfortify") # improves autoplot-function in ggplot, for example biplot with ggplot

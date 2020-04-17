@@ -28,11 +28,13 @@ my_theme <- theme_set(
 #' hclust_performance_table(USArrests, out_path = dir)
 #' }
 hclust_performance_table <- function(input_df, 
+                                     dist_methods = c("euclidean", "manhattan"), 
+                                     hclust_methods = c("average", "single", "complete"),
                                      out_path = "none"){
   
-  buffer <- dendextend::dend_expend(USArrests, 
-                                    dist_methods = c("euclidean", "manhattan"), 
-                                    hclust_methods = c("average", "single", "complete"))
+  buffer <- dend_expend(input_df, 
+                        dist_methods = dist_methods, 
+                        hclust_methods = hclust_methods)
   performance <- buffer$performance
   
   if(out_path != "none"){
@@ -60,13 +62,15 @@ hclust_performance_table <- function(input_df,
 #' hclust_performance_plot(USArrests, out_path = dir)
 #' }
 hclust_performance_plot <- function(input_df, 
+                                    dist_methods = c("euclidean", "manhattan"),
+                                    hclust_methods = c("average", "single", "complete"),
                                      out_path = "none"){
   
   numeric_df <- select_if(input_df, is.numeric)
   
-  buffer <- dendextend::dend_expend(numeric_df, 
-                                    dist_methods = c("euclidean", "manhattan"), 
-                                    hclust_methods = c("average", "single", "complete"))
+  buffer <- dend_expend(numeric_df, 
+                        dist_methods = dist_methods, 
+                        hclust_methods = hclust_methods)
   
   performance <- buffer$performance
   
@@ -184,7 +188,7 @@ hclust_dendrogram <- function(hclust_element,
                               out_path = "none"){
   
   out_name <- paste(out_path, "_dendrogram_", hclust_element$method, "_linkage.png", sep = "")
-  mycolors <- viridis::viridis(n = 4)
+  mycolors <- viridis::viridis(n = 4, begin = 0, end = 0)
 
   if(hclust_element$method == "complete"){
     subtitle <- "Complete linkage"
@@ -319,6 +323,7 @@ hclust_heatmap_interactive <- function(input_df,
                                        dist_method = "euclidean", 
                                        hclust_method = "complete", 
                                        title = "Hierarchical clustering", 
+                                       html_path = "",
                                        out_path = "none"
                                        ){
   
@@ -353,7 +358,9 @@ hclust_heatmap_interactive <- function(input_df,
                         ## general appearance
                         margins = c(60,100,40,20),
                         fontsize_row = 10, fontsize_col = 10,
-                        heatmap_layers = theme(axis.line=element_blank())
+                        heatmap_layers = theme(axis.line=element_blank()),
+                        file = html_path
+                        
   )
   
   if(out_path != "none"){

@@ -346,15 +346,16 @@ parallel_plot <- function(input_df,  group_vector, out_path = "none",
     xlab(x_title) + 
     ylab(y_title) +
     labs(color = legend_title) +
-    scale_color_viridis(discrete=TRUE, end = 0.9) +
+    scale_color_viridis(discrete=TRUE, end = 1) +
     geom_point(shape = 20, size = 0.5) +
     theme(plot.title = element_text(size=12, hjust = 0.5, family="AvantGarde"),
-          axis.text.x = element_text(angle = 90, size = 7, hjust = 1, colour = "grey40", family="AvantGarde"), 
+          axis.text.x = element_text(angle = 45, size = 7, hjust = 1, colour = "grey40", family="AvantGarde"), 
           axis.text.y = element_text(size = 7, colour = "grey40", family="AvantGarde"),
           axis.title.x = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
           axis.title.y = element_text(size = 10, hjust = 0.5, colour = "grey40", family="AvantGarde"),
           legend.text = element_text(size = 7, colour = "grey40", family="AvantGarde"),
           legend.title = element_text(size = 8, colour = "grey40", family="AvantGarde")) 
+
 
   if(out_path != "none"){
     print(paste("Saving plot to ", out_path, "_parcoord.png", sep = ""))
@@ -402,11 +403,13 @@ spider_chart <- function(minimized_df,
   out_name <- paste(out_path, "_spiderChart", ".png", sep = "")
   
   func <- function(){
+    par(mfrow = c(1, 1))
     spider_data <- dplyr::select_if(minimized_df, is.numeric) # remove column with rownames
-    spider_labels <- substring(colnames(spider_data), first = 1, last = 10) # set max. label length to 10 characters
+    spider_labels <- colnames(spider_data) # set max. label length to 10 characters
     
     spider_min <- floor(min(spider_data))
     spider_max <- ceiling(max(spider_data))
+    spider_interval <- (spider_max-spider_min)/4
     spider_data <- as.data.frame(select_if(spider_data, is.numeric))
     
     # add max and min to the dataframe to plot the grid
@@ -417,8 +420,14 @@ spider_chart <- function(minimized_df,
     colors_in = alpha(colors_border, alpha = 0.1)
     
     ## radar chart
+    par(mfrow = c(1, 1))
     radarchart(spider_data,
-               axistype=0,
+               axistype=1,
+               caxislabels = c(spider_min, 
+                               spider_min+spider_interval, 
+                               spider_min+2*spider_interval, 
+                               spider_min+3*spider_interval, 
+                               spider_min+4*spider_interval),
                #custom polygon
                pcol=colors_border,
                pfcol=colors_in,
