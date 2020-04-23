@@ -21,6 +21,7 @@ library(FactoMineR)
 library(heatmaply) # interactive heatmap
 library(gplots) # heatmap
 library(plotly) # interactive heatmap
+library(dendextend)
 
 # library(psych) # for correlation plot 
 # library(gridExtra)
@@ -157,49 +158,16 @@ scree_base(select_if(meat_data, is.numeric))
 biplot_ggplot2(meat_data, "Group", loadings = FALSE, ellipse = TRUE, scale = TRUE)
 biplot_factoextra(meat_pca, meat_data$Group, ellipse = TRUE)
 
-fviz_pca_var(meat_pca, 
+# loadings plots 
+fviz_pca_var(meat_pca, # factoextra
              geom = c("point"), 
              col.var = "contrib", 
              gradient.cols = viridis(n = 3, direction = -1), 
              repel = TRUE)
 
-x <- meat_pca$var
-loadings <- as.data.frame(x$coord)
-loadings <- data.frame(loadings, x$contrib)
+plot_loadings(meat_pca, colour = TRUE, top_loadings = 10) # diy wth ggplot
 
-loadings$mylabel <- rep("", nrow(loadings))
-loadings <- loadings[order(loadings$Dim.1.1, decreasing = TRUE),]
-loadings$mylabel[1:10] <- rownames(loadings)[1:10]
-loadings <- loadings[order(loadings$Dim.2.1, decreasing = TRUE),]
-loadings$mylabel[1:10] <- rownames(loadings)[1:10]
-
-ggplot(loadings, aes(x=Dim.1, y=Dim.2, colour = Dim.1.1)) + 
-  geom_point(size=1) +
-  geom_hline(yintercept = 0,
-             linetype = "dashed",
-             colour = "grey60") +
-  geom_vline(xintercept = 0,
-             linetype = "dashed",
-             colour = "grey60") +
-  geom_text_repel(aes(x = Dim.1,
-                      y = Dim.2,
-                      label = mylabel),
-                  size = 2) +
-  scale_color_viridis_c(direction = -1) +
-  my_theme
-
-
-
-
-  
-
-
-fviz_pca_var(res.pca,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE     # Avoid text overlapping
-)
-
+# contribution to PCs
 plot_contrib_to_pc(meat_pca)
 
 fviz_contrib(meat_pca, choice = "var", axes = 1, top = 10, 
@@ -223,8 +191,7 @@ meat_dist <- dist(select_if(meat_clust, is.numeric), method = "manhattan")
 meat_hclust <- hclust(meat_dist, method = "average")
 hclust_dendrogram(meat_hclust, 
                   labs = paste(meat_data$Sample_nr, 
-                               meat_clust$Group, sep = "-"), 
-                  out_path = plot_name)
+                               meat_clust$Group, sep = "-"))
 
 # hclust_heatmap(meat_clust, 
 #                dist_method = "manhattan", 
@@ -253,7 +220,7 @@ meat_significant_a <- subset(meat_anova, meat_anova$p_value <= 0.05)
 meat_vs_fish <- subset(meat_data, Group == "fish" | Group == "meat")
 meat_vs_fish <- droplevels(meat_vs_fish)
 
-p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = wilcox.test)
+p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = t.test)
 adj_meat_vs_fish <- p.adjust(p_meat_vs_fish$p_values, method = "fdr")
 fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, 
                                    meat_vs_fish$Group, 
@@ -275,7 +242,7 @@ volcano_plot(meat_fish_volcano,
   meat_vs_game <- subset(meat_data, Group == "game" | Group == "meat")
   meat_vs_game <- droplevels(meat_vs_game)
   
-  p_meat_vs_game <- one_sample_test_by_col(meat_vs_game, meat_vs_game$Group, method = wilcox.test)
+  p_meat_vs_game <- one_sample_test_by_col(meat_vs_game, meat_vs_game$Group, method = t.test)
   adj_meat_vs_game <- p.adjust(p_meat_vs_game$p_values, method = "fdr")
   fc_meat_vs_game <- log2_foldchange(meat_vs_game, 
                                      meat_vs_game$Group, 
@@ -297,7 +264,7 @@ volcano_plot(meat_fish_volcano,
   game_vs_fish <- subset(meat_data, Group == "fish" | Group == "game")
   game_vs_fish <- droplevels(game_vs_fish)
   
-  p_game_vs_fish <- one_sample_test_by_col(game_vs_fish, game_vs_fish$Group, method = wilcox.test)
+  p_game_vs_fish <- one_sample_test_by_col(game_vs_fish, game_vs_fish$Group, method = t.test)
   adj_game_vs_fish <- p.adjust(p_game_vs_fish$p_values, method = "fdr")
   fc_game_vs_fish <- log2_foldchange(game_vs_fish, 
                                      game_vs_fish$Group, 

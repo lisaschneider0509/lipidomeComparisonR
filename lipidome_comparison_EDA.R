@@ -431,7 +431,8 @@ spider_chart <- function(minimized_df,
                #custom polygon
                pcol=colors_border,
                pfcol=colors_in,
-               plwd=4,
+               pty = 20,
+               plwd=2,
                plty=1,
                # custom grid
                cglcol="grey",

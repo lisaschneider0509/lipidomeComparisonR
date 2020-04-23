@@ -290,3 +290,67 @@ plot_contrib_to_pc <- function(pca_element,
   }
   par(mar = c(1, 1, 1, 1))
 }
+
+#' Loadings plot
+#' 
+#' `plot_loadings` plots the loadings between the first two principal components. 
+#' @param pca_object Object produced by FactoMineR::PCA. 
+#' @param title string. Main title of the plot. Default = "Loadings plot"
+#' @param colour logical. TRUE ... color scale by PC1. FALSE (default) ... all black. 
+#' @param top_loadings integer. Number of loadings to label (the top n loadings of both PCs are labelled).
+#' @param out_path string. Path to save plot as png. If "none" (default), plot is only printed to device. 
+#' @example 
+#' cars_pca <- PCA(select_if(mtcars, is.numeric), graph = FALSE)
+#' plot_contrib_to_pc(cars_pca)
+plot_loadings <- function(pca_object, 
+                          colour = FALSE,
+                          top_loadings = 10,
+                          title = "Loadings plot", 
+                          out_path = "none"){
+  x <- pca_object$var
+  loadings <- as.data.frame(x$coord)
+  loadings <- data.frame(loadings, x$contrib)
+  
+  loadings$mylabel <- rep("", nrow(loadings))
+  loadings <- loadings[order(loadings$Dim.1.1, decreasing = TRUE),]
+  loadings$mylabel[1:10] <- rownames(loadings)[1:10]
+  loadings <- loadings[order(loadings$Dim.2.1, decreasing = TRUE),]
+  loadings$mylabel[1:top_loadings] <- rownames(loadings)[1:top_loadings]
+  
+  if(top_loadings == 0){
+    loadings$mylabel <- rep("", nrow(loadings))
+  }
+
+  if(colour == TRUE){
+  loadings_plot <- ggplot(loadings, aes(x=Dim.1, 
+                                        y=Dim.2, 
+                                        colour = Dim.1.1))  }
+  else{ loadings_plot <- ggplot(loadings, aes(x=Dim.1, 
+                                              y=Dim.2))  }
+  
+  loadings_plot <- loadings_plot + 
+    geom_point(size=1) +
+    geom_hline(yintercept = 0,
+               linetype = "dashed",
+               colour = "grey60") +
+    geom_vline(xintercept = 0,
+               linetype = "dashed",
+               colour = "grey60") +
+    geom_text_repel(aes(x = Dim.1,
+                        y = Dim.2,
+                        label = mylabel),
+                    colour = "black",
+                    size = 2) +
+    ggtitle(label = title) +
+    scale_color_viridis_c(direction = -1, end = 0.9) +
+    my_theme
+  
+  
+  if(out_path != "none"){
+    print(paste("Saving plot to ", out_path, "_biplot.png", sep = ""))
+    ggsave(paste(out_path, "_loadings_plot.png", sep = ""),
+           plot = loadings_plot)
+  }
+  
+  loadings_plot
+}
