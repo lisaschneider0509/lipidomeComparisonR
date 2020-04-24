@@ -247,40 +247,35 @@ correlation_plot <- function(input_df, method = "spearman", out_path = "none"){
   }
 }
 
-#' Correlation heatmap 
+#' Matrix heatmap 
 #' 
-#' @description `correlation_heatmap` calculates correlations of variables and displays them in a heatmap
-#' @details A heatmap displaying the correlations between the variables of a data frame is generated. 
-#' The heatmap is optionally interactive. 
-#' @param input_df data frame. 
-#' @param method string. Method for calculating the correlation. 
-#' Options: "pearson", "kendall", "spearman" (default). 
+#' @description `matrix_heatmap` displays values of a matrix in a heatmap
+#' @param input_matrix matrix. For exaple correlation or matrix of ratios or differences.  
 #' @param interactive logical. Print heatmap to device (FALSE, default) 
 #' or open interactive heatmap in browser (TRUE). 
 #' @param out_path string. Path to save heatmap to png. 
 #' If out_path is empty the heatmap is printed to the device. 
 #' @example 
-#' correlation_heatmap(iris)
-#' correlation_heatmap(iris, interactive = TRUE)
+#' iris_cor <- cor(iris[,-5], method = "spearman")
+#' matrix_heatmap(iris_cor)
 #' \dontrun{
 #' dir.create(paste(getwd(), "/examples", sep = ""), showWarnings = FALSE)
 #' dir <- paste(getwd(), "/examples/iris", sep = "")
-#' correlation_heatmap(iris, interactive = TRUE, out_path = dir)
-#' correlation_heatmap(iris, out_path = dir)
+#' matrix_heatmap(iris_cor, interactive = TRUE)
+#' matrix_heatmap(iris_cor, out_path = dir)
 #' }
-correlation_heatmap <- function(input_df, 
-                                method = "spearman", 
+matrix_heatmap <- function(input_df, 
+                                title = "",
                                 interactive = FALSE, 
                                 out_path = "none"){
-  cor_matrix <- cor(dplyr::select_if(input_df, is.numeric), method = method)
-  melted_cor_matrix <- reshape::melt(cor_matrix)
-  names(melted_cor_matrix) <- c("x", "y", "correlation")
-  head(melted_cor_matrix)
+  melted_matrix <- reshape::melt(input_df)
+  names(melted_matrix) <- c("x", "y", "value")
+  head(melted_matrix)
   
-  cor_heatmap <- ggplot(data = melted_cor_matrix, aes(x=x, y=y, fill=correlation)) +
+  matrix_heatmap <- ggplot(data = melted_matrix, aes(x=x, y=y, fill=value)) +
     geom_tile() +
-    ggtitle("Spearman correlation") +
-    scale_fill_viridis_c() +
+    ggtitle(title) +
+    scale_fill_viridis_c(direction = -1) +
     my_theme +
     theme(axis.title.x = element_blank(), 
           axis.title.y = element_blank(),
@@ -288,17 +283,47 @@ correlation_heatmap <- function(input_df,
           axis.text.x = element_text(angle = 90, size = 4, hjust = 1))
   
   if(out_path != "none"){
-    print(paste("Saving heatmap to ", out_path, "_cor_heatmap.png", sep = ""))
-    ggsave(paste(out_path, "_cor_heatmap.png", sep = ""), 
-           plot = cor_heatmap)
+    print(paste("Saving plot to ", out_path, "_matrix_heatmap.png", sep = ""))
+    ggsave(paste(out_path, "_matrix_heatmap.png", sep = ""), 
+           plot = matrix_heatmap)
   }
   
   if (interactive == TRUE) {
-    plotly::ggplotly(cor_heatmap) # interactive heatmap
+    plotly::ggplotly(matrix_heatmap) # interactive heatmap
   } else {
-    cor_heatmap # static heatmap
+    matrix_heatmap # static heatmap
   }
 }
+
+
+#' Calculate ratio matrix
+#' 
+#' @description `calculate_ratio_matrix` takes a vector and calculates the ratio between all elements of a vector. 
+#' @param input_vector numeric vector.
+#' @param names_vector vector. Length = length(input_vector). Row and column names for the returnded matrix. Default are numbers 1:length(input_vector). 
+#' @example 
+#' myvector <- c(1712.9583, 1446.4583, 1968.4167, 2124.1250, 2315.7083, 1135.1667, 2227.5000)
+#' mynames <- letters[1:length(myvector)]
+#' calculate_ratio_matrix(myvector, mynames)
+calculate_ratio_matrix <- function(input_vector, 
+                                   names_vector = 1:length(input_vector)){
+  
+  ratio_matrix <- matrix(nrow = length(input_vector), 
+                         ncol = length(input_vector))
+  
+  for(i in 1:length(input_vector)){
+    for(j in 1:length(input_vector)){
+      buffer <- input_vector[i] / input_vector[j]
+      ratio_matrix[i, j] <- buffer
+    }
+  }
+  
+  rownames(ratio_matrix) <- names_vector
+  colnames(ratio_matrix) <- names_vector
+  
+  ratio_matrix
+}
+
 
 #' Parallel coordinates plot
 #' 

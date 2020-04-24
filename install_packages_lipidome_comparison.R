@@ -10,6 +10,7 @@ install_packages_lipidome_comparison <- function(){
   install.packages("stringr") # string manipulation
   install.packages("data.table") # better transpose function than r-base
   install.packages("tibble") # data frame manipulation
+  install.packages("ratios") #todo (?)
   ## data transforations
   install.packages("imputeLCMD") # various imputation procedures, including left censored imputation
   install.packages("impute") # dependecy for imputeLCMD

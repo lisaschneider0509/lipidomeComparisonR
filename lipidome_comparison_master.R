@@ -11,6 +11,7 @@ library(viridis) # colorblind save color schemes
 library(GGally) # paralell plot
 library(fmsb) # spider chart
 library(scales) # scale opacity of filling (alpha)
+library(ggpubr) # multiple plots on one page
 
 library(ggrepel)
 library(factoextra)
@@ -23,6 +24,7 @@ library(gplots) # heatmap
 library(plotly) # interactive heatmap
 library(dendextend)
 
+library(ratios) #todo (?)
 # library(psych) # for correlation plot 
 # library(gridExtra)
 # library(devtools)
@@ -94,7 +96,7 @@ meat_target <- cbind(meat_target$SID, meta_info, meat_target[, -1])
 meat_target <- droplevels(meat_target)
 
 map <- data.frame(Sample_nr=c("sample1","sample2","sample3", "sample4", "sample5", "sample6", "sample7"), 
-                  Group_new=c("meat", "meat", "meat", "game", "game", "fish", "meat"))
+                  Group_new=c("beef", "beef", "beef", "game", "game", "fish", "beef"))
 meat_target <- left_join(meat_target, map, by="Sample_nr")
 meat_target$Group <- meat_target$Group_new
 meat_target <- meat_target[-ncol(meat_target)]
@@ -148,7 +150,29 @@ meat_normality <- shapiro_by_factor(meat_data, meat_data$Group)
 
 ### test for correlation
 meat_correlation <- cor(select_if(meat_data, is.numeric), method = "spearman")
-correlation_heatmap(meat_data, interactive = FALSE)
+matrix_heatmap(meat_correlation, title = "Correlation heatmap", interactive = FALSE)
+
+### ratio heatmap
+meat_sample_means <- calc_by_replicate(meat_data, factor = meat_data$Sample_nr, mean)
+
+ratio_list <- list()
+for(i in 1:nrow(meat_sample_means)){
+  buffer <- calculate_ratio_matrix(as.numeric(meat_sample_means[i, -1]) #, 
+                                   # colnames(meat_sample_means[, -1])
+                                   )
+  list_name <- meat_sample_means$Group.1[i]
+  ratio_list[[list_name]] <- buffer
+}
+
+heatmap_list <- list()
+for(i in 1:length(ratio_list)){
+  buffer <- matrix_heatmap(ratio_list, title = names(ratio_list)[i], interactive = FALSE)
+  list_name <- names(ratio_list)[i]
+  heatmap_list[[list_name]] <- buffer
+}
+
+ggarrange(plotlist = heatmap_list)
+ggarrange(plotlist = heatmap_list, ncol = 2, nrow = 4, align = "h", widths = c(0.9, 0.9), common.legend = TRUE)
 
 ### PCA
 meat_pca <- PCA(select_if(meat_data, is.numeric), scale.unit = TRUE, graph = FALSE)

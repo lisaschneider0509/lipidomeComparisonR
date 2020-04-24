@@ -116,8 +116,10 @@ meta_info$Tech_rep <- paste(meta_info$Biol_rep, meta_info$Tech_rep, sep = "_")
 meat_target <- cbind(meat_target$SID, meta_info, meat_target[, -1])
 meat_target <- droplevels(meat_target)
 
-map <- data.frame(Sample_nr=c("sample1","sample2","sample3", "sample4", "sample5", "sample6", "sample7"), 
-                  Group_new=c("meat", "meat", "meat", "game", "game", "fish", "meat"))
+map <- data.frame(Sample_nr=c("sample1","sample2","sample3", 
+                              "sample4", "sample5", "sample6", "sample7"), 
+                  Group_new=c("meat", "meat", "meat", 
+                              "game", "game", "fish", "meat"))
 meat_target <- left_join(meat_target, map, by="Sample_nr")
 meat_target$Group <- meat_target$Group_new
 meat_target <- meat_target[-ncol(meat_target)]
@@ -239,7 +241,7 @@ meat_pca_sub <- subset(meat_data, select = c("Sample_nr", "Group", pc1_contrib, 
 parallel_plot(meat_pca_sub, meat_pca_sub$Group)
 
 means_meat_pca <- calc_by_replicate(meat_pca_sub, meat_pca_sub$Group, funct = mean)
-spider_chart(means_meat_pca)
+spider_chart(means_meat_pca, legend_lab = means_meat_pca$)
 ```
 
 ## Hierarchical clustering 
@@ -276,18 +278,17 @@ The volcano plots were performed for two groups each. The significance was asses
 
 The volcano_plot function prints a dotplot with the log2-foldchange on the x-axis and the negative log10 of the p-value on the y-axis. The significant up- or down regulated lipids are colored and labelled. Because the number of variables is relatively low for a volcano plot (85 variables), the shape does not resemble a volcano, this should be improved with an increasing number of identified lipids. 
 ```{r hypothesis testing, message=FALSE, warning=FALSE}
-# kruskal-wallis 
-meat_kruskal <- kruskal_test_by_col(meat_data, "Group")
-meat_kruskal$p_adj <- p.adjust(meat_kruskal$p_value, method = "fdr")
-meat_significant <- subset(meat_kruskal, meat_kruskal$p_value <= 0.05)
-head(meat_significant, 3)
+# anova
+meat_anova <- one_way_anova_by_col(meat_data, "Group")
+meat_anova$p_adj <- p.adjust(meat_anova$p_value, method = "fdr")
+meat_significant_a <- subset(meat_anova, meat_anova$p_value <= 0.05)
 
-# fish vs meat & game volcano plot
+# fish vs meat and game
 fish_vs_meat_game <- meat_data
 levels(fish_vs_meat_game$Group)[levels(fish_vs_meat_game$Group) == "meat" | 
                                   levels(fish_vs_meat_game$Group) == "game"] <- "meat/game"
 
-p_fish_vs_meat_game <- one_sample_test_by_col(fish_vs_meat_game, fish_vs_meat_game$Group, method = wilcox.test)
+p_fish_vs_meat_game <- one_sample_test_by_col(fish_vs_meat_game, fish_vs_meat_game$Group, method = t.test)
 adj_fish_vs_meat_game <- p.adjust(p_fish_vs_meat_game$p_values, method = "fdr")
 fc_fish_vs_meat_game <- log2_foldchange(fish_vs_meat_game, 
                                    fish_vs_meat_game$Group, 
@@ -305,67 +306,166 @@ volcano_plot(volcano_df,
              title = "Fish vs. meat and game")
 
 
-# meat vs fish volcano plot
+
+{ # meat vs fish volcano plot
 meat_vs_fish <- subset(meat_data, Group == "fish" | Group == "meat")
 meat_vs_fish <- droplevels(meat_vs_fish)
 
-p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = wilcox.test)
+p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = t.test)
 adj_meat_vs_fish <- p.adjust(p_meat_vs_fish$p_values, method = "fdr")
 fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, 
                                    meat_vs_fish$Group, 
                                    control_group = "fish", 
                                    test_group = "meat")
 
-volcano_df <- data.frame(p_value = p_meat_vs_fish, adj_p_value = adj_meat_vs_fish, log2_foldchange = fc_meat_vs_fish)
-volcano_df <-volcano_df[complete.cases(volcano_df),]
+meat_fish_volcano <- data.frame(p_value = p_meat_vs_fish, adj_p_value = adj_meat_vs_fish, log2_foldchange = fc_meat_vs_fish)
+meat_fish_volcano <- meat_fish_volcano[complete.cases(meat_fish_volcano),]
 
-volcano_plot(volcano_df, 
-             foldchange_col = volcano_df$log2_foldchange, 
-             significance_col = volcano_df$adj_p_value, 
+volcano_plot(meat_fish_volcano, 
+             foldchange_col = meat_fish_volcano$log2_foldchange, 
+             significance_col = meat_fish_volcano$adj_p_value, 
              foldchange = 1, 
              significance = 0.05,
-             title = "Fish vs. meat")
+             out_path = plot_name)
+}
 
-# meat vs game volcano plot
-meat_vs_game <- subset(meat_imputed, Group == "game" | Group == "meat")
-meat_vs_game <- droplevels(meat_vs_game)
+{ # meat vs game volcano plot
+  meat_vs_game <- subset(meat_data, Group == "game" | Group == "meat")
+  meat_vs_game <- droplevels(meat_vs_game)
+  
+  p_meat_vs_game <- one_sample_test_by_col(meat_vs_game, meat_vs_game$Group, method = t.test)
+  adj_meat_vs_game <- p.adjust(p_meat_vs_game$p_values, method = "fdr")
+  fc_meat_vs_game <- log2_foldchange(meat_vs_game, 
+                                     meat_vs_game$Group, 
+                                     control_group = "meat", 
+                                     test_group = "game")
+  
+  meat_game_volcano <- data.frame(p_value = p_meat_vs_game, adj_p_value = adj_meat_vs_game, log2_foldchange = fc_meat_vs_game)
+  meat_game_volcano <- meat_game_volcano[complete.cases(meat_game_volcano),]
+  
+  volcano_plot(meat_game_volcano, 
+               foldchange_col = meat_game_volcano$log2_foldchange, 
+               significance_col = meat_game_volcano$adj_p_value, 
+               foldchange = 1, 
+               out_path = plot_name)
+}
 
-p_meat_vs_game <- one_sample_test_by_col(meat_vs_game, meat_vs_game$Group, method = wilcox.test)
-adj_meat_vs_game <- p.adjust(p_meat_vs_game$p_values, method = "fdr")
-fc_meat_vs_game <- log2_foldchange(meat_vs_game, 
-                                   meat_vs_game$Group, 
-                                   control_group = "meat", 
-                                   test_group = "game")
-
-volcano_df <- data.frame(p_value = p_meat_vs_game, adj_p_value = adj_meat_vs_game, log2_foldchange = fc_meat_vs_game)
-volcano_df <- volcano_df[complete.cases(volcano_df),]
-
-volcano_plot(volcano_df, 
-             foldchange_col = volcano_df$log2_foldchange, 
-             significance_col = volcano_df$adj_p_value, 
-             foldchange = 1, 
-             title = "Meat vs. game")
-
-# game vs fish volcano plot
-game_vs_fish <- subset(meat_imputed, Group == "fish" | Group == "game")
-game_vs_fish <- droplevels(game_vs_fish)
-
-p_game_vs_fish <- one_sample_test_by_col(game_vs_fish, game_vs_fish$Group, method = wilcox.test)
-adj_game_vs_fish <- p.adjust(p_game_vs_fish$p_values, method = "fdr")
-fc_game_vs_fish <- log2_foldchange(game_vs_fish, 
-                                   game_vs_fish$Group, 
-                                   control_group = "fish", 
-                                   test_group = "game")
-
-volcano_df <- data.frame(p_value = p_game_vs_fish, adj_p_value = adj_game_vs_fish, log2_foldchange = fc_game_vs_fish)
-volcano_df <- volcano_df[complete.cases(volcano_df),]
-
-volcano_plot(volcano_df, 
-             foldchange_col = volcano_df$log2_foldchange, 
-             significance_col = volcano_df$adj_p_value, 
-             foldchange = 1, 
-             significance = 0.05,
-             title = "Fish vs. game")
+{ # game vs fish volcano plot
+  # game vs fish volcano plot
+  game_vs_fish <- subset(meat_data, Group == "fish" | Group == "game")
+  game_vs_fish <- droplevels(game_vs_fish)
+  
+  p_game_vs_fish <- one_sample_test_by_col(game_vs_fish, game_vs_fish$Group, method = t.test)
+  adj_game_vs_fish <- p.adjust(p_game_vs_fish$p_values, method = "fdr")
+  fc_game_vs_fish <- log2_foldchange(game_vs_fish, 
+                                     game_vs_fish$Group, 
+                                     control_group = "fish", 
+                                     test_group = "game")
+  
+  volcano_df <- data.frame(p_value = p_game_vs_fish, adj_p_value = adj_game_vs_fish, log2_foldchange = fc_game_vs_fish)
+  volcano_df <- volcano_df[complete.cases(volcano_df),]
+  
+  volcano_plot(volcano_df, 
+               foldchange_col = volcano_df$log2_foldchange, 
+               significance_col = volcano_df$adj_p_value, 
+               foldchange = 1, 
+               significance = 0.05,
+               title = "Fish vs. game",
+               out_path = plot_name)
+}
+# 
+# 
+# 
+# # kruskal-wallis 
+# meat_kruskal <- kruskal_test_by_col(meat_data, "Group")
+# meat_kruskal$p_adj <- p.adjust(meat_kruskal$p_value, method = "fdr")
+# meat_significant <- subset(meat_kruskal, meat_kruskal$p_value <= 0.05)
+# head(meat_significant, 3)
+# 
+# # fish vs meat & game volcano plot
+# fish_vs_meat_game <- meat_data
+# levels(fish_vs_meat_game$Group)[levels(fish_vs_meat_game$Group) == "meat" | 
+#                                   levels(fish_vs_meat_game$Group) == "game"] <- "meat/game"
+# 
+# p_fish_vs_meat_game <- one_sample_test_by_col(fish_vs_meat_game, fish_vs_meat_game$Group, method = wilcox.test)
+# adj_fish_vs_meat_game <- p.adjust(p_fish_vs_meat_game$p_values, method = "fdr")
+# fc_fish_vs_meat_game <- log2_foldchange(fish_vs_meat_game, 
+#                                    fish_vs_meat_game$Group, 
+#                                    control_group = "fish", 
+#                                    test_group = "meat/game")
+# 
+# volcano_df <- data.frame(p_value = p_fish_vs_meat_game, adj_p_value = adj_fish_vs_meat_game, log2_foldchange = fc_fish_vs_meat_game)
+# volcano_df <- volcano_df[complete.cases(volcano_df),]
+# 
+# volcano_plot(volcano_df,
+#              foldchange_col = volcano_df$log2_foldchange,
+#              significance_col = volcano_df$adj_p_value,
+#              foldchange = 1,
+#              significance = 0.05,
+#              title = "Fish vs. meat and game")
+# 
+# 
+# # meat vs fish volcano plot
+# meat_vs_fish <- subset(meat_data, Group == "fish" | Group == "meat")
+# meat_vs_fish <- droplevels(meat_vs_fish)
+# 
+# p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = wilcox.test)
+# adj_meat_vs_fish <- p.adjust(p_meat_vs_fish$p_values, method = "fdr")
+# fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, 
+#                                    meat_vs_fish$Group, 
+#                                    control_group = "fish", 
+#                                    test_group = "meat")
+# 
+# volcano_df <- data.frame(p_value = p_meat_vs_fish, adj_p_value = adj_meat_vs_fish, log2_foldchange = fc_meat_vs_fish)
+# volcano_df <-volcano_df[complete.cases(volcano_df),]
+# 
+# volcano_plot(volcano_df, 
+#              foldchange_col = volcano_df$log2_foldchange, 
+#              significance_col = volcano_df$adj_p_value, 
+#              foldchange = 1, 
+#              significance = 0.05,
+#              title = "Fish vs. meat")
+# 
+# # meat vs game volcano plot
+# meat_vs_game <- subset(meat_imputed, Group == "game" | Group == "meat")
+# meat_vs_game <- droplevels(meat_vs_game)
+# 
+# p_meat_vs_game <- one_sample_test_by_col(meat_vs_game, meat_vs_game$Group, method = wilcox.test)
+# adj_meat_vs_game <- p.adjust(p_meat_vs_game$p_values, method = "fdr")
+# fc_meat_vs_game <- log2_foldchange(meat_vs_game, 
+#                                    meat_vs_game$Group, 
+#                                    control_group = "meat", 
+#                                    test_group = "game")
+# 
+# volcano_df <- data.frame(p_value = p_meat_vs_game, adj_p_value = adj_meat_vs_game, log2_foldchange = fc_meat_vs_game)
+# volcano_df <- volcano_df[complete.cases(volcano_df),]
+# 
+# volcano_plot(volcano_df, 
+#              foldchange_col = volcano_df$log2_foldchange, 
+#              significance_col = volcano_df$adj_p_value, 
+#              foldchange = 1, 
+#              title = "Meat vs. game")
+# 
+# # game vs fish volcano plot
+# game_vs_fish <- subset(meat_imputed, Group == "fish" | Group == "game")
+# game_vs_fish <- droplevels(game_vs_fish)
+# 
+# p_game_vs_fish <- one_sample_test_by_col(game_vs_fish, game_vs_fish$Group, method = wilcox.test)
+# adj_game_vs_fish <- p.adjust(p_game_vs_fish$p_values, method = "fdr")
+# fc_game_vs_fish <- log2_foldchange(game_vs_fish, 
+#                                    game_vs_fish$Group, 
+#                                    control_group = "fish", 
+#                                    test_group = "game")
+# 
+# volcano_df <- data.frame(p_value = p_game_vs_fish, adj_p_value = adj_game_vs_fish, log2_foldchange = fc_game_vs_fish)
+# volcano_df <- volcano_df[complete.cases(volcano_df),]
+# 
+# volcano_plot(volcano_df, 
+#              foldchange_col = volcano_df$log2_foldchange, 
+#              significance_col = volcano_df$adj_p_value, 
+#              foldchange = 1, 
+#              significance = 0.05,
+#              title = "Fish vs. game")
 
 ```
 
