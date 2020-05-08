@@ -10,7 +10,6 @@ install_packages_lipidome_comparison <- function(){
   install.packages("stringr") # string manipulation
   install.packages("data.table") # better transpose function than r-base
   install.packages("tibble") # data frame manipulation
-  install.packages("ratios") #todo (?)
   ## data transforations
   install.packages("imputeLCMD") # various imputation procedures, including left censored imputation
   install.packages("impute") # dependecy for imputeLCMD
@@ -22,6 +21,7 @@ install_packages_lipidome_comparison <- function(){
   install.packages("viridis") # color blind and printer save color schemes
   install.packages("ggrepel") # avoids overlapping lables in ggplot
   install.packages("plotly") # interactive ggplots
+  install.packages("htmlwidgets") # save plotly-plots as html
   install.packages("ggpubr") # arrange ggplots in grid
   ## PCA
   install.packages("FactoMineR")

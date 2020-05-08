@@ -21,10 +21,11 @@ library(FactoMineR)
 
 library(heatmaply) # interactive heatmap
 library(gplots) # heatmap
-library(plotly) # interactive heatmap
+library(plotly) # interactive ggplots
+library(htmlwidgets) # save plotly-plots as html
 library(dendextend)
 
-library(ratios) #todo (?)
+
 # library(psych) # for correlation plot 
 # library(gridExtra)
 # library(devtools)
@@ -157,22 +158,44 @@ meat_sample_means <- calc_by_replicate(meat_data, factor = meat_data$Sample_nr, 
 
 ratio_list <- list()
 for(i in 1:nrow(meat_sample_means)){
-  buffer <- calculate_ratio_matrix(as.numeric(meat_sample_means[i, -1]) #, 
-                                   # colnames(meat_sample_means[, -1])
-                                   )
+  buffer <- calculate_ratio_matrix(as.numeric(meat_sample_means[i, -1]), 
+                                   names_vector = 1:ncol(meat_sample_means[-1]))
   list_name <- meat_sample_means$Group.1[i]
   ratio_list[[list_name]] <- buffer
 }
 
+for (i in 1:length(ratio_list)){
+  write.csv(ratio_list[[i]], paste("output/lipid_ratios_", names(ratio_list)[i], ".csv", sep = ""))
+}
+
 heatmap_list <- list()
 for(i in 1:length(ratio_list)){
-  buffer <- matrix_heatmap(ratio_list, title = names(ratio_list)[i], interactive = FALSE)
+  buffer <- matrix_heatmap(ratio_list[[i]], 
+                           title = names(ratio_list)[i], 
+                           interactive = TRUE)
   list_name <- names(ratio_list)[i]
   heatmap_list[[list_name]] <- buffer
 }
 
-ggarrange(plotlist = heatmap_list)
-ggarrange(plotlist = heatmap_list, ncol = 2, nrow = 4, align = "h", widths = c(0.9, 0.9), common.legend = TRUE)
+for(i in 1:length(heatmap_list)){
+  saveWidget(heatmap_list[[i]], 
+             file = paste(plot_path, "/lipid_ratio", names(heatmap_list)[i], ".html", sep = ""))
+}
+
+lipid_ratio_heatmaps <- ggarrange(plotlist = heatmap_list, 
+          ncol = 2, 
+          nrow = 4, 
+          align = "h", 
+          widths = c(0.9, 0.9),
+          common.legend = TRUE, 
+          legend = "right")
+lipid_ratio_heatmaps <- annotate_figure(lipid_ratio_heatmaps, 
+                                top = text_grob("Lipid ratios per sample", 
+                                                size = 16, family = "AvantGarde"))
+
+ggsave(filename = paste(plot_name, "/ratio_heatmap.png", sep = ""), 
+       plot = lipid_ratio_heatmaps, width = 8, height = 12)
+
 
 ### PCA
 meat_pca <- PCA(select_if(meat_data, is.numeric), scale.unit = TRUE, graph = FALSE)

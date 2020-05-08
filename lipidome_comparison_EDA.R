@@ -265,9 +265,9 @@ correlation_plot <- function(input_df, method = "spearman", out_path = "none"){
 #' matrix_heatmap(iris_cor, out_path = dir)
 #' }
 matrix_heatmap <- function(input_df, 
-                                title = "",
-                                interactive = FALSE, 
-                                out_path = "none"){
+                           title = "",
+                           interactive = FALSE, 
+                           out_path = "none"){
   melted_matrix <- reshape::melt(input_df)
   names(melted_matrix) <- c("x", "y", "value")
   head(melted_matrix)
@@ -279,8 +279,8 @@ matrix_heatmap <- function(input_df,
     my_theme +
     theme(axis.title.x = element_blank(), 
           axis.title.y = element_blank(),
-          axis.text.y = element_text(size = 4),
-          axis.text.x = element_text(angle = 90, size = 4, hjust = 1))
+          axis.text.y = element_text(size = 6),
+          axis.text.x = element_text(angle = 90, size = 6, hjust = 1))
   
   if(out_path != "none"){
     print(paste("Saving plot to ", out_path, "_matrix_heatmap.png", sep = ""))
@@ -289,12 +289,12 @@ matrix_heatmap <- function(input_df,
   }
   
   if (interactive == TRUE) {
-    plotly::ggplotly(matrix_heatmap) # interactive heatmap
+    interactive_heatmap <- ggplotly(matrix_heatmap) # interactive heatmap
+    interactive_heatmap
   } else {
     matrix_heatmap # static heatmap
   }
 }
-
 
 #' Calculate ratio matrix
 #' 
