@@ -494,4 +494,66 @@ spider_chart <- function(minimized_df,
   }
 }
 
+#' Simple barchart
+#' 
+#' `simple_barchart` returns a ggplot barchart with viridis coloring
+#' @param data_frame data frame with at least one numeric and one factor column
+#' @param x vector. Factor column
+#' @param y vector. Numeric column
+#' @param fill vector. Factor column to fill bars by. By default all bars are blue. 
+#' @param title string. Main title of the plot. Default = ""
+#' @param xlab string. Title of x-axis. Default = ""
+#' @param ylab string. Title of y-axis. Default = ""
+#' @example 
+#' iris_table <- reshape::melt(table(iris$Species))
+#' simple_barchart(iris_table, x = iris_table$Var.1, y = iris_table$value, fill = "#35608DFF")
+simple_barchart <- function(data_frame, x, y, fill = "#35608DFF", 
+                            title = "test", xlab = "", ylab = ""){
+  simple_barchart <- ggplot(data_frame, aes(x=x, y=y, fill=fill)) +
+    geom_bar(stat="identity") + 
+    labs(title = title, 
+         x = xlab, 
+         y = ylab) +
+    scale_fill_viridis_d() +
+    theme(legend.position = "none")
+  
+  
+  if(is.character(fill)){
+    simple_barchart <- simple_barchart + geom_bar(stat="identity", fill = fill)
+  }
+  simple_barchart
+}
 
+#' Plot ratio barcharts
+#' @description `plot_ratio_barcharts` plots the ratios of a list of values from a data frame by group. 
+#' @param data_frame data frame. From aggregate() function. 
+#' @param subset_vector vector of column names from the data_frame. 
+#' @param grop_column string. Name of the column to group by. 
+#' @example 
+#' aggregated_iris <- aggregate(iris[-5], by = list(iris$Species), FUN = mean)
+#' plot_ratio_barcharts(aggregated_iris, c("Group.1", "Sepal.Length", "Sepal.Width", "Petal.Length"), group_column = "Group.1")
+plot_ratio_barcharts <- function(data_frame, subset_vector, group_column){
+  mysubset <- subset(data_frame, select = subset_vector)
+  myratios <- lapply(1:nrow(mysubset), 
+                     function(i) calculate_ratio_matrix(as.numeric(mysubset[i, -1]), 
+                                                        names_vector = colnames(mysubset[-1])))
+  names(myratios) <- as.character(mysubset[[group_column]])
+  
+  myratios <- reshape::melt(myratios)
+  myratios$ratio_name <- as.factor(paste(myratios$X1, "/", myratios$X2))
+  myratios <- myratios[-(1:2)]
+  
+  my_ratio_list <- lapply(1:length(levels(myratios$ratio_name)), 
+                          function(i) subset(myratios, myratios$ratio_name == levels(myratios$ratio_name)[i]))
+  names(my_ratio_list) <- levels(myratios$ratio_name)
+  
+  ratio_barcharts <- lapply(1:length(my_ratio_list), 
+                            function(i) simple_barchart(my_ratio_list[[i]], 
+                                                        x = my_ratio_list[[i]]$L1, 
+                                                        y = my_ratio_list[[i]]$value,
+                                                        fill = as.factor(my_ratio_list[[i]]$L1), 
+                                                        title = my_ratio_list[[i]]$ratio_name, 
+                                                        xlab = "group", 
+                                                        ylab = "ratio"))
+  ratio_barcharts
+}

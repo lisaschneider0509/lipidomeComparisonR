@@ -153,48 +153,65 @@ meat_normality <- shapiro_by_factor(meat_data, meat_data$Group)
 meat_correlation <- cor(select_if(meat_data, is.numeric), method = "spearman")
 matrix_heatmap(meat_correlation, title = "Correlation heatmap", interactive = FALSE)
 
-### ratio heatmap
+### lipid ratios
 meat_sample_means <- calc_by_replicate(meat_data, factor = meat_data$Sample_nr, mean)
+meat_group_means <- calc_by_replicate(meat_data, factor = meat_data$Group, mean)
 
-ratio_list <- list()
-for(i in 1:nrow(meat_sample_means)){
-  buffer <- calculate_ratio_matrix(as.numeric(meat_sample_means[i, -1]), 
-                                   names_vector = 1:ncol(meat_sample_means[-1]))
-  list_name <- meat_sample_means$Group.1[i]
-  ratio_list[[list_name]] <- buffer
-}
+## ratio heatmap
+{
+# ratio matrix
+ratio_list <- lapply(1:nrow(meat_group_means), 
+                       function(i) calculate_ratio_matrix(as.numeric(meat_group_means[i, -1]), 
+                                                          names_vector = colnames(meat_group_means[-1])))
+names(ratio_list) <- as.character(meat_group_means$Group.1)
 
-for (i in 1:length(ratio_list)){
-  write.csv(ratio_list[[i]], paste("output/lipid_ratios_", names(ratio_list)[i], ".csv", sep = ""))
-}
 
-heatmap_list <- list()
-for(i in 1:length(ratio_list)){
-  buffer <- matrix_heatmap(ratio_list[[i]], 
-                           title = names(ratio_list)[i], 
-                           interactive = TRUE)
-  list_name <- names(ratio_list)[i]
-  heatmap_list[[list_name]] <- buffer
-}
+# save ratio matrixes to csv
+lapply(1:length(ratio_list), 
+       function(i) write.csv(ratio_list[[i]], 
+                             file = paste("output/ratio_matrix_", 
+                                          names(ratio_list[i]), ".csv", 
+                                          sep = ""),
+                             row.names = TRUE))
+# ratio heatmap
+heatmap_list <- lapply(1:length(ratio_list), 
+       function(i) matrix_heatmap(ratio_list[[i]], 
+                                  title = names(ratio_list)[i], 
+                                  interactive = TRUE))
+names(heatmap_list) <- names(ratio_list)
 
-for(i in 1:length(heatmap_list)){
-  saveWidget(heatmap_list[[i]], 
-             file = paste(plot_path, "/lipid_ratio", names(heatmap_list)[i], ".html", sep = ""))
-}
-
-lipid_ratio_heatmaps <- ggarrange(plotlist = heatmap_list, 
+# ratio heatmap html
+lapply(1:length(heatmap_list), 
+       function(i) saveWidget(heatmap_list[[i]], 
+                              file = paste(plot_path, 
+                                           "/ratio_heatmap_", 
+                                           names(heatmap_list)[i], 
+                                           ".html", sep = "")))
+# ratio heatmaps arranged
+arranged_ratio_heatmaps <- ggarrange(plotlist = heatmap_list, 
           ncol = 2, 
           nrow = 4, 
           align = "h", 
           widths = c(0.9, 0.9),
           common.legend = TRUE, 
           legend = "right")
-lipid_ratio_heatmaps <- annotate_figure(lipid_ratio_heatmaps, 
+arranged_ratio_heatmaps <- annotate_figure(arranged_ratio_heatmaps, 
                                 top = text_grob("Lipid ratios per sample", 
                                                 size = 16, family = "AvantGarde"))
 
+# save ratio heatmaps
 ggsave(filename = paste(plot_name, "/ratio_heatmap.png", sep = ""), 
-       plot = lipid_ratio_heatmaps, width = 8, height = 12)
+       plot = arranged_ratio_heatmaps, width = 8, height = 12)
+}
+
+# ratio barplots
+ratio_lipids <- colnames(meat_group_means[c(1, 4:6)])
+barchart_list <- plot_ratio_barcharts(meat_group_means, ratio_lipids, ratio_lipids[1])
+arranged_barcharts <- ggarrange(plotlist = barchart_list,
+                                align = "h", 
+                                widths = c(0.9, 0.9),
+                                common.legend = TRUE, 
+                                legend = "none")
 
 
 ### PCA
