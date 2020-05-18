@@ -32,5 +32,12 @@ install_packages_lipidome_comparison <- function(){
   install.packages("dendextend") # find the best clustering parameters
   install.packages("gplots") # nicer heatmaps than ggplot
   install.packages("heatmaply") # interactive hatmaps
+  ## Bioconductor
+  if (!requireNamespace("BiocManager", quietly = TRUE)){
+    install.packages("BiocManager")}
+  BiocManager::install("lipidr")
+  
+  # install.packages("LipidMS")
+  # install.packages("LipidMSdata")
 }
 

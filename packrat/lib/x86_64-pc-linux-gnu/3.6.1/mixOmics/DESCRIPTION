@@ -1,7 +1,7 @@
 Package: mixOmics
 Type: Package
 Title: Omics Data Integration Project
-Version: 6.10.8
+Version: 6.10.9
 Depends: R (>= 3.5.0), MASS, lattice, ggplot2
 Imports: igraph, ellipse, corpcor, RColorBrewer, parallel, dplyr,
         tidyr, reshape2, methods, matrixStats, rARPACK, gridExtra,
@@ -28,7 +28,7 @@ URL: http://www.mixOmics.org
 BugReports: https://github.com/mixOmicsTeam/mixOmics/issues/
 Repository: Bioconductor
 VignetteBuilder: knitr
-Packaged: 2020-01-30 04:14:56 UTC; biocbuild
+Packaged: 2020-03-31 03:02:43 UTC; biocbuild
 NeedsCompilation: no
 biocViews: ImmunoOncology, Microarray, Sequencing, Metabolomics,
         Metagenomics, Proteomics, GenePrediction, MultipleComparison,
@@ -36,9 +36,9 @@ biocViews: ImmunoOncology, Microarray, Sequencing, Metabolomics,
 RoxygenNote: 6.1.1
 git_url: https://git.bioconductor.org/packages/mixOmics
 git_branch: RELEASE_3_10
-git_last_commit: 03ad223
-git_last_commit_date: 2020-01-28
-Date/Publication: 2020-01-29
+git_last_commit: b399f33
+git_last_commit_date: 2020-03-29
+Date/Publication: 2020-03-30
 Author: Kim-Anh Le Cao [aut, cre],
   Florian Rohart [aut],
   Ignacio Gonzalez [aut],
@@ -50,4 +50,4 @@ Author: Kim-Anh Le Cao [aut, cre],
   Jeff Coquery [ctb],
   FangZou Yao [ctb],
   Benoit Liquet [ctb]
-Built: R 3.6.1; ; 2020-02-03 13:33:16 UTC; unix
+Built: R 3.6.1; ; 2020-05-15 07:36:46 UTC; unix

@@ -1,4 +1,3 @@
-textshape-package	textshape
 as_list	mtabulate
 bind_list	bind_list
 bind_table	bind_table
@@ -23,6 +22,15 @@ from_to.default	from_to
 from_to.numeric	from_to
 from_to_summarize	from_to
 golden_rules	golden_rules
+grab_index	grab_index
+grab_index.character	grab_index
+grab_index.data.frame	grab_index
+grab_index.default	grab_index
+grab_index.list	grab_index
+grab_match	grab_match
+grab_match.character	grab_match
+grab_match.data.frame	grab_match
+grab_match.list	grab_match
 hamlet	hamlet
 mtabulate	mtabulate
 package-textshape	textshape

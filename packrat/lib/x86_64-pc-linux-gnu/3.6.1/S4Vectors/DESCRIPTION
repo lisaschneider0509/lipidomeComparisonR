@@ -9,7 +9,7 @@ Description: The S4Vectors package defines the Vector and List virtual classes
 	interest (e.g. DataFrame, Rle, and Hits) are implemented in the
 	S4Vectors package itself (many more are implemented in the IRanges
 	package and in other Bioconductor infrastructure packages).
-Version: 0.24.3
+Version: 0.24.4
 Encoding: UTF-8
 Author: H. Pagès, M. Lawrence and P. Aboyoun
 Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
@@ -32,9 +32,9 @@ Collate: S4-utils.R show-utils.R utils.R normarg-utils.R LLint-class.R
         shiftApply-methods.R zzz.R
 git_url: https://git.bioconductor.org/packages/S4Vectors
 git_branch: RELEASE_3_10
-git_last_commit: dee1a8b
-git_last_commit_date: 2020-01-18
-Date/Publication: 2020-01-18
+git_last_commit: 0287f96
+git_last_commit_date: 2020-04-03
+Date/Publication: 2020-04-09
 NeedsCompilation: yes
-Packaged: 2020-01-19 01:42:21 UTC; biocbuild
-Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-03-19 13:24:15 UTC; unix
+Packaged: 2020-04-10 00:57:16 UTC; biocbuild
+Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-05-15 07:17:35 UTC; unix

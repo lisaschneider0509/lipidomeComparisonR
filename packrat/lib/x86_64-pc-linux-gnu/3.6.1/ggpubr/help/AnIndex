@@ -7,6 +7,7 @@ background_image	background_image
 bgcolor	bgcolor
 border	border
 change_palette	set_palette
+clean_table_theme	theme_pubr
 clean_theme	theme_pubr
 colnames_style	ggtexttable
 color_palette	set_palette
@@ -23,6 +24,7 @@ geom_exec	geom_exec
 geom_signif	reexports
 get_legend	get_legend
 get_palette	get_palette
+get_summary_stats	reexports
 ggadd	ggadd
 ggarrange	ggarrange
 ggballoonplot	ggballoonplot
@@ -47,6 +49,8 @@ ggqqplot	ggqqplot
 ggscatter	ggscatter
 ggscatterhist	ggscatterhist
 ggstripchart	ggstripchart
+ggsummarystats	ggsummarystats
+ggsummarytable	ggsummarystats
 ggtext	ggtext
 ggtexttable	ggtexttable
 ggviolin	ggviolin
@@ -63,6 +67,8 @@ median_iqr	add_summary
 median_mad	add_summary
 median_range	add_summary
 mutate	reexports
+print.ggsummarystats	ggsummarystats
+print.ggsummarystats_list	ggsummarystats
 reexports	reexports
 rotate	rotate
 rotate_axis_text	rotate_axis_text

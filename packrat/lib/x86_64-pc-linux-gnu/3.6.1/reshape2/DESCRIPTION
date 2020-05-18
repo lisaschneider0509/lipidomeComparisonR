@@ -1,6 +1,6 @@
 Package: reshape2
 Title: Flexibly Reshape Data: A Reboot of the Reshape Package
-Version: 1.4.3
+Version: 1.4.4
 Author: Hadley Wickham <h.wickham@gmail.com>
 Maintainer: Hadley Wickham <h.wickham@gmail.com>
 Description: Flexibly restructure and aggregate data using just two
@@ -14,12 +14,9 @@ Suggests: covr, lattice, testthat (>= 0.8.0)
 LinkingTo: Rcpp
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 7.1.0
 NeedsCompilation: yes
-Packaged: 2017-12-10 22:04:42 UTC; hadley
+Packaged: 2020-04-09 12:27:19 UTC; hadley
 Repository: CRAN
-Date/Publication: 2017-12-11 16:47:57 UTC
-Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-01-31 12:51:08 UTC; unix
-InstallAgent: packrat 0.5.0
-InstallSource: CRAN
-Hash: 07530ccc44ce1d2e5390d6ae41bafe03
+Date/Publication: 2020-04-09 13:50:02 UTC
+Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-05-15 07:27:20 UTC; unix

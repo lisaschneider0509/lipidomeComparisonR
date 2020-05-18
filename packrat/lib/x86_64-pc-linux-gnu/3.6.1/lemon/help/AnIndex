@@ -13,6 +13,7 @@ brackets_vertical	brackets
 capped_horisontal	coord_capped
 capped_horizontal	coord_capped
 capped_vertical	coord_capped
+CoordCartesian	lemon-ggproto
 CoordFlexCartesian	lemon-ggproto
 CoordFlexFixed	lemon-ggproto
 CoordFlexFlipped	lemon-ggproto
@@ -44,7 +45,6 @@ grid_arrange_shared_legend	grid_arrange_shared_legend
 gtable_show_grill	gtable_show
 gtable_show_names	gtable_show
 guidebox_as_column	guidebox_as_column
-guide_axis	ggplot2-non-exports
 g_legend	g_legend
 if-not-null	ggplot2-non-exports
 is.small	is.small

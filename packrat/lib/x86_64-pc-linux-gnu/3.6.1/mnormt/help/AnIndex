@@ -9,3 +9,4 @@ rmnorm	dmnorm
 rmt	dmt
 sadmvn	dmnorm
 sadmvt	dmt
+sample_Mardia_measures	sample_Mardia_measures

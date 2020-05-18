@@ -2,6 +2,7 @@ copy_tinytex	copy_tinytex
 install_tinytex	install_tinytex
 latexmk	latexmk
 lualatex	latexmk
+parse_install	parse_install
 parse_packages	parse_packages
 pdflatex	latexmk
 reinstall_tinytex	install_tinytex

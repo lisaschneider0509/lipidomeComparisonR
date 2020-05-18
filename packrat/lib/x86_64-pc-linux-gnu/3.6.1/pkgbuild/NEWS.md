@@ -1,3 +1,11 @@
+# pkgbuild 1.0.8
+
+* Fixes for capability RStudio 1.2. and Rtools 40, R 4.0.0
+
+# pkgbuild 1.0.7
+
+* Additional fixes for Rtools 40
+
 # pkgbuild 1.0.6
 
 * Support for RTools 40 and custom msys2 toolchains that are explicitly set

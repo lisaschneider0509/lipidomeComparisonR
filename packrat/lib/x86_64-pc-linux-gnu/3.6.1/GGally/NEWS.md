@@ -1,3 +1,23 @@
+GGally 1.5.0
+---------------------
+
+* Updated to work with ggplot2 v3.3.0 (#308)
+
+`ggnet` and `ggnet2`
+* Fixed some logic bugs from newer R versions
+
+`ggally_box` and `ggally_dot`
+* Label now appears axis and is displayed in a plot matrix. (#253)
+
+`ggsurv`
+* Provide sensible legend values when multiple factors are present. (#310)
+
+`ggally_cor`
+* Added `displayGrid` argument to turn of the background grid. (#312)
+
+
+
+
 GGally 1.3.3
 ----------------
 

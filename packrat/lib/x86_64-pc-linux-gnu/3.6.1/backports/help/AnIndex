@@ -5,7 +5,9 @@ backports-package	backports-package
 anyNA	anyNA
 backports	backports-package
 capture.output	capture.output
+deparse1	deparse1
 dir.exists	dir.exists
+dQuote	dQuote
 endsWith	endsWith
 errorCondition	warningCondition
 file.info	file.info
@@ -18,6 +20,9 @@ import	import
 isFALSE	isFALSE
 isTRUE	isTRUE
 lengths	lengths
+list2DF	list2DF
+R_user_dir	R_user_dir
+sQuote	dQuote
 startsWith	startsWith
 strrep	strrep
 trimws	trimws

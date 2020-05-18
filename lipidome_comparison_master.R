@@ -70,7 +70,7 @@ meat_data <- subset(meat_data, select = c(Compound, Type, Filename, Status, Grou
 meat_data <- subset(meat_data, Status == "Processed")
 # meat_data[meat_data==''] <- NA
 meat_data[meat_data=='N/F'] <- NA
-meat_data$Area <- as.numeric(meat_data$Area)
+meat_data$Area <- as.numeric(as.character(meat_data$Area))
 meat_target <- subset(meat_data, Type == "Target Compound")
 meat_standard <- subset(meat_data, Type == "Internal Standard")
 
@@ -257,15 +257,13 @@ hclust_dendrogram(meat_hclust,
                   labs = paste(meat_data$Sample_nr, 
                                meat_clust$Group, sep = "-"))
 
-# hclust_heatmap(meat_clust, 
-#                dist_method = "manhattan", 
-#                hclust_method = "average", 
-#                row_names = meat_clust$Group, 
-#                out_path = plot_name)
+hclust_heatmap(meat_clust,
+               dist_method = "manhattan",
+               hclust_method = "average",
+               row_names = meat_clust$Group)
 hclust_heatmap_interactive(meat_clust, 
                            dist_method = "manhattan", 
-                           hclust_method = "average", 
-                           out_path = "/plots/meat")
+                           hclust_method = "average")
 
 ### hypothesis testing & volcano plot
 
@@ -281,7 +279,7 @@ meat_significant_a <- subset(meat_anova, meat_anova$p_value <= 0.05)
 
 
 { # meat vs fish volcano plot
-meat_vs_fish <- subset(meat_data, Group == "fish" | Group == "meat")
+meat_vs_fish <- subset(meat_data, Group == "fish" | Group == "beef")
 meat_vs_fish <- droplevels(meat_vs_fish)
 
 p_meat_vs_fish <- one_sample_test_by_col(meat_vs_fish, meat_vs_fish$Group, method = t.test)
@@ -289,7 +287,7 @@ adj_meat_vs_fish <- p.adjust(p_meat_vs_fish$p_values, method = "fdr")
 fc_meat_vs_fish <- log2_foldchange(meat_vs_fish, 
                                    meat_vs_fish$Group, 
                                    control_group = "fish", 
-                                   test_group = "meat")
+                                   test_group = "beef")
 
 meat_fish_volcano <- data.frame(p_value = p_meat_vs_fish, adj_p_value = adj_meat_vs_fish, log2_foldchange = fc_meat_vs_fish)
 meat_fish_volcano <- meat_fish_volcano[complete.cases(meat_fish_volcano),]

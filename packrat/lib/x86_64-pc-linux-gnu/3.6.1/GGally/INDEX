@@ -4,7 +4,7 @@ add_ref_boxes           Add reference boxes around each cell of the
                         glyphmap.
 add_ref_lines           Add reference lines for each cell of the
                         glyphmap.
-australia_PISA2012      Programme for International Student Assesment
+australia_PISA2012      Programme for International Student Assessment
                         (PISA) 2012 Data for Australia
 brew_colors             RColorBrewer Set1 colors
 broomify                Broomify a model

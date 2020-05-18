@@ -38,6 +38,7 @@ ggqqplot                QQ Plots
 ggscatter               Scatter plot
 ggscatterhist           Scatter Plot with Marginal Histograms
 ggstripchart            Stripcharts
+ggsummarytable          GGPLOT with Summary Stats Table Under the Plot
 ggtext                  Text
 ggtexttable             Draw a Textual Table
 ggviolin                Violin plot

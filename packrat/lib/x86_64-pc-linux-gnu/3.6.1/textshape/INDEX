@@ -13,6 +13,8 @@ flatten                 Flatten a Nested List of Vectors Into a Single
                         Tier List of Vectors
 from_to                 Prepare Discourse Data for Network Plotting
 golden_rules            Sentence Boundary Disambiguation Edge Cases
+grab_index              Get Elements Matching Between 2 Points
+grab_match              Get Elements Matching Between 2 Points
 hamlet                  Hamlet (Complete & Split by Sentence)
 mtabulate               Tabulate Frequency Counts for Multiple Vectors
 simple_dtm              Simple 'DocumentTermMatrix'

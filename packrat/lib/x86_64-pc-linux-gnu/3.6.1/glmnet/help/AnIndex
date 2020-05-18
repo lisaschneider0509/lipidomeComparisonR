@@ -38,7 +38,9 @@ cvcompute	glmnet-internal
 cvstats	glmnet-internal
 cvtype	glmnet-internal
 deviance.glmnet	deviance.glmnet
+dev_function	dev_function
 elnet	glmnet-internal
+elnet.fit	elnet.fit
 error.bars	glmnet-internal
 fishnet	glmnet-internal
 fix.lam	glmnet-internal
@@ -47,10 +49,13 @@ getcoef.multinomial	glmnet-internal
 getmin	glmnet-internal
 getOptcv.glmnet	glmnet-internal
 getOptcv.relaxed	glmnet-internal
+get_start	get_start
 glmnet	glmnet
 glmnet-internal	glmnet-internal
 glmnet.control	glmnet.control
+glmnet.fit	glmnet.fit
 glmnet.measures	glmnet.measures
+glmnet.path	glmnet.path
 glmnet_softmax	glmnet-internal
 jerr	glmnet-internal
 jerr.coxnet	glmnet-internal
@@ -66,6 +71,8 @@ na.mean	glmnet-internal
 na.replace	na.replace
 na_sparse_fix	glmnet-internal
 nonzeroCoef	glmnet-internal
+obj_function	obj_function
+pen_function	pen_function
 plot.cv.glmnet	plot.cv.glmnet
 plot.cv.relaxed	plot.cv.glmnet
 plot.glmnet	plot.glmnet
@@ -79,6 +86,7 @@ predict.cv.relaxed	predict.cv.glmnet
 predict.elnet	predict.glmnet
 predict.fishnet	predict.glmnet
 predict.glmnet	predict.glmnet
+predict.glmnetfit	predict.glmnetfit
 predict.lognet	predict.glmnet
 predict.mrelnet	predict.glmnet
 predict.multnet	predict.glmnet
@@ -93,6 +101,8 @@ relax.glmnet	glmnet
 response.coxnet	glmnet-internal
 rmult	rmult
 roc.glmnet	assess.glmnet
+spelnet.fit	spelnet.fit
+spglmnet.fit	spglmnet.fit
 x	beta_CVX
 y	beta_CVX
 zeromat	glmnet-internal

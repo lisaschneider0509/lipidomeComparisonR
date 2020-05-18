@@ -1,10 +1,11 @@
-git2r-package	git2r
 add	add
 ahead_behind	ahead_behind
+as.character.git_time	git_time
 as.data.frame	reexports
 as.data.frame.git_repository	as.data.frame.git_repository
 as.data.frame.git_tree	as.data.frame.git_tree
 as.list.git_tree	as.list.git_tree
+as.POSIXct.git_time	git_time
 blame	blame
 blob_create	blob_create
 branches	branches
@@ -36,8 +37,10 @@ diff.git_tree	diff-methods
 discover_repository	discover_repository
 fetch	fetch
 fetch_heads	fetch_heads
+format.git_time	git_time
 git2r	git2r
 git_config_files	git_config_files
+git_time	git_time
 hash	hash
 hashfile	hashfile
 head	reexports
@@ -85,6 +88,7 @@ odb_objects	odb_objects
 parents	parents
 plot.git_repository	plot.git_repository
 print.git_reflog_entry	print.git_reflog_entry
+print.git_time	git_time
 pull	pull
 punch_card	punch_card
 push	push

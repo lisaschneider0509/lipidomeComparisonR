@@ -1,10 +1,10 @@
-## ----setup,include=FALSE-------------------------------------------------
+## ----setup,include=FALSE------------------------------------------------------
 library(knitr)
 
 knitr::opts_chunk$set(fig.height=4, fig.width=6,
                       cache=TRUE, autodep = TRUE, cache.path = 'geoms-cache/')
 
-## ----fig.height=8,fig.cap=''---------------------------------------------
+## ----fig.height=8,fig.cap=''--------------------------------------------------
 library(ggplot2)
 library(lemon)
 library(gridExtra)

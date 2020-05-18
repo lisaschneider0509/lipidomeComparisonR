@@ -17,6 +17,34 @@ And constructed with the following guidelines:
 * Bug fixes and misc changes bumps the patch
 
 
+
+
+textshape 1.6.1 - 1.7.1
+----------------------------------------------------------------
+
+
+BUG FIXES
+
+`as_list` contained a bug because it relies on `apply` which can simplfy lists
+  to a data.frame when the lists contain equal numbers of each eleement.
+
+`split_run` relies on **stringi** which had a change in API that caused the 
+  strings to no longer split correctly (a space was added at the end).  This has 
+  been fixed.
+
+NEW FEATURES
+
+* `grab_index` added to grab from a start up to an ending index.  
+
+* `grab_match` added to grab from a start up to an ending regex match.
+
+
+IMPROVEMENTS
+
+* `split_transcript` now has more accurate regex group capturing.
+
+
+
 textshape 1.5.1 - 1.6.0
 ----------------------------------------------------------------
 

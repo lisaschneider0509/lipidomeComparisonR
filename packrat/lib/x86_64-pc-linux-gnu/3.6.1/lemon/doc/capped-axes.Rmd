@@ -108,7 +108,7 @@ return grobs.
 The function is called by the `coord` objects when printing the plot, 
 and is called with the arguments
 
-    scale_details, axis, scale, position, theme
+    panel_params$guides position, theme
 
 The function should then return a grob.
 Some pointers to how it is used can be found in ggplot2's help pages on
@@ -118,49 +118,68 @@ The arguments are as follows[^tip_rds]
 
 [^tip_rds]: To get the contents of the arguments, I usually include a line
 in the function's code to save them as a RDS object:
-`saveRDS(list(scale_details=scale_details, axis=axis, scale=scale, position=position, theme=theme), file='whatever.rds')`
+`saveRDS(list(guides=panel_params$guides, position=position, theme=theme), file='whatever.rds')`
 
+`panel_params$guide` contains 4 lists, named respectively `x`, `x.sec`, `y` and `y.sec`, 
+corresponding to the x- and y-axis, and `.sec` refers to the secondary axis.
 
-`scale_details`: Details of the scales in 'npc' units (see `grid::unit`). 
-In the example below, a secondary y-axis is used, so we find both 
-`y.major`, etc., and `y.sec.major`, etc.
+Drawing these lines is done with the function `ggplot2:::panel_guides_grob` which is found in
+the file `R/coord-cartesian.r`.
 
-    List of 20
-     $ x.range           : num [1:2] 0.4 3.6
-     $ x.labels          : chr [1:3] "a" "b" "c"
-     $ x.major           : num [1:3] 0.187 0.5 0.812
-     $ x.minor           : NULL
-     $ x.major_source    : int [1:3] 1 2 3
-     $ x.minor_source    : NULL
-     $ x.arrange         : chr [1:2] "secondary" "primary"
-     $ y.range           : num [1:2] -2.17 2.26
-     $ y.labels          : chr [1:5] "-2" "-1" "0" "1" ...
-     $ y.major           : num [1:5] 0.0378 0.2635 0.4892 0.7149 0.9406
-     $ y.minor           : num [1:9] 0.0378 0.1506 0.2635 0.3763 0.4892 ...
-     $ y.major_source    : num [1:5] -2 -1 0 1 2
-     $ y.minor_source    : num [1:9] -2 -1.5 -1 -0.5 0 0.5 1 1.5 2
-     $ y.sec.range       : num [1:2] -10.8 11.3
-     $ y.sec.labels      : chr [1:5] "-10" "-5" "0" "5" ...
-     $ y.sec.major       : num [1:5] 0.038 0.263 0.489 0.715 0.941
-     $ y.sec.minor       : num [1:9] 0.0378 0.1506 0.2635 0.3763 0.4892 ...
-     $ y.sec.major_source: num [1:5] -10 -5 0 5 10
-     $ y.sec.minor_source: num [1:9] -10 -7.5 -5 -2.5 0 2.5 5 7.5 10
-     $ y.arrange         : chr [1:2] "primary" "secondary"
+For the arguments `position` and `theme`, values passed are `"top"`, `"bottom"`, `"left"` or `"right"` for `position`,
+while `theme` is a theme-object, as described in the bottom.
 
-The secondary y-axis mulitplied the values by 5.
-Ticks are drawn at `major` coordinates, as are major grid lines. 
-Minor grid lines, if the theme supports them, are drawn at `minor`.
-Observe the connection between `y.label` and `y.major_source`; it only becomes
-apparent when also observing the same for the x-axis. 
-The `x.major_source` are the factor integers.
+`guides` is a list of elements for drawing an axis line and its ticks. Following is for a secondary axis to the right:
 
-`axis`: Character, either `"primary"` or `"secondary"`. Recall that the
-function is called _per axis_ drawn.
+    $title
+    list()
+    attr(,"class")
+    [1] "waiver"
+    
+    $check.overlap
+    [1] FALSE
+    
+    $angle
+    NULL
+    
+    $n.dodge
+    [1] 1
+    
+    $order
+    [1] 0
+    
+    $position
+    [1] "right"
+    
+    $available_aes
+    [1] "x" "y"
+    
+    $name
+    [1] "axis_y"
+    
+    $key
+              y       .value .label x
+    1 0.2442442 -1.249523622   -2.5 1
+    2 0.5105105 -0.001656758    0.0 1
+    3 0.7777778  1.250901335    2.5 1
+    
+    $hash
+    [1] "803d9baa63668f8906bd6c98dd767655"
+    
+    attr(,"class")
+    [1] "guide" "axis" 
 
-`scale`: Character, either `"x"` or `"y"`. 
+The data.frame `$key` is interesting, as it describes the position in both y- *and* x-direction. 
+Here is a corresponding data.frame for a x-axis in the bottom:
 
-`position`: Character, one of the sides, `"top"`, `"right"`, `"bottom"`, or 
-`"left"`.
+    $key
+           x .value .label y
+    1 0.1875      a      a 0
+    2 0.5000      b      b 0
+    3 0.8125      c      c 0
+    
+
+Notice that the x- and y-values are relative to the viewport, i.e. in "npc" units.
 
 `theme`: The plot's theme. This is however not in absolute terms, 
 e.g. so text sizes may be described in relative terms to the base size. 

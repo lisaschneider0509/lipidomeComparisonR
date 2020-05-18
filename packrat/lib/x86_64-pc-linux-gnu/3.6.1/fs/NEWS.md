@@ -1,3 +1,15 @@
+# fs 1.4.1
+
+# fs 1.4.0
+
+* `[[.fs_path`, `[[.fs_bytes` and `[[.fs_perms` now preserve their classes after subsetting (#254).
+
+* `path_has_parent()` now recycles both the `path` and `parent` arguments (#253).
+
+* `path_ext_set()` now recycles both the `path` and `ext` arguments (#250).
+
+* Internally fs no longer depends on Rcpp
+
 # fs 1.3.2
 
 * fs now passes along `CPPFLAGS` during compilation of libuv, fixing an issue that could

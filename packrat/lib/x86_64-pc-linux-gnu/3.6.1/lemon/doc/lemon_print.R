@@ -1,4 +1,4 @@
-## ----setup,include=FALSE-------------------------------------------------
+## ----setup,include=FALSE------------------------------------------------------
 library(knitr)
 library(stringr)
 
@@ -20,35 +20,35 @@ knit_hooks$set(source = function(x, options){
 })
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 data(USArrests)
 head(USArrests)
 
-## ----message=FALSE-------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 library(lemon)
 knit_print.data.frame <- lemon_print
 
 ## ----caption="Data frame is now printed using `kable`.",verbatim=TRUE,render=lemon_print----
 head(USArrests)
 
-## ----normal_print,render=normal_print,verbatim=TRUE----------------------
+## ----normal_print,render=normal_print,verbatim=TRUE---------------------------
 head(USArrests)
 
-## ----results='asis',render=normal_print,verbatim=TRUE--------------------
+## ----results='asis',render=normal_print,verbatim=TRUE-------------------------
 kable(head(USArrests),caption='Normal `kable` usage.')
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 kable(head(USArrests))
 
 ## ----kable.opts=list(caption='Summary tables are printed with some default options.'),verbatim=TRUE----
 knit_print.table <- lemon_print
 summary(USArrests)
 
-## ----mtcars--------------------------------------------------------------
+## ----mtcars-------------------------------------------------------------------
 head(mtcars)
 with(mtcars, table(cyl, gear))
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(dplyr)
 knit_print.tbl <- lemon_print
 

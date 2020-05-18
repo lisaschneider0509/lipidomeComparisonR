@@ -1,4 +1,4 @@
-## ----setup,include=FALSE-------------------------------------------------
+## ----setup,include=FALSE------------------------------------------------------
 library(knitr)
 
 knitr::opts_chunk$set(fig.height=4, fig.width=6,
@@ -46,22 +46,22 @@ popViewport()
 pushViewport(vp2)
 grid.draw(reposition_legend(d, 'top left', plot=FALSE))
 
-## ----fig.cap="Legend with multple guides on a tacky 'snow' background."----
+## ----fig.cap="Legend with multple guides on a tacky 'snow' background."-------
 d2 <- d + aes(shape=cut) + 
   theme(legend.box.background = element_rect(fill='#fffafa'),
         legend.background = element_blank())
 reposition_legend(d2, 'left')
 
-## ----fig.cap='Legend is drawn *under* axis lines.'-----------------------
+## ----fig.cap='Legend is drawn *under* axis lines.'----------------------------
 reposition_legend(d + theme_classic(), 'top left')
 
-## ----fig.cap='Legend has to be nudged to not overpaint panel border.'----
+## ----fig.cap='Legend has to be nudged to not overpaint panel border.'---------
 reposition_legend(d + theme_bw(), 'top left', x=0.002, y=1-0.002)
 
 ## ----fig.cap='Legend has to be nudged to not overpaint panel border, this time by `offset`.'----
 reposition_legend(d + theme_bw(), 'top left', offset=0.002)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 g1 <- function(a.gplot){
   if (!gtable::is.gtable(a.gplot))
     a.gplot <- ggplotGrob(a.gplot)
@@ -82,7 +82,7 @@ g2 <- function(a.gplot){
 print(g1(da))
 print(g2(da))
 
-## ----fig.cap="Facetted panels' names."-----------------------------------
+## ----fig.cap="Facetted panels' names."----------------------------------------
 d2 <- d + facet_grid(.~cut)
 gtable_show_names(d2)
 
@@ -103,7 +103,7 @@ reposition_legend(d4, 'center', panel=c('panel-2-2','panel-4-2'))
 ## ----gtable_show_names,fig.cap="Use of `gtable_show_names` to reveal the panels' names."----
 gtable_show_names(d4)
 
-## ----fig.cap='...'-------------------------------------------------------
+## ----fig.cap='...'------------------------------------------------------------
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 p1 <- qplot(carat, price, data = dsamp, colour = clarity)
 p2 <- qplot(cut, price, data = dsamp, colour = clarity)
@@ -114,7 +114,7 @@ grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='bottom'
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='left')
 grid_arrange_shared_legend(p1, p2, p3, p4, ncol = 2, nrow = 2, position='right')
 
-## ----g_legend,include=FALSE,fig.cap=''-----------------------------------
+## ----g_legend,include=FALSE,fig.cap=''----------------------------------------
 g_legend <- function(a.gplot){
   if (!gtable::is.gtable(a.gplot))
     a.gplot <- ggplotGrob(a.gplot)
@@ -123,7 +123,7 @@ g_legend <- function(a.gplot){
   a.gplot$grobs[[leg]]
 }
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(gridExtra)
 legend <- g_legend(p1 + theme(legend.position='bottom'))
 grid.arrange(p1+theme(legend.position='hidden'), p2+theme(legend.position='hidden'),
@@ -139,7 +139,7 @@ grid.arrange(p1+theme(legend.position='hidden'), p2+theme(legend.position='hidde
              p3+theme(legend.position='hidden'), bottom=legend$grobs[[1]],
              layout_matrix=matrix(c(1,3,2,3), ncol=2))
 
-## ----example_shared_legend_complex_layout_before-------------------------
+## ----example_shared_legend_complex_layout_before------------------------------
 library(ggplot2)
 library(grid)
 library(gridExtra)
@@ -154,18 +154,18 @@ p2 <- ggplot(d2) + geom_col(mapping = aes(x, y, fill = col))
 p3 <- ggplot(d3) + geom_col(mapping = aes(x, y, fill = col))
 grid.arrange(p0, arrangeGrob(p1,p2,p3, ncol=3), ncol=1)
 
-## ----example_shared_legend_complex_layout_after--------------------------
+## ----example_shared_legend_complex_layout_after-------------------------------
 nt <- theme(legend.position='hidden')
 grid_arrange_shared_legend(p0, arrangeGrob(p1+nt,p2+nt,p3+nt, ncol=3), ncol=1, nrow=2)
 
-## ----fig.height=300/72,fig.width=350/72----------------------------------
+## ----fig.height=300/72,fig.width=350/72---------------------------------------
 p <- ggplot(dsamp, aes(x=cut, y=price, colour=clarity)) + geom_point(position=position_jitter(width=0.2)) +
   coord_flex_cart(bottom=brackets_horizontal(), left=capped_vertical('none')) +
   theme_bw() + theme(panel.border=element_blank(), axis.line = element_line(),
                      legend.background = element_rect(colour='grey'))
 g <- reposition_legend(p, 'top left', plot=TRUE)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 d <- ggplot(dsamp, aes(carat, price)) +
   geom_point(aes(colour = clarity)) 

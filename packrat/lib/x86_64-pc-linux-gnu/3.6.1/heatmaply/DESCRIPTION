@@ -1,8 +1,8 @@
 Package: heatmaply
 Type: Package
 Title: Interactive Cluster Heat Maps Using 'plotly'
-Version: 1.0.0
-Date: 2019-12-05
+Version: 1.1.0
+Date: 2020-03-27
 Authors@R: c(
     person("Tal", "Galili", role = c("aut", "cre", "cph"), email = "tal.galili@gmail.com", comment = "https://www.r-statistics.com"),
     person("Alan", "O'Callaghan", comment = "https://github.com/Alanocallaghan",role = "aut"),
@@ -38,15 +38,15 @@ URL: https://talgalili.github.io/heatmaply/,
         https://www.r-statistics.com/tag/heatmaply/
 BugReports: https://github.com/talgalili/heatmaply/issues
 LazyData: true
-RoxygenNote: 7.0.1
+RoxygenNote: 7.0.2
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2019-12-05 18:42:56 UTC; talgalili
+Packaged: 2020-03-27 20:07:54 UTC; talgalili
 Author: Tal Galili [aut, cre, cph] (https://www.r-statistics.com),
   Alan O'Callaghan [aut] (https://github.com/Alanocallaghan),
   Jonathan Sidi [ctb] (https://github.com/yonicd),
   Yoav Benjamini [ths]
 Maintainer: Tal Galili <tal.galili@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-12-05 19:40:02 UTC
-Built: R 3.6.1; ; 2020-03-06 12:55:50 UTC; unix
+Date/Publication: 2020-03-28 05:50:13 UTC
+Built: R 3.6.1; ; 2020-05-15 07:37:20 UTC; unix

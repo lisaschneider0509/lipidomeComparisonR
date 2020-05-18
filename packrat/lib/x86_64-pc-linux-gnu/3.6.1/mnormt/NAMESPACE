@@ -1,4 +1,4 @@
 importFrom("stats", "cov2cor", "dnorm", "dt", "pnorm", "pt", "rchisq",
-     "rnorm")
+     "pchisq", "rnorm", "complete.cases", "var")
 exportPattern(".")
 

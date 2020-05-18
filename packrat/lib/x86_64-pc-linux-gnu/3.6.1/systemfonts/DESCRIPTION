@@ -1,12 +1,13 @@
 Package: systemfonts
 Type: Package
 Title: System Native Font Finding
-Version: 0.1.1
+Version: 0.2.2
 Authors@R: 
     c(person(given = "Thomas Lin",
              family = "Pedersen",
              role = c("aut", "cre"),
-             email = "thomas.pedersen@rstudio.com"),
+             email = "thomas.pedersen@rstudio.com",
+             comment = c(ORCID = "0000-0002-5147-4711")),
       person(given = "Jeroen", 
              family = "Ooms", 
              role = "aut",
@@ -29,17 +30,19 @@ Description: Provides system native access to the font catalogue. As font
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
+SystemRequirements: C++11, fontconfig, freetype2
 Suggests: testthat (>= 2.1.0), covr, knitr, rmarkdown, tools
 VignetteBuilder: knitr
 URL: https://github.com/r-lib/systemfonts
 BugReports: https://github.com/r-lib/systemfonts/issues
 NeedsCompilation: yes
-Packaged: 2019-07-01 11:23:59 UTC; thomas
-Author: Thomas Lin Pedersen [aut, cre],
+Packaged: 2020-05-13 08:41:59 UTC; thomas
+Author: Thomas Lin Pedersen [aut, cre]
+    (<https://orcid.org/0000-0002-5147-4711>),
   Jeroen Ooms [aut] (<https://orcid.org/0000-0002-4035-0289>),
   Devon Govett [aut] (Author of font-manager),
   RStudio [cph]
 Repository: CRAN
-Date/Publication: 2019-07-01 12:50:02 UTC
-Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-02-07 12:15:20 UTC; unix
+Date/Publication: 2020-05-14 19:50:02 UTC
+Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-05-15 07:18:12 UTC; unix

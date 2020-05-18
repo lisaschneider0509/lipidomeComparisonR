@@ -1,10 +1,10 @@
-## ----setup,include=FALSE-------------------------------------------------
+## ----setup,include=FALSE------------------------------------------------------
 library(knitr)
 
 knitr::opts_chunk$set(fig.height=4, fig.width=6,
                       cache=TRUE, autodep = TRUE, cache.path = 'show_lemonade/')
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(ggplot2)
 library(gtable)
 library(grid)
@@ -22,20 +22,16 @@ my.theme <- theme_light()
   p <- ggplot(dat1, aes(gp, y)) + geom_point() + my.theme
 )
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 g <- ggplotGrob(p)
 
 for (i in 1:nrow(g$layout)) {
   if (g$layout$name[i] == 'lemon') next
   h <- g$heights[[g$layout$t[i]]]
-  rot <- 0
-  if (class(h)[1] == 'unit') {
-    rot <- ifelse(as.numeric(h) == 1 & attr(h, 'unit') == 'null', 90, 0)
-  }
+  # if h == null
+  rot <- if (as.character(h) == "1null") 90 else 0
   w <- g$widths[[g$layout$l[i]]]
-  if (rot == 90 & class(w)[1] == 'unit') {
-    rot <- ifelse(as.numeric(w) == 1 & attr(w, 'unit') == 'null', 0, rot)
-  }
+  rot <- if (rot == 90 && as.character(w) == "1null") 0 else rot
   r <- rectGrob(gp=gpar(col='black', fill='white', alpha=1/4))
   t <- textGrob(g$layout$name[i], rot = rot)
   g$grobs[[i]] <- grobTree(r, t)
@@ -43,7 +39,7 @@ for (i in 1:nrow(g$layout)) {
 grid.newpage()
 grid.draw(g)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 is.small <- function(x) {
   #if (is.list(x) & !inherits(x[[1]], 'unit.list') & length(x) == 1) x <- x[[1]]
   #if (inherits(x, 'unit.list')) return(FALSE)
@@ -64,7 +60,7 @@ is.small <- function(x) {
   return(r)
 }
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 g <- ggplotGrob(p)
 
 gp.gutter <- gpar(colour='grey', lty='dashed')
@@ -89,7 +85,7 @@ for (i in 2:ncol(g)) {
 grid.newpage()
 grid.draw(g)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 gtable_show_grill <- function(x, plot=TRUE) {
   if (is.ggplot(x)) x <- ggplotGrob(x)
   
@@ -124,7 +120,7 @@ gtable_show_grill <- function(x, plot=TRUE) {
 }
 gtable_show_grill(p)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 gtable_show_names <- function(x, plot=TRUE) {
   if (is.ggplot(x)) x <- ggplotGrob(x)
   
@@ -154,10 +150,10 @@ gtable_show_names <- function(x, plot=TRUE) {
 }
 gtable_show_names(p)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 gtable_show_names(gtable_show_grill(p, plot=FALSE))
 
-## ----error=FALSE---------------------------------------------------------
+## ----error=FALSE--------------------------------------------------------------
 try(rm(list=c('gtable_show_names','gtable_show_grill')), silent=TRUE)
 library(lemon)
 
@@ -165,7 +161,7 @@ library(lemon)
 print(p)
 grid.draw(gtable_show_names(p, plot=FALSE))
 
-## ----error=TRUE----------------------------------------------------------
+## ----error=TRUE---------------------------------------------------------------
 gp <- ggplotGrob(p)
 gp <- gtable_add_rows(gp, g$heights[1], 0)
 gp <- gtable_add_cols(gp, unit(1.5, 'line'))

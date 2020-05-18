@@ -42,6 +42,7 @@ fetch                   Fetch new data and update tips
 fetch_heads             Get updated heads during the last fetch.
 git2r                   git2r: R bindings to the libgit2 library
 git_config_files        Locate the path to configuration files
+git_time                Time
 hash                    Determine the sha from a blob string
 hashfile                Determine the sha from a blob in a file
 head.git_repository     Get HEAD for a repository

@@ -33,6 +33,7 @@ clowess                 Miscellaneous Functions
 cnvrt.coords            Convert between the 5 different coordinate
                         sytems on a graphical device
 colorFacet              Miscellaneous ggplot2 and grid Helper Functions
+combplotp               Combination Plot
 consolidate             Element Merging
 contents                Metadata for a Data Frame
 cpower                  Power of Cox/log-rank Two-Sample Test

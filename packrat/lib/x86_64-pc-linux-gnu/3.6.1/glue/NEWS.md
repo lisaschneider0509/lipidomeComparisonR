@@ -1,3 +1,20 @@
+# glue 1.4.1
+
+* Internal changes for compatibility with vctrs 0.3.0 (#187).
+* `glue_sql()` now replaces missing values correctly when collapsing values (#185).
+* `glue_sql()` now always preserves the type of the column even in the presence of missing values (#130)
+
+# glue 1.4.0
+
+* `.envir = NULL` is now supported and is equivalent to passing `.envir = emptyenv()` (#140)
+
+* New `glue_safe()` and `glue_data_safe()` functions, safer versions of
+  `glue()` that do not execute code, only look up values (using `get()`). These
+  alternatives are useful for things like shiny applications where you do not
+  have control of the input for your glue expressions. (#140)
+
+* Fixed memory access issue and memory leaks found by valgrind.
+
 # glue 1.3.2
 
 * glue now implements vctrs methods. This ensures that vectors of glue

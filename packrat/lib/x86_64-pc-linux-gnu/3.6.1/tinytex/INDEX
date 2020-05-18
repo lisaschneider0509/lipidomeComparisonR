@@ -2,6 +2,8 @@ copy_tinytex            Copy TinyTeX to another location and use it in
                         another system
 install_tinytex         Install/Uninstall TinyTeX
 latexmk                 Compile a LaTeX document
+parse_install           Parse the LaTeX log and install missing LaTeX
+                        packages if possible
 parse_packages          Find missing LaTeX packages from a LaTeX log
                         file
 r_texmf                 Add/remove R's texmf tree to/from TeX Live

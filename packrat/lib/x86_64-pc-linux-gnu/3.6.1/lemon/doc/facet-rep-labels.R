@@ -1,4 +1,4 @@
-## ----setup,include=FALSE-------------------------------------------------
+## ----setup,include=FALSE------------------------------------------------------
 library(knitr)
 library(ggplot2)
 
@@ -30,7 +30,7 @@ p + facet_wrap(~ interaction(cyl, drv), scales='free') +
 ## ----facet_rep_wrap_left,fig.cap='With `repeat.tick.labels` we are free to specify which sides to keep.'----
 p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'left')
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'all')
 #  p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'bottom')
 #  p + facet_rep_wrap(~ interaction(cyl, drv), scales='free_y', repeat.tick.labels = 'left')

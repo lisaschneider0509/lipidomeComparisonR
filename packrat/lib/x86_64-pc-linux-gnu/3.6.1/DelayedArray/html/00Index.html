@@ -13,7 +13,7 @@ in-memory array-like datasets
 <div style="text-align: center;">
 <a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
 <a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
-</div><h2>Documentation for package &lsquo;DelayedArray&rsquo; version 0.12.2</h2>
+</div><h2>Documentation for package &lsquo;DelayedArray&rsquo; version 0.12.3</h2>
 
 <ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
 <li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
@@ -54,10 +54,6 @@ in-memory array-like datasets
 <td>Common operations on DelayedArray objects</td></tr>
 <tr><td style="width: 25%;"><a href="bind-arrays.html">acbind-method</a></td>
 <td>Bind arrays along their rows or columns</td></tr>
-<tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">aind</a></td>
-<td>SparseArraySeed objects</td></tr>
-<tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">aind-method</a></td>
-<td>SparseArraySeed objects</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-utils.html">anyNA-method</a></td>
 <td>Common operations on DelayedArray objects</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-class.html">aperm</a></td>
@@ -90,6 +86,10 @@ in-memory array-like datasets
 <td>ArrayGrid and ArrayViewport objects</td></tr>
 <tr><td style="width: 25%;"><a href="ArrayGrid-class.html">ArbitraryArrayGrid-class</a></td>
 <td>ArrayGrid and ArrayViewport objects</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">array selection</a></td>
+<td>Manipulation of array selections</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">array selections</a></td>
+<td>Manipulation of array selections</td></tr>
 <tr><td style="width: 25%;"><a href="ArrayGrid-class.html">ArrayGrid</a></td>
 <td>ArrayGrid and ArrayViewport objects</td></tr>
 <tr><td style="width: 25%;"><a href="ArrayGrid-class.html">ArrayGrid-class</a></td>
@@ -100,6 +100,10 @@ in-memory array-like datasets
 <td>ArrayGrid and ArrayViewport objects</td></tr>
 <tr><td style="width: 25%;"><a href="ArrayGrid-class.html">ArrayViewport-class</a></td>
 <td>ArrayGrid and ArrayViewport objects</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">array_selection</a></td>
+<td>Manipulation of array selections</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">array_selections</a></td>
+<td>Manipulation of array selections</td></tr>
 <tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">as.array-method</a></td>
 <td>SparseArraySeed objects</td></tr>
 <tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">as.array.SparseArraySeed</a></td>
@@ -123,13 +127,15 @@ in-memory array-like datasets
 <td>Bind arrays along their rows or columns</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-utils.html">bindROWS-method</a></td>
 <td>Common operations on DelayedArray objects</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">blockApply</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">block processing</a></td>
+<td>Block processing of an array-like object</td></tr>
+<tr><td style="width: 25%;"><a href="blockApply.html">blockApply</a></td>
 <td>Block processing of an array-like object</td></tr>
 <tr><td style="width: 25%;"><a href="blockGrid.html">blockGrid</a></td>
 <td>Define grids to use in the context of block processing</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">blockReduce</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">blockReduce</a></td>
 <td>Block processing of an array-like object</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">block_processing</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">block_processing</a></td>
 <td>Block processing of an array-like object</td></tr>
 <tr><td style="width: 25%;"><a href="realize.html">BLOCK_write_to_sink</a></td>
 <td>Realize a DelayedArray object</td></tr>
@@ -246,9 +252,9 @@ in-memory array-like datasets
 <td>DelayedMatrix row/col summarization</td></tr>
 <tr><td style="width: 25%;"><a href="simplify.html">contentIsPristine</a></td>
 <td>Simplify a tree of delayed operations</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">currentBlockId</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">currentBlockId</a></td>
 <td>Block processing of an array-like object</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">currentViewport</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">currentViewport</a></td>
 <td>Block processing of an array-like object</td></tr>
 </table>
 
@@ -380,7 +386,7 @@ in-memory array-like datasets
 <h2><a name="E">-- E --</a></h2>
 
 <table width="100%">
-<tr><td style="width: 25%;"><a href="block_processing.html">effectiveGrid</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">effectiveGrid</a></td>
 <td>Block processing of an array-like object</td></tr>
 <tr><td style="width: 25%;"><a href="ArrayGrid-class.html">end-method</a></td>
 <td>ArrayGrid and ArrayViewport objects</td></tr>
@@ -409,9 +415,9 @@ in-memory array-like datasets
 <td>Define grids to use in the context of block processing</td></tr>
 <tr><td style="width: 25%;"><a href="blockGrid.html">getAutoBlockSize</a></td>
 <td>Define grids to use in the context of block processing</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">getAutoBPPARAM</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">getAutoBPPARAM</a></td>
 <td>Block processing of an array-like object</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">getAutoGridMaker</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">getAutoGridMaker</a></td>
 <td>Block processing of an array-like object</td></tr>
 <tr><td style="width: 25%;"><a href="RealizationSink-class.html">getRealizationBackend</a></td>
 <td>RealizationSink objects</td></tr>
@@ -455,17 +461,25 @@ in-memory array-like datasets
 <h2><a name="L">-- L --</a></h2>
 
 <table width="100%">
+<tr><td style="width: 25%;"><a href="array_selection.html">L-index</a></td>
+<td>Manipulation of array selections</td></tr>
 <tr><td style="width: 25%;"><a href="ArrayGrid-class.html">lengths-method</a></td>
 <td>ArrayGrid and ArrayViewport objects</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-utils.html">lengths-method</a></td>
 <td>Common operations on DelayedArray objects</td></tr>
-<tr><td style="width: 25%;"><a href="linearInd.html">linearInd</a></td>
-<td>Converting array indices into linear indices</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">Lindex</a></td>
+<td>Manipulation of array selections</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">Lindex2Mindex</a></td>
+<td>Manipulation of array selections</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">linearInd</a></td>
+<td>Manipulation of array selections</td></tr>
 </table>
 
 <h2><a name="M">-- M --</a></h2>
 
 <table width="100%">
+<tr><td style="width: 25%;"><a href="array_selection.html">M-index</a></td>
+<td>Manipulation of array selections</td></tr>
 <tr><td style="width: 25%;"><a href="makeCappedVolumeBox.html">makeCappedVolumeBox</a></td>
 <td>Utilities to make capped volume boxes</td></tr>
 <tr><td style="width: 25%;"><a href="ArrayGrid-class.html">makeNindexFromArrayViewport</a></td>
@@ -488,6 +502,10 @@ in-memory array-like datasets
 <td>Common operations on DelayedArray objects</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-utils.html">mean.DelayedArray</a></td>
 <td>Common operations on DelayedArray objects</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">Mindex</a></td>
+<td>Manipulation of array selections</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">Mindex2Lindex</a></td>
+<td>Manipulation of array selections</td></tr>
 <tr><td style="width: 25%;"><a href="showtree.html">modify_seeds</a></td>
 <td>Visualize and access the leaves of a tree of delayed operations</td></tr>
 </table>
@@ -495,6 +513,8 @@ in-memory array-like datasets
 <h2><a name="N">-- N --</a></h2>
 
 <table width="100%">
+<tr><td style="width: 25%;"><a href="array_selection.html">N-index</a></td>
+<td>Manipulation of array selections</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-class.html">names-method</a></td>
 <td>DelayedArray objects</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-class.html">names&lt;--method</a></td>
@@ -507,6 +527,8 @@ in-memory array-like datasets
 <td>Simplify a tree of delayed operations</td></tr>
 <tr><td style="width: 25%;"><a href="DelayedArray-class.html">new_DelayedArray</a></td>
 <td>DelayedArray objects</td></tr>
+<tr><td style="width: 25%;"><a href="array_selection.html">Nindex</a></td>
+<td>Manipulation of array selections</td></tr>
 <tr><td style="width: 25%;"><a href="showtree.html">nseed</a></td>
 <td>Visualize and access the leaves of a tree of delayed operations</td></tr>
 <tr><td style="width: 25%;"><a href="showtree.html">nseed-method</a></td>
@@ -514,6 +536,10 @@ in-memory array-like datasets
 <tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">nzdata</a></td>
 <td>SparseArraySeed objects</td></tr>
 <tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">nzdata-method</a></td>
+<td>SparseArraySeed objects</td></tr>
+<tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">nzindex</a></td>
+<td>SparseArraySeed objects</td></tr>
+<tr><td style="width: 25%;"><a href="SparseArraySeed-class.html">nzindex-method</a></td>
 <td>SparseArraySeed objects</td></tr>
 </table>
 
@@ -677,9 +703,9 @@ in-memory array-like datasets
 <td>Define grids to use in the context of block processing</td></tr>
 <tr><td style="width: 25%;"><a href="blockGrid.html">setAutoBlockSize</a></td>
 <td>Define grids to use in the context of block processing</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">setAutoBPPARAM</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">setAutoBPPARAM</a></td>
 <td>Block processing of an array-like object</td></tr>
-<tr><td style="width: 25%;"><a href="block_processing.html">setAutoGridMaker</a></td>
+<tr><td style="width: 25%;"><a href="blockApply.html">setAutoGridMaker</a></td>
 <td>Block processing of an array-like object</td></tr>
 <tr><td style="width: 25%;"><a href="RealizationSink-class.html">setRealizationBackend</a></td>
 <td>RealizationSink objects</td></tr>

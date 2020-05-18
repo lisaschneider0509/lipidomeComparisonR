@@ -1,7 +1,7 @@
 bash                    Open bash shell in package directory.
 build                   Build package
 build_manual            Create package pdf manual
-build_readme            Build a Rmarkdown README for a package
+build_rmd               Build a Rmarkdown files package
 build_site              Execute 'pkgdown' build_site in a package
 build_vignettes         Build package vignettes.
 check                   Build and check a package, cleaning up

@@ -9,11 +9,11 @@ RealizationSink         RealizationSink objects
 RleArray-class          RleArray objects
 RleArraySeed-class      RleArraySeed objects
 SparseArraySeed-class   SparseArraySeed objects
+array selection         Manipulation of array selections
 bind-arrays             Bind arrays along their rows or columns
+blockApply              Block processing of an array-like object
 blockGrid               Define grids to use in the context of block
                         processing
-block_processing        Block processing of an array-like object
-linearInd               Converting array indices into linear indices
 makeCappedVolumeBox     Utilities to make capped volume boxes
 read_block              Read/write blocks of array data
 realize                 Realize a DelayedArray object

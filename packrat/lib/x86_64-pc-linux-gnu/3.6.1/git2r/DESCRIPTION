@@ -4,10 +4,11 @@ Description: Interface to the 'libgit2' library, which is a pure C
     implementation of the 'Git' core methods. Provides access to 'Git'
     repositories to extract data and running some basic 'Git'
     commands.
-Version: 0.26.1
+Version: 0.27.1
 License: GPL-2
 Copyright: See COPYRIGHTS file.
-URL: https://github.com/ropensci/git2r
+URL: https://docs.ropensci.org/git2r (website),
+        https://github.com/ropensci/git2r
 BugReports: https://github.com/ropensci/git2r/issues
 Maintainer: Stefan Widgren <stefan.widgren@gmail.com>
 Author: See AUTHORS file.
@@ -33,8 +34,8 @@ Collate: 'blame.R' 'blob.R' 'branch.R' 'bundle_r_package.R'
         'signature.R' 'stash.R' 'status.R' 'tag.R' 'time.R' 'tree.R'
         'when.R'
 Encoding: UTF-8
-RoxygenNote: 6.1.1
-Packaged: 2019-06-29 21:17:13 UTC; stefan
+RoxygenNote: 7.1.0
+Packaged: 2020-05-03 10:25:56 UTC; stefan
 Repository: CRAN
-Date/Publication: 2019-06-29 22:50:26 UTC
-Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-02-04 13:31:25 UTC; unix
+Date/Publication: 2020-05-03 11:30:02 UTC
+Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-05-15 07:12:15 UTC; unix

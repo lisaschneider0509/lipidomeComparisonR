@@ -1,3 +1,19 @@
+# xml2 1.3.2
+
+* `read_html()` and `read_xml()` now error if passed strings of length greater than one (#121)
+
+* `read_xml.raw()` had an inadvertent regression in 1.3.0 and is now again fixed (#300)
+
+* Compilation fix on macOS 10.15.4 (@kevinushey, #296)
+
+# xml2 1.3.1
+
+* `read_html()` now again works with HTML files with non-ASCII encodings (#293).
+
+# xml2 1.3.0
+
+* Removes the Rcpp dependency
+
 # xml2 1.2.5
 
 * Fix compilation issue on macOS versions after High Sierra when not using homebrew supplied libxml2

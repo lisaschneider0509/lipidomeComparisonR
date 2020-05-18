@@ -1,10 +1,10 @@
-## ----setup,include=FALSE-------------------------------------------------
+## ----setup,include=FALSE------------------------------------------------------
 library(knitr)
 
 knitr::opts_chunk$set(fig.height=4, fig.width=6,
                       cache=TRUE, autodep = TRUE, cache.path = 'capped-axes-cache/')
 
-## ----load_pkg_and_data,fig.cap='Default ggplot2 plotting.'---------------
+## ----load_pkg_and_data,fig.cap='Default ggplot2 plotting.'--------------------
 library(ggplot2)
 library(lemon)
 
@@ -21,7 +21,7 @@ my.theme <- theme_light()
   p <- ggplot(dat1, aes(gp, y)) + geom_point() + my.theme
 )
 
-## ----theme---------------------------------------------------------------
+## ----theme--------------------------------------------------------------------
 my.theme <- my.theme + theme(panel.border=element_blank(), 
                              axis.line = element_line(), 
                              axis.ticks = element_line(colour='black'))
@@ -38,7 +38,7 @@ ggplot(dat1, aes(gp, y)) + geom_point(position=position_jitter(width=0.2, height
   coord_capped_cart(left='none', bottom=brackets_horizontal()) +
   my.theme + theme(panel.grid.major.x = element_blank())
 
-## ----brackets------------------------------------------------------------
+## ----brackets-----------------------------------------------------------------
 p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
   geom_point(position=position_jitter(width=0.3)) +
   scale_x_continuous(breaks=c(4,5,6,8), sec.axis=dup_axis()) + 
@@ -50,7 +50,7 @@ p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
   my.theme
 p
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
   geom_point(position=position_jitter(width=0.3)) +
   coord_flex_cart(bottom=brackets_horizontal(tick.length=0), 
@@ -58,7 +58,7 @@ p <- ggplot(mpg, aes(cyl, hwy, colour=class)) +
   my.theme
 p
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
 (d <- ggplot(dsamp, aes(carat, price)) +
   geom_point(aes(colour = clarity)) + 
@@ -66,16 +66,16 @@ dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
   facet_grid(.~cut) + my.theme
 )
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 d + facet_rep_grid(.~cut)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 d + facet_rep_grid(.~cut, repeat.tick.labels = TRUE)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 (d2 <- d + facet_rep_wrap(~cut, ncol=2))
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 d2 <- d2 + guides(colour=guide_legend(ncol=3)) + 
   theme(legend.background = element_rect(colour='grey'))
 reposition_legend(d2, position='center', panel='panel-2-3')

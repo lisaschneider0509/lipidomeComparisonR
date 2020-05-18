@@ -235,8 +235,8 @@ exportMethods(
 ###
 
 export(
-    ## linearInd.R:
-    linearInd,
+    ## array_selection.R:
+    Lindex2Mindex, Mindex2Lindex, linearInd,
 
     ## ArrayGrid-class.R:
     ArrayViewport, makeNindexFromArrayViewport,
@@ -254,6 +254,12 @@ export(
     setAutoBlockShape, getAutoBlockShape,
     blockGrid, rowGrid, colGrid, multGrids,
 
+    ## blockApply.R:
+    setAutoGridMaker, getAutoGridMaker,
+    setAutoBPPARAM, getAutoBPPARAM,
+    blockApply, blockReduce,
+    effectiveGrid, currentBlockId, currentViewport,
+
     ## showtree.R:
     showtree, seedApply, modify_seeds,
 
@@ -263,17 +269,13 @@ export(
     ## DelayedArray-class.R:
     new_DelayedArray,
 
-    ## block_processing.R:
-    setAutoGridMaker, getAutoGridMaker,
-    setAutoBPPARAM, getAutoBPPARAM,
-    blockApply, blockReduce,
-    effectiveGrid, currentBlockId, currentViewport,
-    BLOCK_write_to_sink,
-
     ## RealizationSink-class.R:
     supportedRealizationBackends,
     getRealizationBackend, setRealizationBackend,
     RealizationSink,
+
+    ## realize.R:
+    BLOCK_write_to_sink,
 
     ## RleArray-class.R:
     RleArray
@@ -295,7 +297,7 @@ export(
     refdim, maxlength, aperm, downsample,
 
     ## SparseArraySeed-class.R:
-    aind, nzdata, sparsity, is_sparse, extract_sparse_array,
+    nzindex, nzdata, sparsity, is_sparse, extract_sparse_array,
 
     ## read_block.R:
     read_block, write_block,
@@ -343,7 +345,7 @@ exportMethods(
     arbind, acbind,
     extract_array,
     refdim, maxlength, aperm, downsample,
-    aind, nzdata, sparsity, is_sparse, extract_sparse_array,
+    nzindex, nzdata, sparsity, is_sparse, extract_sparse_array,
     read_block, write_block,
     mapToGrid, mapToRef,
     isLinear,
