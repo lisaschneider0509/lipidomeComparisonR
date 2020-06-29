@@ -323,7 +323,7 @@ hclust_heatmap_interactive <- function(input_df,
                                        dist_method = "euclidean", 
                                        hclust_method = "complete", 
                                        title = "Hierarchical clustering", 
-                                       html_path = "",
+                                       # html_path = "",
                                        out_path = "none"
                                        ){
   
@@ -358,8 +358,8 @@ hclust_heatmap_interactive <- function(input_df,
                         ## general appearance
                         margins = c(60,100,40,20),
                         fontsize_row = 10, fontsize_col = 10,
-                        heatmap_layers = theme(axis.line=element_blank()),
-                        file = html_path
+                        heatmap_layers = theme(axis.line=element_blank()) #,
+                        # file = html_path
                         
   )
   

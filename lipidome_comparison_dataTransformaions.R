@@ -14,7 +14,7 @@ my_theme <- theme_set(
 )
 
 
-#' Transpose data frame with sorrect row- and column names.
+#' Transpose data frame with correct row- and column names.
 #' 
 #' @description 
 #' `pretty_transpose` transposes a data frame to a new data frame
@@ -51,7 +51,7 @@ flip_df <- function(df){
     buffer_df <- subset(buffer, select = c(Compound, Area))
     t_buffer_df <- pretty_transpose(buffer_df)
     t_buffer_df <- add_column(t_buffer_df, SID = sample[i], .before = 1)
-    t_buffer_df <- add_column(t_buffer_df, Group = buffer$Group[1], .after = 1)
+    # t_buffer_df <- add_column(t_buffer_df, Group = buffer$Group[1], .after = 1)
     new_df <- rbind(new_df, t_buffer_df)
     rownames(new_df)[i] <- i
   }

@@ -472,7 +472,7 @@ spider_chart <- function(minimized_df,
     title(main = title, cex.main = 0.9, font.main = 1)
     
     ## Add a legend
-    legend(x=-2, 
+    legend(x=-1.4, 
            y=1.1, 
            legend = legend_lab, 
            bty = "n", 
@@ -531,13 +531,13 @@ simple_barchart <- function(data_frame, x, y, fill = "#35608DFF",
 #' @param grop_column string. Name of the column to group by. 
 #' @example 
 #' aggregated_iris <- aggregate(iris[-5], by = list(iris$Species), FUN = mean)
-#' plot_ratio_barcharts(aggregated_iris, c("Group.1", "Sepal.Length", "Sepal.Width", "Petal.Length"), group_column = "Group.1")
+#' plot_ratio_barcharts(aggregated_iris, c("Sepal.Length", "Sepal.Width", "Petal.Length"), group_column = "Group.1")
 plot_ratio_barcharts <- function(data_frame, subset_vector, group_column){
   mysubset <- subset(data_frame, select = subset_vector)
   myratios <- lapply(1:nrow(mysubset), 
-                     function(i) calculate_ratio_matrix(as.numeric(mysubset[i, -1]), 
-                                                        names_vector = colnames(mysubset[-1])))
-  names(myratios) <- as.character(mysubset[[group_column]])
+                     function(i) calculate_ratio_matrix(as.numeric(mysubset[i, ]), 
+                                                        names_vector = colnames(mysubset)))
+  names(myratios) <- as.character(data_frame[[group_column]])
   
   myratios <- reshape::melt(myratios)
   myratios$ratio_name <- as.factor(paste(myratios$X1, "/", myratios$X2))

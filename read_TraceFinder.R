@@ -1,0 +1,64 @@
+### load packages
+library(dplyr) # select part of data
+library(stringr) # count separators
+library(data.table) # transpose data frame
+
+source("lipidome_comparison_dataTransformaions.R")
+
+### set paths 
+project <- "meat"
+
+working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
+setwd(working_directory)
+
+lipid_list_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_fish_final_raw.csv"
+annotation_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_annotation.csv"
+out_path <- paste("/home/lisa/FH/Masterarbeit/LipidomeComparison/data/", project, "_data_matrix.csv", sep = "")
+
+plot_path <- paste(working_directory, "/plots", sep = "")
+plot_name <- paste(plot_path, "/lipid_list", sep = "")
+
+## read data
+lipid_list <- read.csv(lipid_list_path, sep = ",", dec = ".", header = TRUE)
+annotation_data <- read.csv(annotation_path, sep = ",", dec = ".", header = TRUE)
+
+lipid_list <- subset(lipid_list, select = c(Compound, Type, Filename, Status, Area))
+lipid_list <- subset(lipid_list, Status == "Processed")
+lipid_list[lipid_list=='N/F'] <- NA
+lipid_list$Area <- as.numeric(as.character(lipid_list$Area))
+target_lipids <- subset(lipid_list, Type == "Target Compound")
+lipid_standards <- subset(lipid_list, Type == "Internal Standard")
+
+target_lipids <- flip_df(target_lipids)
+lipid_standards <- flip_df(lipid_standards)
+
+target_lipids$SID <- sub(".*probe","sample", target_lipids$SID)
+target_lipids$SID <- sub("\\.*pos2","2", target_lipids$SID)
+target_lipids$SID <- sub("\\.*pos","1", target_lipids$SID)
+
+target_lipids <- subset(target_lipids, str_detect(target_lipids$SID, "sample") == TRUE)
+
+meat_AS <- target_lipids$SID[str_detect(target_lipids$SID, "AS") == TRUE]
+target_lipids$SID[str_detect(target_lipids$SID, "AS") == TRUE] <- sub(".*sample","AS_sample", meat_AS)
+meat_N <- target_lipids$SID[str_detect(target_lipids$SID, "AS") == FALSE]
+target_lipids$SID[str_detect(target_lipids$SID, "AS") == FALSE] <- sub(".*sample","N_sample", meat_N)
+target_lipids$SID <- str_remove(target_lipids$SID, "_AS")
+
+meta_info <- read.table(text = target_lipids$SID, sep = "_")
+colnames(meta_info) <- c("Treatment", "Sample_nr", "Biol_rep", "Tech_rep")
+meta_info$Biol_rep <- paste(meta_info$Sample_nr, meta_info$Biol_rep, sep = "_")
+meta_info$Tech_rep <- paste(meta_info$Biol_rep, meta_info$Tech_rep, sep = "_")
+
+target_lipids <- cbind(meta_info, target_lipids)
+# row.names(target_lipids) <- target_lipids$SID
+# target_lipids <- target_lipids[ , colnames(target_lipids) != "SID"]
+target_lipids <- droplevels(target_lipids)
+
+map <- data.frame(Sample_nr = annotation_data$Sample, 
+                  Group = annotation_data$Meat.type)
+target_lipids <- left_join(map, target_lipids, by="Sample_nr")
+# names(target_lipids$`target_lipids$SID`) <- "SID"
+# target_lipids$Group <- target_lipids$Group_new
+# target_lipids <- target_lipids[-ncol(target_lipids)]
+
+write.csv(target_lipids, file = out_path)

@@ -39,5 +39,13 @@ install_packages_lipidome_comparison <- function(){
   
   # install.packages("LipidMS")
   # install.packages("LipidMSdata")
+  install.packages("devtools")
+  install.packages("githubinstall")
+  library(devtools)
+  
+  install.packages("qgraph")
+  
+  install_github("PNNL-Comp-Mass-Spec / Rodin")
+  
 }
 

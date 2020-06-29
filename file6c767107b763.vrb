@@ -1,0 +1,94 @@
+\frametitle{Slide with Plot}
+
+\begin{verbatim}
+## knitr
+\end{verbatim}
+
+\begin{verbatim}
+## dplyr
+\end{verbatim}
+
+\begin{verbatim}
+## stringr
+\end{verbatim}
+
+\begin{verbatim}
+## data.table
+\end{verbatim}
+
+\begin{verbatim}
+## impute
+\end{verbatim}
+
+\begin{verbatim}
+## imputeLCMD
+\end{verbatim}
+
+\begin{verbatim}
+## ggplot2
+\end{verbatim}
+
+\begin{verbatim}
+## tibble
+\end{verbatim}
+
+\begin{verbatim}
+## viridis
+\end{verbatim}
+
+\begin{verbatim}
+## GGally
+\end{verbatim}
+
+\begin{verbatim}
+## fmsb
+\end{verbatim}
+
+\begin{verbatim}
+## scales
+\end{verbatim}
+
+\begin{verbatim}
+## ggpubr
+\end{verbatim}
+
+\begin{verbatim}
+## ggrepel
+\end{verbatim}
+
+\begin{verbatim}
+## factoextra
+\end{verbatim}
+
+\begin{verbatim}
+## ggfortify
+\end{verbatim}
+
+\begin{verbatim}
+## corrplot
+\end{verbatim}
+
+\begin{verbatim}
+## FactoMineR
+\end{verbatim}
+
+\begin{verbatim}
+## heatmaply
+\end{verbatim}
+
+\begin{verbatim}
+## gplots
+\end{verbatim}
+
+\begin{verbatim}
+## plotly
+\end{verbatim}
+
+\begin{verbatim}
+## htmlwidgets
+\end{verbatim}
+
+\begin{verbatim}
+## dendextend
+\end{verbatim}
+

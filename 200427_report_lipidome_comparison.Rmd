@@ -185,7 +185,7 @@ meat_normality
 
 ### test for correlation
 meat_correlation <- cor(select_if(meat_data, is.numeric), method = "spearman")
-correlation_heatmap(meat_data, interactive = FALSE)
+# correlation_heatmap(meat_data, interactive = FALSE)
 ```
 
 ## Principal component analysis
@@ -241,7 +241,7 @@ meat_pca_sub <- subset(meat_data, select = c("Sample_nr", "Group", pc1_contrib, 
 parallel_plot(meat_pca_sub, meat_pca_sub$Group)
 
 means_meat_pca <- calc_by_replicate(meat_pca_sub, meat_pca_sub$Group, funct = mean)
-spider_chart(means_meat_pca, legend_lab = means_meat_pca$)
+# spider_chart(means_meat_pca, legend_lab = means_meat_pca$)
 ```
 
 ## Hierarchical clustering 

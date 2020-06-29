@@ -129,7 +129,7 @@ kruskal_test_by_col <- function(input_df, factor_col, print_all = FALSE){
 #' my_iris <- subset(x = iris, Species == "setosa" | Species == "versicolor")
 #' log2_foldchange(my_iris, my_iris$Species, control_group = "versicolor", test_group = "setosa")
 log2_foldchange <- function(input_df, group_vector, control_group, test_group){
-  log2_df <- log2(select_if(input_df, is.numeric))
+  log2_df <- select_if(input_df, is.numeric)
   log2_df$group <- group_vector
   
   means <- aggregate(select_if(log2_df, is.numeric), by = list(log2_df$group), FUN = mean)
@@ -172,7 +172,7 @@ log2_foldchange <- function(input_df, group_vector, control_group, test_group){
 #' fold_changes <- c(rnorm(2000, 0, 2))
 #' pvalues <- runif(n=2000, min=1e-50, max=.1)
 #' volcano_test <- as.data.frame(cbind(fold_changes, pvalues))
-#' volcano_plot(volcano_test, 
+#' vp <- volcano_plot(volcano_test, 
 #'              foldchange_col = volcano_test$fold_changes, 
 #'              significance_col = volcano_test$pvalues, 
 #'              significance = 0.001,
@@ -223,6 +223,7 @@ volcano_plot <- function(volcano_df,
   }
 
   volcano_df <- cbind(volcano_df, threshold, mylabel)
+  volcano_df$rownames <- rownames(volcano_df)
 
   if(labels == FALSE){
     volcano_df$mylabel <- ""
@@ -233,7 +234,7 @@ volcano_plot <- function(volcano_df,
   mycolors <- viridis(n = 2, begin = 0, end = 0.9)
 
   volcano <- ggplot(data = volcano_df,
-                    aes(x = foldchange_col, y = -1*log10(significance_col))) +
+                    aes(x = foldchange_col, y = -1*log10(significance_col), text = rownames)) +
     geom_point(aes(color = as.factor(threshold)), shape = 20) +
     geom_hline(yintercept = -1*log10(significance),
                linetype = "dashed",
