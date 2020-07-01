@@ -48,6 +48,34 @@ scree_factoextra <- function(prcomp_element, title = "Scree plot", out_path = "n
   }
 }
 
+#' Pecentage of variance
+#' 
+#' 
+plot_pc_variance <- function(data_frame, 
+                             x, 
+                             y, 
+                             xlab = "dimensions", 
+                             ylab = "variance [%]", 
+                             title = "Scree plot",
+                             fill = "#35608DFF"){
+  
+  variance_barchart <- ggplot(data=data_frame, aes(x=x, y=y, group = 1)) + 
+    geom_bar(stat = "identity", fill = fill) + 
+    geom_line() +
+    geom_point() + 
+    labs(title = "Cummulative variance", y = "cummulative variance [%]", x = "principal component") + 
+    scale_x_discrete(breaks = rownames(iris_eigen), labels = 1:nrow(iris_eigen)) + 
+    geom_text(aes(label = round(y, 1)), vjust = -0.2, hjust = 1)
+
+  variance_barchart
+}
+
+iris_pca <- PCA(select_if(iris, is.numeric))
+iris_eigen <- as.data.frame(get_eigenvalue(iris_pca))
+plot_pc_variance(iris_eigen, x = rownames(iris_eigen), y = iris_eigen$cumulative.variance.percent)
+
+
+
 #' Biplot with factorextra
 #' 
 #' @description `biplot_factoextra` prints a biplot from a prcomp element. 

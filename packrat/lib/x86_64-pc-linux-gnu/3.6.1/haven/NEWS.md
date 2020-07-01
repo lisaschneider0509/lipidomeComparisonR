@@ -1,3 +1,21 @@
+# haven 2.3.1
+
+* Add missing methods so `median()`, `quantile()` and `summary()` work
+  once more (#520).
+  
+* Add missing cast methods (#522).
+
+# haven 2.3.0
+
+* `labelled()` gains the necessary support to work seemlessly in dplyr 1.0.0,
+  tidyr 1.0.0, and other packages that use vctrs (@mikmart, #496).
+
+* `labelled()` vectors now explicitly inherit from the corresponding base
+  types (e.g. integer, double, or character) (#509).
+
+* ReadStat update, including `read_sas()` supports for "any" encoding (#482),
+  and fixes for compiler warnings.
+
 # haven 2.2.0
 
 ## Partial reading
