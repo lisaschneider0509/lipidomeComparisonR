@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>R: Annotation tools for Affymetrix biological metadata</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+<h1> Annotation tools for Affymetrix biological metadata
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;annaffy&rsquo; version 1.58.0</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="#A">A</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#G">G</a>
+<a href="#I">I</a>
+<a href="#M">M</a>
+<a href="#P">P</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#misc">misc</a>
+</p>
+
+
+<h2><a name="A">-- A --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aaf.handler.html">aaf.handler</a></td>
+<td>Handle feching annotation data columns</td></tr>
+<tr><td style="width: 25%;"><a href="aafChromLoc.html">aafChromLoc</a></td>
+<td>Constructor for aafChromLoc objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafChromLoc-class.html">aafChromLoc-class</a></td>
+<td>Class aafChromLoc, a class for gene chromosome locations</td></tr>
+<tr><td style="width: 25%;"><a href="aafChromosome.html">aafChromosome</a></td>
+<td>Constructor for aafChromosome objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafChromosome-class.html">aafChromosome-class</a></td>
+<td>Class aafChromosome, a class for gene chromosome assignments</td></tr>
+<tr><td style="width: 25%;"><a href="aafCytoband.html">aafCytoband</a></td>
+<td>Constructor for aafCytoband objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafCytoband-class.html">aafCytoband-class</a></td>
+<td>Class aafCytoband, a class for cytoband data</td></tr>
+<tr><td style="width: 25%;"><a href="aafDescription.html">aafDescription</a></td>
+<td>Constructor for aafDescription objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafDescription-class.html">aafDescription-class</a></td>
+<td>Class aafDescription, a class for gene descriptions</td></tr>
+<tr><td style="width: 25%;"><a href="aafExpr.html">aafExpr</a></td>
+<td>Sample ExpressionSet used for demonstration purposes</td></tr>
+<tr><td style="width: 25%;"><a href="aafGenBank.html">aafGenBank</a></td>
+<td>Constructor for aafGenBank objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafGenBank-class.html">aafGenBank-class</a></td>
+<td>Class aafGenBank, a class for GenBank accession numbers</td></tr>
+<tr><td style="width: 25%;"><a href="aafGO.html">aafGO</a></td>
+<td>Constructor for aafGO objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafGO-class.html">aafGO-class</a></td>
+<td>Class aafGO, a class for gene ontology ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafGOItem-class.html">aafGOItem</a></td>
+<td>Class aafGOItem, a class for gene ontology id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafGOItem-class.html">aafGOItem-class</a></td>
+<td>Class aafGOItem, a class for gene ontology id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafIntensity-class.html">aafIntensity</a></td>
+<td>Class aafIntensity, a class for gene expression values</td></tr>
+<tr><td style="width: 25%;"><a href="aafIntensity-class.html">aafIntensity-class</a></td>
+<td>Class aafIntensity, a class for gene expression values</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">aafList</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">aafList-class</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafLocusLink.html">aafLocusLink</a></td>
+<td>Constructor for aafLocusLink objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafLocusLink-class.html">aafLocusLink-class</a></td>
+<td>Class aafLocusLink, a class for LocusLink ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathway.html">aafPathway</a></td>
+<td>Constructor for aafPathway objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathway-class.html">aafPathway-class</a></td>
+<td>Class aafPathway, a class for KEGG pathway ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathwayItem-class.html">aafPathwayItem</a></td>
+<td>Class aafPathwayItem, a class for KEGG pathway id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathwayItem-class.html">aafPathwayItem-class</a></td>
+<td>Class aafPathwayItem, a class for KEGG pathway id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafProbe.html">aafProbe</a></td>
+<td>Constructor for aafProbe objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafProbe-class.html">aafProbe-class</a></td>
+<td>Class aafProbe, a class for Probe ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPubMed.html">aafPubMed</a></td>
+<td>Constructor for aafPubMed objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafPubMed-class.html">aafPubMed-class</a></td>
+<td>Class aafPubMed, a class for PubMed ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafSearchGO.html">aafSearchGO</a></td>
+<td>Find probe ids corresponding to GO ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafSearchText.html">aafSearchText</a></td>
+<td>Search metadata annotation text</td></tr>
+<tr><td style="width: 25%;"><a href="aafSigned-class.html">aafSigned</a></td>
+<td>Class aafSigned, a class for signed numerical data</td></tr>
+<tr><td style="width: 25%;"><a href="aafSigned-class.html">aafSigned-class</a></td>
+<td>Class aafSigned, a class for signed numerical data</td></tr>
+<tr><td style="width: 25%;"><a href="aafSymbol.html">aafSymbol</a></td>
+<td>Constructor for aafSymbol objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafSymbol-class.html">aafSymbol-class</a></td>
+<td>Class aafSymbol, a class for gene symbols</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable.html">aafTable</a></td>
+<td>Constructor for aafTable objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">aafTable-class</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTableAnn.html">aafTableAnn</a></td>
+<td>Constructor for aafTable objects from annotation data</td></tr>
+<tr><td style="width: 25%;"><a href="aafTableFrame.html">aafTableFrame</a></td>
+<td>Constructor for aafTable objects from data frames</td></tr>
+<tr><td style="width: 25%;"><a href="aafTableInt.html">aafTableInt</a></td>
+<td>Constructor for aafTable objects from ExpressionSets</td></tr>
+<tr><td style="width: 25%;"><a href="aafUniGene.html">aafUniGene</a></td>
+<td>Constructor for aafUniGene objects</td></tr>
+<tr><td style="width: 25%;"><a href="aafUniGene-class.html">aafUniGene-class</a></td>
+<td>Class aafUniGene, a class for UniGene cluster ids</td></tr>
+</table>
+
+<h2><a name="C">-- C --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aafTable-class.html">colnames</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">colnames-method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">colnames&lt;-</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">colnames&lt;--method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+</table>
+
+<h2><a name="D">-- D --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aafTable-class.html">dim.aafTable</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+</table>
+
+<h2><a name="G">-- G --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="getCSS-methods.html">getCSS</a></td>
+<td>Methods for function getCSS</td></tr>
+<tr><td style="width: 25%;"><a href="aafGO-class.html">getCSS-method</a></td>
+<td>Class aafGO, a class for gene ontology ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">getCSS-method</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathway-class.html">getCSS-method</a></td>
+<td>Class aafPathway, a class for KEGG pathway ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPubMed-class.html">getCSS-method</a></td>
+<td>Class aafPubMed, a class for PubMed ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafSigned-class.html">getCSS-method</a></td>
+<td>Class aafSigned, a class for signed numerical data</td></tr>
+<tr><td style="width: 25%;"><a href="getCSS-methods.html">getCSS-method</a></td>
+<td>Methods for function getCSS</td></tr>
+<tr><td style="width: 25%;"><a href="getCSS-methods.html">getCSS-methods</a></td>
+<td>Methods for function getCSS</td></tr>
+<tr><td style="width: 25%;"><a href="getHTML-methods.html">getHTML</a></td>
+<td>Methods for function getHTML</td></tr>
+<tr><td style="width: 25%;"><a href="aafGO-class.html">getHTML-method</a></td>
+<td>Class aafGO, a class for gene ontology ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafGOItem-class.html">getHTML-method</a></td>
+<td>Class aafGOItem, a class for gene ontology id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">getHTML-method</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathway-class.html">getHTML-method</a></td>
+<td>Class aafPathway, a class for KEGG pathway ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathwayItem-class.html">getHTML-method</a></td>
+<td>Class aafPathwayItem, a class for KEGG pathway id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafPubMed-class.html">getHTML-method</a></td>
+<td>Class aafPubMed, a class for PubMed ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafUniGene-class.html">getHTML-method</a></td>
+<td>Class aafUniGene, a class for UniGene cluster ids</td></tr>
+<tr><td style="width: 25%;"><a href="getHTML-methods.html">getHTML-method</a></td>
+<td>Methods for function getHTML</td></tr>
+<tr><td style="width: 25%;"><a href="getHTML-methods.html">getHTML-methods</a></td>
+<td>Methods for function getHTML</td></tr>
+<tr><td style="width: 25%;"><a href="getTD-methods.html">getTD</a></td>
+<td>Methods for function getTD</td></tr>
+<tr><td style="width: 25%;"><a href="aafGO-class.html">getTD-method</a></td>
+<td>Class aafGO, a class for gene ontology ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafIntensity-class.html">getTD-method</a></td>
+<td>Class aafIntensity, a class for gene expression values</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">getTD-method</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathway-class.html">getTD-method</a></td>
+<td>Class aafPathway, a class for KEGG pathway ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPubMed-class.html">getTD-method</a></td>
+<td>Class aafPubMed, a class for PubMed ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafSigned-class.html">getTD-method</a></td>
+<td>Class aafSigned, a class for signed numerical data</td></tr>
+<tr><td style="width: 25%;"><a href="getTD-methods.html">getTD-method</a></td>
+<td>Methods for function getTD</td></tr>
+<tr><td style="width: 25%;"><a href="getTD-methods.html">getTD-methods</a></td>
+<td>Methods for function getTD</td></tr>
+<tr><td style="width: 25%;"><a href="getText-methods.html">getText</a></td>
+<td>Methods for function getText</td></tr>
+<tr><td style="width: 25%;"><a href="aafCytoband-class.html">getText-method</a></td>
+<td>Class aafCytoband, a class for cytoband data</td></tr>
+<tr><td style="width: 25%;"><a href="aafGO-class.html">getText-method</a></td>
+<td>Class aafGO, a class for gene ontology ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafGOItem-class.html">getText-method</a></td>
+<td>Class aafGOItem, a class for gene ontology id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">getText-method</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathway-class.html">getText-method</a></td>
+<td>Class aafPathway, a class for KEGG pathway ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathwayItem-class.html">getText-method</a></td>
+<td>Class aafPathwayItem, a class for KEGG pathway id elements</td></tr>
+<tr><td style="width: 25%;"><a href="getText-methods.html">getText-method</a></td>
+<td>Methods for function getText</td></tr>
+<tr><td style="width: 25%;"><a href="getText-methods.html">getText-methods</a></td>
+<td>Methods for function getText</td></tr>
+<tr><td style="width: 25%;"><a href="getURL-methods.html">getURL</a></td>
+<td>Methods for function getURL</td></tr>
+<tr><td style="width: 25%;"><a href="aafCytoband-class.html">getURL-method</a></td>
+<td>Class aafCytoband, a class for cytoband data</td></tr>
+<tr><td style="width: 25%;"><a href="aafGO-class.html">getURL-method</a></td>
+<td>Class aafGO, a class for gene ontology ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafGOItem-class.html">getURL-method</a></td>
+<td>Class aafGOItem, a class for gene ontology id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafGenBank-class.html">getURL-method</a></td>
+<td>Class aafGenBank, a class for GenBank accession numbers</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">getURL-method</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafLocusLink-class.html">getURL-method</a></td>
+<td>Class aafLocusLink, a class for LocusLink ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathway-class.html">getURL-method</a></td>
+<td>Class aafPathway, a class for KEGG pathway ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathwayItem-class.html">getURL-method</a></td>
+<td>Class aafPathwayItem, a class for KEGG pathway id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafProbe-class.html">getURL-method</a></td>
+<td>Class aafProbe, a class for Probe ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafPubMed-class.html">getURL-method</a></td>
+<td>Class aafPubMed, a class for PubMed ids</td></tr>
+<tr><td style="width: 25%;"><a href="aafUniGene-class.html">getURL-method</a></td>
+<td>Class aafUniGene, a class for UniGene cluster ids</td></tr>
+<tr><td style="width: 25%;"><a href="getURL-methods.html">getURL-method</a></td>
+<td>Methods for function getURL</td></tr>
+<tr><td style="width: 25%;"><a href="getURL-methods.html">getURL-methods</a></td>
+<td>Methods for function getURL</td></tr>
+</table>
+
+<h2><a name="I">-- I --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="is.annpkg.html">is.annpkg</a></td>
+<td>Determine if packages contain annotation</td></tr>
+</table>
+
+<h2><a name="M">-- M --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aafTable-class.html">merge.aafTable</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+</table>
+
+<h2><a name="P">-- P --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aafTable-class.html">probeids</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">probeids-method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">probeids&lt;-</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">probeids&lt;--method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+</table>
+
+<h2><a name="R">-- R --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aafTable-class.html">rbind.aafTable</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+</table>
+
+<h2><a name="S">-- S --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aafTable-class.html">saveHTML</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">saveHTML-method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">saveText</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">saveText-method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="selectorWidget.html">selectorWidget</a></td>
+<td>Dialog to select items from a list</td></tr>
+<tr><td style="width: 25%;"><a href="aafCytoband-class.html">show-method</a></td>
+<td>Class aafCytoband, a class for cytoband data</td></tr>
+<tr><td style="width: 25%;"><a href="aafGOItem-class.html">show-method</a></td>
+<td>Class aafGOItem, a class for gene ontology id elements</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">show-method</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafPathwayItem-class.html">show-method</a></td>
+<td>Class aafPathwayItem, a class for KEGG pathway id elements</td></tr>
+</table>
+
+<h2><a name="misc">-- misc --</a></h2>
+
+<table width="100%">
+<tr><td style="width: 25%;"><a href="aafTable-class.html">$.aafTable</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafList-class.html">[-method</a></td>
+<td>Class aafList, a specialized subclass of list</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">[-method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+<tr><td style="width: 25%;"><a href="aafTable-class.html">[[-method</a></td>
+<td>Class aafTable, a tabular microarray data class</td></tr>
+</table>
+</body></html>

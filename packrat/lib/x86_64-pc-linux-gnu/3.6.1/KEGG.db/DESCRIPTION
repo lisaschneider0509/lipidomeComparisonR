@@ -1,0 +1,15 @@
+Package: KEGG.db
+Title: A set of annotation maps for KEGG
+Description: A set of annotation maps for KEGG assembled using data from KEGG
+Version: 3.2.3
+Author: Marc Carlson
+Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
+Depends: R (>= 2.7.0), methods, AnnotationDbi (>= 1.34.3)
+Imports: methods, AnnotationDbi
+Suggests: DBI
+License: file LICENSE
+License_restricts_use: yes
+biocViews: AnnotationData, FunctionalAnnotation
+NeedsCompilation: no
+Packaged: 2016-06-02 20:13:16 UTC; ubuntu
+Built: R 3.6.1; ; 2020-03-19 13:57:06 UTC; unix

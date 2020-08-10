@@ -1,0 +1,206 @@
+
+R Under development (unstable) (2019-03-01 r76185) -- "Unsuffered Consequences"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> library("slam")
+> ## <FIXME>
+> ## Remove eventually.
+> suppressWarnings(RNGversion("3.5.0"))
+> ## </FIXME>
+> set.seed(20090626)
+> 
+> ###
+> 
+> x <- sample(0:5, 100, T, prob=c(.8,rep(.04,5)))
+> x <- matrix(as.logical(x), nrow = 20,
++      dimnames = list(rows = 1:20, cols = LETTERS[1:5]))
+> x
+    cols
+rows     A     B     C     D     E
+  1   TRUE FALSE FALSE FALSE FALSE
+  2   TRUE FALSE FALSE FALSE  TRUE
+  3  FALSE  TRUE FALSE FALSE FALSE
+  4  FALSE FALSE FALSE FALSE  TRUE
+  5  FALSE FALSE FALSE FALSE FALSE
+  6  FALSE FALSE FALSE  TRUE FALSE
+  7  FALSE FALSE FALSE FALSE FALSE
+  8  FALSE FALSE FALSE FALSE FALSE
+  9  FALSE  TRUE FALSE FALSE FALSE
+  10  TRUE FALSE FALSE  TRUE FALSE
+  11 FALSE FALSE FALSE FALSE FALSE
+  12  TRUE  TRUE FALSE FALSE FALSE
+  13 FALSE  TRUE FALSE FALSE FALSE
+  14 FALSE FALSE FALSE FALSE FALSE
+  15  TRUE  TRUE  TRUE FALSE FALSE
+  16 FALSE  TRUE FALSE FALSE FALSE
+  17 FALSE FALSE FALSE FALSE FALSE
+  18 FALSE FALSE FALSE FALSE FALSE
+  19 FALSE FALSE  TRUE FALSE FALSE
+  20  TRUE FALSE FALSE FALSE FALSE
+> 
+> xst <- as.simple_triplet_matrix(x)
+> xst
+A 20x5 simple triplet matrix.
+> 
+> identical(rowSums(x), row_sums(xst))
+[1] TRUE
+> identical(colSums(x), col_sums(xst))
+[1] TRUE
+> identical(rowMeans(x), row_means(xst))
+[1] TRUE
+> identical(colMeans(x), col_means(xst))
+[1] TRUE
+> 
+> local({
++     x[] <- as.double(x)
++     xst <- as.simple_triplet_matrix(x)
++     identical(rowSums(x), row_sums(xst))
++ })
+[1] TRUE
+> 
+> local({
++     x[] <- as.complex(x)
++     xst <- as.simple_triplet_matrix(x)
++     identical(rowSums(x), row_sums(xst))
++ })
+[1] TRUE
+> 
+> ## NAs
+> 
+> xna <- x
+> n <- prod(dim(x))
+> is.na(xna) <- sample(seq_len(n), ceiling(n * .1))
+> xna
+    cols
+rows     A     B     C     D     E
+  1   TRUE FALSE FALSE FALSE FALSE
+  2   TRUE FALSE FALSE FALSE  TRUE
+  3  FALSE    NA FALSE FALSE FALSE
+  4  FALSE    NA FALSE FALSE  TRUE
+  5  FALSE FALSE FALSE FALSE FALSE
+  6  FALSE    NA FALSE    NA FALSE
+  7  FALSE FALSE FALSE FALSE FALSE
+  8  FALSE FALSE FALSE FALSE FALSE
+  9  FALSE  TRUE FALSE FALSE FALSE
+  10  TRUE FALSE FALSE  TRUE FALSE
+  11    NA FALSE FALSE FALSE FALSE
+  12  TRUE    NA FALSE FALSE FALSE
+  13 FALSE  TRUE FALSE FALSE FALSE
+  14 FALSE FALSE FALSE FALSE    NA
+  15  TRUE    NA  TRUE FALSE FALSE
+  16 FALSE  TRUE FALSE FALSE FALSE
+  17 FALSE FALSE FALSE FALSE FALSE
+  18 FALSE FALSE FALSE FALSE FALSE
+  19 FALSE FALSE  TRUE FALSE FALSE
+  20  TRUE FALSE    NA    NA FALSE
+> 
+> xnast <- as.simple_triplet_matrix(xna)
+> xnast
+A 20x5 simple triplet matrix.
+> 
+> ## default method
+> identical(rowSums(xna), row_sums(xna))
+[1] TRUE
+> identical(colSums(xna), col_sums(xna))
+[1] TRUE
+> identical(rowMeans(xna), row_means(xna))
+[1] TRUE
+> identical(colMeans(xna), col_means(xna))
+[1] TRUE
+> 
+> identical(rowSums(xna), row_sums(xnast))
+[1] TRUE
+> identical(colSums(xna), col_sums(xnast))
+[1] TRUE
+> identical(rowMeans(xna), row_means(xnast))
+[1] TRUE
+> identical(colMeans(xna), col_means(xnast))
+[1] TRUE
+> 
+> local({
++     xna[] <- as.double(xna)
++     xnast <- as.simple_triplet_matrix(xna)
++     identical(rowSums(xna), row_sums(xnast))
++ })
+[1] TRUE
+> 
+> local({
++     xna[] <- as.complex(xna)
++     xnast <- as.simple_triplet_matrix(xna)
++     identical(rowSums(xna), row_sums(xnast))
++ })
+[1] TRUE
+> 
+> identical(rowSums(xna, na.rm = TRUE), row_sums(xnast, na.rm = TRUE))
+[1] TRUE
+> identical(colSums(xna, na.rm = TRUE), col_sums(xnast, na.rm = TRUE))
+[1] TRUE
+> identical(rowMeans(xna, na.rm = TRUE), row_means(xnast, na.rm = TRUE))
+[1] TRUE
+> identical(colMeans(xna, na.rm = TRUE), col_means(xnast, na.rm = TRUE))
+[1] TRUE
+> 
+> local({
++     xna[] <- as.double(xna)
++     xnast <- as.simple_triplet_matrix(xna)
++     identical(rowSums(xna, na.rm = TRUE), row_sums(xnast, na.rm = TRUE))
++ })
+[1] TRUE
+> 
+> local({
++     xna[] <- as.complex(xna)
++     xnast <- as.simple_triplet_matrix(xna)
++     identical(rowSums(xna, na.rm = TRUE), row_sums(xnast, na.rm = TRUE))
++ })
+[1] TRUE
+> 
+> ## cross-product
+> 
+> identical(tcrossprod(x), tcrossprod_simple_triplet_matrix(xst))
+[1] TRUE
+> identical(tcrossprod(x), tcrossprod_simple_triplet_matrix(xst, x))
+[1] TRUE
+> identical(tcrossprod(x[1:10,], x[11:20,]),
++ 	  tcrossprod_simple_triplet_matrix(xst[1:10,], xst[11:20,]))
+[1] TRUE
+> 
+> x <- matrix(c(1, 0, 0, 2, 1, NA), nrow = 3)
+> x
+     [,1] [,2]
+[1,]    1    2
+[2,]    0    1
+[3,]    0   NA
+> s <- as.simple_triplet_matrix(x)
+> 
+> identical(tcrossprod(x), tcrossprod_simple_triplet_matrix(s))
+[1] TRUE
+> identical(tcrossprod(x), tcrossprod_simple_triplet_matrix(s, x))
+[1] TRUE
+> identical(tcrossprod(x[2:3,], x[1,, drop = FALSE]), 
++ 	  tcrossprod_simple_triplet_matrix(s[2:3,], s[1,]))
+[1] TRUE
+> identical(tcrossprod(x[1,, drop = FALSE], x[2:3,]), 
++ 	  tcrossprod_simple_triplet_matrix(s[1,], s[2:3,]))
+[1] TRUE
+> 
+> ###
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  0.111   0.013   0.116 

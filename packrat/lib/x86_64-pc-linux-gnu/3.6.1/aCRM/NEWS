@@ -1,0 +1,13 @@
+Planned changes in next versions:
+
+* Error handling
+* Many more functions
+---------------------------------------------------------------
+Change log:
+
+*0.1.1 March 2014
+Fixed bug which was due to change in one of the imported packages
+
+*0.1.0 March 2013:
+Package submitted with functions Aggregate, cocktailEnsemble, predict.cocktailEnsemble, imputeMissings
+

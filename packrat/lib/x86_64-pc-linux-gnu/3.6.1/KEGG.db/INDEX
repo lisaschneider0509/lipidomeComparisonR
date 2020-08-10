@@ -1,0 +1,21 @@
+KEGG.db                 Bioconductor annotation data package
+KEGGENZYMEID2GO         An annotation data object that maps Enzyme
+                        Commission numbers to Gene Ontology identifiers
+KEGGEXTID2PATHID        An annotation data object that maps Entrez Gene
+                        or Open Reading Frame identifiers KEGG pathway
+                        identifiers
+KEGGGO2ENZYMEID         An annotation data object that maps Gene
+                        Ontology (GO) identifiers to Enzyme Commission
+                        numbers
+KEGGMAPCOUNTS           Number of mapped keys for the maps in package
+                        KEGG.db
+KEGGPATHID2EXTID        An annotation data object that maps KEGG
+                        pathway identifiers to Entrez Gene or Open
+                        Reading Frame identifiers.
+KEGGPATHID2NAME         An annotation data object that maps KEGG
+                        pathway identifiers to KEGG pathway names
+KEGGPATHNAME2ID         An annotation data object that maps KEGG
+                        pathway names to identifiers for the
+                        corresponding pathway names used by KEGG
+KEGG_dbconn             Collect information about the package
+                        annotation DB

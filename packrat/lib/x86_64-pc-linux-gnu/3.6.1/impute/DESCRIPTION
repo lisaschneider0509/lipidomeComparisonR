@@ -1,0 +1,18 @@
+Package: impute
+Title: impute: Imputation for microarray data
+Version: 1.60.0
+Author: Trevor Hastie, Robert Tibshirani, Balasubramanian Narasimhan,
+        Gilbert Chu
+Description: Imputation for microarray data (currently KNN only)
+Maintainer: Balasubramanian Narasimhan <naras@stat.Stanford.EDU>
+Depends: R (>= 2.10)
+License: GPL-2
+biocViews: Microarray
+git_url: https://git.bioconductor.org/packages/impute
+git_branch: RELEASE_3_10
+git_last_commit: 559cacd
+git_last_commit_date: 2019-10-29
+Date/Publication: 2019-10-29
+NeedsCompilation: yes
+Packaged: 2019-10-29 23:34:02 UTC; biocbuild
+Built: R 3.6.1; x86_64-pc-linux-gnu; 2020-03-27 12:51:09 UTC; unix

@@ -1,0 +1,15 @@
+.code.to.na	code.to.na
+.na.to.snglcode	na.to.sgnlcode
+da.norm	da.norm
+em.norm	em.norm
+getparam.norm	getparam.norm
+imp.norm	imp.norm
+loglik.norm	loglik.norm
+logpost.norm	logpost.norm
+makeparam.norm	makeparam.norm
+mda.norm	mda.norm
+mdata	mdata
+mi.inference	mi.inference
+ninvwish	ninvwish
+prelim.norm	prelim.norm
+rngseed	rngseed

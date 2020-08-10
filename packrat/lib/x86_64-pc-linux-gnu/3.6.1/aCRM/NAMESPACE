@@ -1,0 +1,7 @@
+import(dummies, randomForest, kernelFactory, ada)
+
+export(imputeMissings)
+export(Aggregate)
+export(cocktailEnsemble)
+export(aCRMNews)
+S3method(predict, cocktailEnsemble)

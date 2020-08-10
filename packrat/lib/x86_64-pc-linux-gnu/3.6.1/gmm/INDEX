@@ -1,0 +1,40 @@
+ATEgel                  ATE with Generalized Empirical Likelihood
+                        estimation
+FinRes.baseGmm.res      Method to finalize the result of the
+                        momentEstim method
+Finance                 Returns on selected stocks
+Growth                  Growth Data
+KTest                   Compute the K statistics of Kleibergen
+bread.gmm               Bread for sandwiches
+bwWilhelm               Wilhelm (2015) bandwidth selection
+charStable              The characteristic function of a stable
+                        distribution
+coef.gel                Coefficients of GEL or GMM
+confint.gel             Confidence intervals for GMM or GEL
+estfun.gmmFct           Extracts the empirical moment function
+fitted.gel              Fitted values of GEL and GMM
+formula.gel             Formula method for gel and gmm objects
+gel                     Generalized Empirical Likelihood estimation
+getDat                  Extracting data from a formula
+getImpProb              Implied Probabilities
+getLamb                 Solving for the Lagrange multipliers of
+                        Generalized Empirical Likelihood (GEL)
+getModel.baseGmm        Method for setting the properties of a model
+gmm                     Generalized method of moment estimation
+marginal                Marginal effects Summary
+momentEstim.baseGmm.twoStep
+                        Method for estimating models based on moment
+                        conditions
+nsw                     Lalonde subsample of the National Supported
+                        Work Demonstration Data (NSW)
+plot.gel                Plot Diagnostics for gel and gmm objects
+print.gmm               Printing a gmm or gel object
+residuals.gel           Residuals of GEL or GMM
+smoothG                 Kernel smoothing of a matrix of time series
+specTest                Compute tests of specification
+summary.gmm             Method for object of class gmm or gel
+sysGmm                  Generalized method of moment estimation for
+                        system of equations
+tsls                    Two stage least squares estimation
+vcov.gmm                Variance-covariance matrix of GMM or GEL
+wage                    Labor Data
