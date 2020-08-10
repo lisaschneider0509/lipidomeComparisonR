@@ -1,27 +1,24 @@
 ### load packages
-{library(dplyr) # select part of data
-  library(stringr) # count separators
-  library(data.table) # transpose data frame
-  library(tibble) # data frame manipulation
-  
-  library(tidyverse)
-  library(ggplot2)#, # plots
-  library(viridis) # colorblind save color schemes
-  library(GGally) # paralell plot
-  library(fmsb) # spider chart
-  library(scales) # scale opacity of filling (alpha)
-  library(ggpubr) # multiple plots on one page
-  # library(ggmosaic)
-  
-  library(ggrepel)
-  library(factoextra)
-  library(ggfortify) # biplot with ggplot
-  library(FactoMineR)
-  
-  source("R/lipidome_comparison_dataTransformaions.R")
-  source("R/lipidome_comparison_EDA.R")
-  source("R/lipidome_comparison_pca.R")
-}
+# library(dplyr) # select part of data
+# library(stringr) # count separators
+# library(data.table) # transpose data frame
+# library(tibble) # data frame manipulation
+
+library(tidyverse)
+library(viridis) # colorblind save color schemes
+library(GGally) # paralell plot
+library(fmsb) # spider chart
+library(scales) # scale opacity of filling (alpha)
+library(ggpubr) # multiple plots on one page
+
+library(ggrepel) # keep labels from overlapping
+library(ggfortify) # biplot with ggplot
+
+library(factoextra) # package for multivariate methods
+library(FactoMineR) # package for multivariate methods
+
+source("R/lipidome_comparison_EDA.R")
+source("R/lipidome_comparison_pca.R")
   
 # set ggplot theme
 my_theme <- theme_set(
@@ -37,65 +34,62 @@ my_theme <- theme_set(
 )
 
 ############### set variables #############################
-{
-  project <- "meat"
-  
-  working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
-  setwd(working_directory)
-  
-  data_dir <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data"
-  lipid_list_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_fish_final_raw.csv"
-  annotation_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_annotation.csv"
-  data_matrix_path <- paste("/home/lisa/FH/Masterarbeit/LipidomeComparison/data/", project, "_data_matrix.csv", sep = "")
-  
-  plot_path <- paste(working_directory, "/plots", sep = "")
-}
+project <- "meat"
+
+working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
+setwd(working_directory)
+
+data_dir <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data"
+lipid_list_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_fish_final_raw.csv"
+annotation_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_annotation.csv"
+data_matrix_path <- paste("/home/lisa/FH/Masterarbeit/LipidomeComparison/data/", project, "_data_matrix.csv", sep = "")
+
+plot_path <- paste(working_directory, "/plots", sep = "")
 
 ############## import lipid data #############################
 
-  lipid_data <- read.csv(file = paste(data_dir, "/", project, "_renamed_data.csv", sep = ""), row.names = 1)
-  colnames(lipid_data) <- base::unlist(read.csv(paste(data_dir, "/", project, "_renamed_data.csv", sep = ""), header = FALSE)[1, -1], use.names = FALSE)
+lipid_data <- read.csv(file = paste(data_dir, "/", project, "_renamed_data.csv", sep = ""), row.names = 1)
+colnames(lipid_data) <- base::unlist(read.csv(paste(data_dir, "/", project, "_renamed_data.csv", sep = ""), header = FALSE)[1, -1], use.names = FALSE)
 
 ###################### PCA #############################################
-  lipid_pca <- FactoMineR::PCA(select_if(lipid_data, is.numeric), scale.unit = T, graph = F)
+lipid_pca <- FactoMineR::PCA(select_if(lipid_data, is.numeric), scale.unit = T, graph = F)
   
 ############ get eigenvalues and plot contribution of PCs to variance #####
-  lipid_eigenvalues <- as.data.frame(factoextra::get_eigenvalue(lipid_pca))
+lipid_eigenvalues <- as.data.frame(factoextra::get_eigenvalue(lipid_pca))
 
-{ # scree
-  # eigen_plot <- plot_pc_variance(lipid_eigenvalues[1:10,], 
-  #                                x = seq(1:10), 
-  #                                y = lipid_eigenvalues$eigenvalue[1:10], 
-  #                                title = "Eigenvalue", 
-  #                                ylab = "eigenvalues")
-  # 
-  var_plot <- plot_pc_variance(lipid_eigenvalues[1:10,], 
-                               x = seq(1:10), 
-                               y = lipid_eigenvalues$variance.percent[1:10], 
-                               xlab = "principal components",
-                               title = "Variance [%]")
-  
-  cum_var_plot <- plot_pc_variance(lipid_eigenvalues[1:10,], 
-                                   x = seq(1:10), 
-                                   y = lipid_eigenvalues$cumulative.variance.percent[1:10], 
-                                   title = "Cummulative variance [%]", 
-                                   ylab = NULL,
-                                   xlab = "principal components",
-                                   hjust = 1)
-  
-  scree <- ggarrange(plotlist = list(var_plot, cum_var_plot), 
-                     nrow = 1, 
-                     ncol = 2, 
-                     widths = c(1, 1), 
-                     labels = c("(A)", "(B)"), 
-                     font.label = list(size = 10, 
-                                       color = "grey40", 
-                                       face = "plain", 
-                                       family = "AvantGarde")
-  )
-  ggsave(paste(plot_path, "/", project, "_scree.png", sep = ""), scree, device = "png", 
-         height = 5, width = 10)
-}
+# scree
+# eigen_plot <- plot_pc_variance(lipid_eigenvalues[1:10,], 
+#                                x = seq(1:10), 
+#                                y = lipid_eigenvalues$eigenvalue[1:10], 
+#                                title = "Eigenvalue", 
+#                                ylab = "eigenvalues")
+# 
+var_plot <- plot_pc_variance(lipid_eigenvalues[1:10,], 
+                             x = seq(1:10), 
+                             y = lipid_eigenvalues$variance.percent[1:10], 
+                             xlab = "principal components",
+                             title = "Variance [%]")
+
+cum_var_plot <- plot_pc_variance(lipid_eigenvalues[1:10,], 
+                                 x = seq(1:10), 
+                                 y = lipid_eigenvalues$cumulative.variance.percent[1:10], 
+                                 title = "Cummulative variance [%]", 
+                                 ylab = NULL,
+                                 xlab = "principal components",
+                                 hjust = 1)
+
+scree <- ggpubr::ggarrange(plotlist = list(var_plot, cum_var_plot), 
+                   nrow = 1, 
+                   ncol = 2, 
+                   widths = c(1, 1), 
+                   labels = c("(A)", "(B)"), 
+                   font.label = list(size = 10, 
+                                     color = "grey40", 
+                                     face = "plain", 
+                                     family = "AvantGarde")  )
+
+ggsave(paste(plot_path, "/", project, "_scree.png", sep = ""), scree, device = "png", 
+       height = 5, width = 10)
 
 ################# plot sample scores ###############################
 lipid_biplot <- biplot_ggplot2(lipid_data, 
@@ -104,6 +98,7 @@ lipid_biplot <- biplot_ggplot2(lipid_data,
                                ellipse = TRUE, 
                                scale = TRUE, 
                                title = "Scores plot of meat data")
+
 ggsave(filename = paste(plot_path, "/", project, "_biplot.png", sep = ""), 
        plot = lipid_biplot, 
        device = "png", 
@@ -133,8 +128,6 @@ ggsave(paste(plot_path, "/", project, "_loadings_plot.png", sep = ""),
 
 ################# plot contribution of variables to principal components ############
 
-contribution_to_pc <- plot_contrib_to_pc(lipid_pca)
-
 pc1_loadngs_bar <- fviz_contrib(lipid_pca, choice = "var", axes = 1, top = 10,
                      fill = viridis(n = 1, begin = 0.3), color = viridis(n = 1, begin = 0.3),
                      title = "Contribution to PC1",
@@ -147,7 +140,7 @@ pc2_loadings_bar <- fviz_contrib(lipid_pca, choice = "var", axes = 2, top = 10,
                      linecolor = "black", 
                      xtickslab.rt = 45)
 
-contribution_plot <- ggarrange(plotlist = list(pc1_loadngs_bar, pc2_loadings_bar), 
+contribution_plot <- ggpubr::ggarrange(plotlist = list(pc1_loadngs_bar, pc2_loadings_bar), 
                         nrow = 1, 
                         ncol = 2, 
                         widths = c(1, 1), 

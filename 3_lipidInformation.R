@@ -1,19 +1,18 @@
 ### load packages
-{library(dplyr) # select part of data
-  library(stringr) # count separators
-  library(data.table) # transpose data frame
-  library(tibble) # data frame manipulation
-  
-  library(tidyverse)
-  library(ggplot2)#, # plots
-  library(viridis) # colorblind save color schemes
-  library(ggpubr) # multiple plots on one page
-  library(ggmosaic)
+library(dplyr) # select part of data
+library(stringr) # count separators
+library(data.table) # transpose data frame
+library(tibble) # data frame manipulation
 
-  
-  source("R/lipidome_comparison_dataTransformaions.R")
-  source("R/lipidome_comparison_EDA.R")
-}
+library(tidyverse)
+library(ggplot2)#, # plots
+library(viridis) # colorblind save color schemes
+library(ggpubr) # multiple plots on one page
+library(ggmosaic)
+
+
+source("R/lipidome_comparison_dataTransformaions.R")
+# source("R/lipidome_comparison_EDA.R")
 
 # set ggplot theme
 my_theme <- theme_set(
@@ -92,7 +91,6 @@ my_theme <- theme_set(
   class_table <- as.data.frame(table(lipid_class))
   species_table <- as.data.frame(table(sub(".*\\ ", "", lipid_information$lipidSpecies)))
   alcyl_table <- as.data.frame(table(sub(".*\\ ", "", lipid_information$fattyAcyls)))
-  table(is_pufa)
   
   class_plot <- ggplot(data = lipid_information) +
     geom_mosaic(aes(x = product(lipidClass), fill=lipidClass)) +
@@ -111,7 +109,7 @@ my_theme <- theme_set(
           axis.text.y = element_blank(),
           legend.title = element_blank())
   
-  freq_plot <- ggarrange(plotlist = list(class_plot, pufa_plot),
+  freq_plot <- ggpubr::ggarrange(plotlist = list(class_plot, pufa_plot),
                          ncol = 2,
                          nrow = 1,
                          align = "h",

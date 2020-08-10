@@ -10,34 +10,6 @@ my_theme <- theme_set(
           legend.title = element_text(size = 10, colour = "grey40", family="AvantGarde"))
 )
 
-### Exploratory data analysis  ###
-
-#' Aggregate function results by factor
-#' 
-#' @description 
-#' `calc_by_replicate` takes a data frame calculates the results of a fuction grouped by a factor
-#' @details 
-#' Take a data frame and calculate the results of a fuction grouped by a given factor. 
-#' @param input_df a data frame with at least one factor column
-#' @param factor a string with the column name to group by
-#' @param funct a generic R function, that takes only one argument (e.g. mean(), summary(), etc.)
-#' @param na_action function. Indcates what should happen if there are NA values in the data. c(NULL (default), na.omit).
-#' @examples 
-#' calc_by_replicate(iris, iris$Species, mean)
-calc_by_replicate <- function(input_df, 
-                              factor, 
-                              funct, 
-                              na_action = na.omit
-                              ){ 
-  as.data.frame(
-    aggregate(select_if(input_df, is.numeric), 
-              by=list(factor), 
-              FUN=funct, 
-              na.action = na_action)
-  )
-}
-
-### Graphical exploratory data analysis
 
 #' Print one qqplot for each variable and group
 #' 
