@@ -1,18 +1,11 @@
 ### load packages
-library(dplyr) # select part of data
-library(stringr) # count separators
 library(data.table) # transpose data frame
-library(tibble) # data frame manipulation
-
 library(tidyverse)
-library(ggplot2)#, # plots
 library(viridis) # colorblind save color schemes
 library(ggpubr) # multiple plots on one page
 library(ggmosaic)
 
-
 source("R/lipidome_comparison_dataTransformaions.R")
-# source("R/lipidome_comparison_EDA.R")
 
 # set ggplot theme
 my_theme <- theme_set(
@@ -137,3 +130,4 @@ my_theme <- theme_set(
 
 write.csv(file = paste(data_dir, "/", project, "_renamed_data.csv", sep = ""), x = complete_data)
 write.csv(file = paste(data_dir, "/", project, "_lipid_information.csv", sep = ""), x = lipid_information)
+

@@ -1,23 +1,17 @@
 ### load packages
-# library(dplyr) # select part of data
-# library(stringr) # count separators
-# library(data.table) # transpose data frame
-# library(tibble) # data frame manipulation
-
+library(scales) # scale opacity of filling (alpha)
 library(tidyverse)
 library(viridis) # colorblind save color schemes
 library(GGally) # paralell plot
 library(fmsb) # spider chart
-library(scales) # scale opacity of filling (alpha)
 library(ggpubr) # multiple plots on one page
-
 library(ggrepel) # keep labels from overlapping
 library(ggfortify) # biplot with ggplot
 
 library(factoextra) # package for multivariate methods
 library(FactoMineR) # package for multivariate methods
 
-source("R/lipidome_comparison_EDA.R")
+source("R/lipidome_comparison_visualization.R")
 source("R/lipidome_comparison_pca.R")
   
 # set ggplot theme

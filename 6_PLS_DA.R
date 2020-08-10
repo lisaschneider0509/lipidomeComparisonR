@@ -3,8 +3,9 @@ library(tidyverse)
 library(viridis) # colorblind save color schemes
 library(mixOmics)
 library(ggpubr)
+library(GGally)
 
-source("R/lipidome_comparison_EDA.R")
+source("R/lipidome_comparison_visualization.R")
 source("R/lipidome_comparison_plsDA.R")
 
 # set ggplot theme
@@ -164,10 +165,10 @@ pls_sub2 <- mixOmics::selectVar(new_splsda, comp = 2)$name
 pls1 <- subset(lipid_list, select = c("Group", pls_sub1))
 pls_all <- cbind(pls1, subset(lipid_list, select = c(pls_sub2)))
 
-parallel_plot <- parallel_plot(pls_all, pls_all$Group)
+p_plot <- parallel_plot(pls_all, pls_all$Group)
 
 ggsave(paste(plot_path, "pp_pls_da.pbg", sep ="/" ), 
-       parallel_plot,
+       p_plot,
        device = "png", 
        width = 10, 
        height = 4)

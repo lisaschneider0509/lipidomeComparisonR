@@ -5,16 +5,11 @@
   library(fmsb) # spider chart
   library(scales) # scale opacity of filling (alpha)
   library(ggpubr) # multiple plots on one page
-  
   library(ggrepel)
-  # library(factoextra)
-  # library(ggfortify) # biplot with ggplot
-  # library(corrplot)
-  # library(FactoMineR)
   
   
   source("R/lipidome_comparison_dataTransformaions.R")
-  source("R/lipidome_comparison_EDA.R")
+  source("R/lipidome_comparison_visualization.R")
   source("R/lipidome_comparison_hypothesis_testing.R")
 
 

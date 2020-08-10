@@ -25,7 +25,6 @@ my_theme <- theme_set(
 )
 
 ############### set variables #############################
-{
   project <- "meat"
   
   working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
@@ -37,7 +36,7 @@ my_theme <- theme_set(
   data_matrix_path <- paste("/home/lisa/FH/Masterarbeit/LipidomeComparison/data/", project, "_data_matrix.csv", sep = "")
   
   plot_path <- paste(working_directory, "/plots", sep = "")
-}
+
 
 ############## import lipid data #############################
 

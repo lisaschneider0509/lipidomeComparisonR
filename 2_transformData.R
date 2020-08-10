@@ -1,8 +1,5 @@
 ### load packages
-library(dplyr) # select part of data
-library(stringr) # count separators
 library(data.table) # transpose data frame
-library(crmn)
 library(impute)
 library(imputeLCMD)
 library(tibble) # data frame manipulation
