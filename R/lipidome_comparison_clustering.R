@@ -63,20 +63,20 @@ hclust_performance_plot <- function(input_df,
   performance <- performance[colSums(!is.na(performance)) > 0]
 
 
-  myplot <- ggplot2::ggplot(data=performance, aes(x=hclust_methods, y=optim, fill = dist_methods)) +
-    ggplot2::geom_bar(stat="identity", position=position_dodge()) +
+  myplot <- ggplot2::ggplot(data=performance, ggplot2::aes(x=hclust_methods, y= stats::optim, fill = dist_methods)) +
+    ggplot2::geom_bar(stat="identity", position= ggplot2::position_dodge()) +
     ggplot2::geom_hline(yintercept = max(performance$optim), colour = "grey40", size = 0.3, linetype = "dashed") +
     ggplot2::scale_fill_viridis(discrete = TRUE, name = "Distance function") +
     ggplot2::labs(title="Hierarchical clustering methods - performance",
          subtitle = "",
          x="Hierarchical clustering function", y = "Performance") +
     ggplot2::theme_minimal() +
-    ggplot2::theme(plot.title = element_text(size=12, hjust = 0.5),
-              axis.text.x = element_text(size = 8),
-              axis.title.x = element_text(size = 10, hjust = 0.5),
-              axis.title.y = element_text(size = 10, hjust = 0.5),
-              legend.text = element_text(size = 8),
-              legend.title = element_text(size = 10),
+    ggplot2::theme(plot.title = ggplot2::element_text(size=12, hjust = 0.5),
+              axis.text.x = ggplot2::element_text(size = 8),
+              axis.title.x = ggplot2::element_text(size = 10, hjust = 0.5),
+              axis.title.y = ggplot2::element_text(size = 10, hjust = 0.5),
+              legend.text = ggplot2::element_text(size = 8),
+              legend.title = ggplot2::element_text(size = 10),
               legend.position = "bottom")
 
   myplot
@@ -342,7 +342,7 @@ hclust_heatmap_interactive <- function(input_df,
                         ## general appearance
                         margins = c(60,100,40,20),
                         fontsize_row = 10, fontsize_col = 10,
-                        heatmap_layers = theme(axis.line=element_blank()) #,
+                        heatmap_layers = ggplot2::theme(axis.line= ggplot2::element_blank()) #,
                         # file = html_path
 
   )
