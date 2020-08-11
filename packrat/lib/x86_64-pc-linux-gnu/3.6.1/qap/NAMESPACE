@@ -1,7 +1,0 @@
-useDynLib(qap)
-
-export(
-    "qap",
-    "qap.obj",
-    "read_qaplib"
-)

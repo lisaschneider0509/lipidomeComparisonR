@@ -1,2 +1,0 @@
-importMethodsFrom(AnnotationDbi, mget)
-export(addGeneInfo)

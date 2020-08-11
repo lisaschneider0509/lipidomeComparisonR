@@ -1,8 +1,4 @@
-*scratch*
-*.Rhistory
 .Rproj.user
-plots/
-examples/
 .Rhistory
-.Rprofile
-packrat/lib*/
+.RData
+.Ruserdata
