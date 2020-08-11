@@ -63,10 +63,10 @@ hclust_performance_plot <- function(input_df,
   performance <- performance[colSums(!is.na(performance)) > 0]
 
 
-  myplot <- ggplot2::ggplot(data=performance, ggplot2::aes(x=hclust_methods, y= stats::optim, fill = dist_methods)) +
+  myplot <- ggplot2::ggplot(data=performance, ggplot2::aes(x=hclust_methods, y = optim, fill = dist_methods)) +
     ggplot2::geom_bar(stat="identity", position= ggplot2::position_dodge()) +
     ggplot2::geom_hline(yintercept = max(performance$optim), colour = "grey40", size = 0.3, linetype = "dashed") +
-    ggplot2::scale_fill_viridis(discrete = TRUE, name = "Distance function") +
+    viridis::scale_fill_viridis(discrete = TRUE, name = "Distance function") +
     ggplot2::labs(title="Hierarchical clustering methods - performance",
          subtitle = "",
          x="Hierarchical clustering function", y = "Performance") +
@@ -349,7 +349,7 @@ hclust_heatmap_interactive <- function(input_df,
 
   if(out_path != "none"){
     print(paste("Saving to ", out_file, sep = ""))
-    heatmaply::orca(hheatmap, file = out_file, width = 16 * 96, height = 8 * 96)
+    plotly::orca(hheatmap, file = out_file, width = 16 * 96, height = 8 * 96)
   }
 
   hheatmap

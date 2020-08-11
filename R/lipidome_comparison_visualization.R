@@ -468,7 +468,7 @@ simple_barchart <- function(data_frame, x, y, fill = "#35608DFF",
     ggplot2::labs(title = title,
          x = xlab,
          y = ylab) +
-    viridis::scale_fill_viridis_d() +
+    viridis::scale_fill_viridis(discrete = TRUE) +
     ggplot2::theme(plot.title = ggplot2::element_text(size=12, hjust = 0.5, family="AvantGarde"),
                    axis.text.x = ggplot2::element_text(size = 8, colour = "grey40", family="AvantGarde"),
                    axis.text.y = ggplot2::element_text(size = 8, colour = "grey40", family="AvantGarde"),

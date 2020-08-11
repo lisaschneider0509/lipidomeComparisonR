@@ -48,8 +48,8 @@ plot_pls_scores <- function(pls_da_obj,
                colour = "grey60") +
     ggplot2::labs(title = title, x = xlab, y = ylab) +
 
-    viridis::scale_color_viridis_d() +
-    viridis::scale_fill_viridis_d(alpha = 0.1) +
+    viridis::scale_color_viridis(discrete = TRUE) +
+    viridis::scale_fill_viridis(alpha = 0.1, discrete = TRUE) +
     ggplot2::theme_minimal() +
     ggplot2::theme(plot.title = ggplot2::element_text(size=12, hjust = 0.5),
           axis.text.x = ggplot2::element_text(size = 8),
