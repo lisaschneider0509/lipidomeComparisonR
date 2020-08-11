@@ -1,7 +1,0 @@
-confusionMatrix	confusionMatrix
-simulateData	simulateData
-topTable	topTable
-topTable,elnet-method	topTable-methods
-topTable,glmnet-method	topTable-methods
-topTable,lognet-method	topTable-methods
-topTable-methods	topTable-methods

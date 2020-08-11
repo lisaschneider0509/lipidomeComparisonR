@@ -1,22 +1,31 @@
+### install packages
+if (!requireNamespace("tidyverse", quietly = TRUE)){
+  install.packages("tidyverse")}
+if (!requireNamespace("data.table", quietly = TRUE)){
+  install.packages("data.table")}
+if (!requireNamespace("impute", quietly = TRUE)){
+  install.packages("impute")}
+if (!requireNamespace("imputeLCMD", quietly = TRUE)){
+  install.packages("imputeLCMD")}
+if (!requireNamespace("lipidomeComparison", quietly = TRUE)){
+  devtools::install_local("lipidomeComparison_0.1.0.tar.gz")}  
+
 ### load packages
 library(data.table) # transpose data frame
 library(impute)
 library(imputeLCMD)
-library(tibble) # data frame manipulation
 library(tidyverse)
-
-source("R/lipidome_comparison_dataTransformaions.R")
-  # source("R/lipidome_comparison_EDA.R")
+library(lipidomeComparison)
 
 ############### set variables #############################
 project <- "meat"
 
-working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
+working_directory <- "/home/lisa/FH/Masterarbeit/meatLipidomics"
 setwd(working_directory)
 
-data_dir <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data"
-lipid_list_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_fish_final_raw.csv"
-annotation_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_annotation.csv"
+data_dir <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data"
+lipid_list_path <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data/meat_fish_final_raw.csv"
+annotation_path <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data/meat_annotation.csv"
 
 plot_path <- paste(working_directory, "/plots", sep = "")
 

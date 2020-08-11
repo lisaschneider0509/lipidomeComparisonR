@@ -1,18 +1,27 @@
+### install packages
+if (!requireNamespace("tidyverse", quietly = TRUE)){
+  install.packages("tidyverse")}
+if (!requireNamespace("ggpubr", quietly = TRUE)){
+  install.packages("ggpubr")}
+if (!requireNamespace("ggfortify", quietly = TRUE)){
+  install.packages("ggfortify")}
+if (!requireNamespace("FactoMineR", quietly = TRUE)){
+  install.packages("FactoMineR")}
+if (!requireNamespace("factoextra", quietly = TRUE)){
+  install.packages("factoextra")}
+
+if (!requireNamespace("lipidomeComparison", quietly = TRUE)){
+  devtools::install_local("lipidomeComparison_0.1.0.tar.gz")}  
+
 ### load packages
-library(scales) # scale opacity of filling (alpha)
 library(tidyverse)
-library(viridis) # colorblind save color schemes
-library(GGally) # paralell plot
-library(fmsb) # spider chart
-library(ggpubr) # multiple plots on one page
-library(ggrepel) # keep labels from overlapping
-library(ggfortify) # biplot with ggplot
+library(ggpubr)
+library(ggfortify)
+library(FactoMineR)
+library(factoextra)
+library(lipidomeComparison) # biplot with ggplot
 
-library(factoextra) # package for multivariate methods
-library(FactoMineR) # package for multivariate methods
 
-source("R/lipidome_comparison_visualization.R")
-source("R/lipidome_comparison_pca.R")
   
 # set ggplot theme
 my_theme <- theme_set(
@@ -30,13 +39,13 @@ my_theme <- theme_set(
 ############### set variables #############################
 project <- "meat"
 
-working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
+working_directory <- "/home/lisa/FH/Masterarbeit/meatLipidomics"
 setwd(working_directory)
 
-data_dir <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data"
-lipid_list_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_fish_final_raw.csv"
-annotation_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_annotation.csv"
-data_matrix_path <- paste("/home/lisa/FH/Masterarbeit/LipidomeComparison/data/", project, "_data_matrix.csv", sep = "")
+data_dir <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data"
+lipid_list_path <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data/meat_fish_final_raw.csv"
+annotation_path <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data/meat_annotation.csv"
+data_matrix_path <- paste("/home/lisa/FH/Masterarbeit/meatLipidomics/data/", project, "_data_matrix.csv", sep = "")
 
 plot_path <- paste(working_directory, "/plots", sep = "")
 

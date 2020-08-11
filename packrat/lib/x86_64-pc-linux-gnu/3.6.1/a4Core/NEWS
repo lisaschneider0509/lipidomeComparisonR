@@ -1,9 +1,0 @@
-1.1.3
-  o remove duplicated code for glmnet type of objects; add topTable method for 'elnet' objects
-    and accompanying print method print.topTableElnet
-1.1.2
-  o add topTable method for 'lognet' objects and accompanying print method print.topTableLognet
-1.1.1
-  o on BioConductor
-0.0-1
-  o first introduction as separate package

@@ -1,10 +1,23 @@
+### install packages
+if (!requireNamespace("tidyverse", quietly = TRUE)){
+  install.packages("tidyverse")}
+if (!requireNamespace("ggpubr", quietly = TRUE)){
+  install.packages("ggpubr")}
+if (!requireNamespace("viridis", quietly = TRUE)){
+  install.packages("viridis")}
+if (!requireNamespace("BiocManager::", quietly = TRUE)){
+  install.packages("BiocManager::")}
+if (!requireNamespace("lipidr", quietly = TRUE)){
+  BiocManager::install("lipidr")}
+
+if (!requireNamespace("lipidomeComparison", quietly = TRUE)){
+  devtools::install_local("lipidomeComparison_0.1.0.tar.gz")} 
+
+
 library(tidyverse)
 library(lipidr)
 library(ggpubr)
 library(viridis)
-library(ggrepel)
-
-source("R/lipidome_comparison_hypothesis_testing.R")
 
 
 # set ggplot theme
@@ -23,15 +36,16 @@ my_theme <- theme_set(
 ############### set variables #############################
 project <- "meat"
 
-working_directory <- "/home/lisa/FH/Masterarbeit/LipidomeComparison"
+working_directory <- "/home/lisa/FH/Masterarbeit/meatLipidomics"
 setwd(working_directory)
 
-data_dir <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data"
-lipid_list_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_fish_final_raw.csv"
-annotation_path <- "/home/lisa/FH/Masterarbeit/LipidomeComparison/data/meat_annotation.csv"
-data_matrix_path <- paste("/home/lisa/FH/Masterarbeit/LipidomeComparison/data/", project, "_data_matrix.csv", sep = "")
+data_dir <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data"
+lipid_list_path <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data/meat_fish_final_raw.csv"
+annotation_path <- "/home/lisa/FH/Masterarbeit/meatLipidomics/data/meat_annotation.csv"
+data_matrix_path <- paste("/home/lisa/FH/Masterarbeit/meatLipidomics/data/", project, "_data_matrix.csv", sep = "")
 
 plot_path <- paste(working_directory, "/plots", sep = "")
+
 
 
 ################### read data ###############

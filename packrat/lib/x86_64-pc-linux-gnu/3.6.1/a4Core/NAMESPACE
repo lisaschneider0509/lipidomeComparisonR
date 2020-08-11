@@ -1,5 +1,0 @@
-export(confusionMatrix, simulateData)
-S3method(print, topTableGlmnet)
-S3method(print, topTableLognet)
-S3method(print, topTableElnet)
-exportMethods(topTable)
