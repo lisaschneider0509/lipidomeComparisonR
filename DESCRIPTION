@@ -14,6 +14,15 @@ Imports:
     data.table,
     dplyr,
     tibble,
-    magrittr
+    magrittr,
+    viridis,
+    reshape,
+    ggplot2,
+    psych,
+    GGally,
+    stats,
+    plotly,
+    fmsb,
+    scales
 Depends: 
     R (>= 2.10)
