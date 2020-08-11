@@ -11,6 +11,6 @@
 iris
 }
 \description{
-Edgar Anderson's Iris Data
+Edgar Anderson's Iris Data. See
 }
 \keyword{datasets}

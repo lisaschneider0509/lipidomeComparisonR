@@ -11,7 +11,7 @@ plot_ratio_barcharts(data_frame, subset_vector, group_column)
 
 \item{subset_vector}{vector of column names from the data_frame.}
 
-\item{grop_column}{string. Name of the column to group by.}
+\item{group_column}{string. Name of the column to group by.}
 }
 \description{
 `plot_ratio_barcharts` plots the ratios of a list of values from a data frame by group.

@@ -7,14 +7,13 @@
 matrix_heatmap(input_df, title = "", interactive = FALSE, out_path = "none")
 }
 \arguments{
+\item{input_df}{data frame or matrix. For exaple correlation or matrix of ratios or differences.}
+
+\item{title}{string. Main title of the plot. Default: no title}
+
 \item{interactive}{logical. Print heatmap to device (FALSE, default) or open interactive heatmap in browser (TRUE).}
 
 \item{out_path}{string. Path to save heatmap to png. If out_path is empty the heatmap is printed to the device.}
-
-\item{input_matrix}{matrix. For exaple correlation or matrix of ratios or differences.}
-}
-\value{
-matrix_heatmap
 }
 \description{
 `matrix_heatmap` displays values of a matrix in a heatmap

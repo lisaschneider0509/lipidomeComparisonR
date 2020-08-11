@@ -12,7 +12,7 @@
 
 #' The iris data set from R's data sets.
 #'
-#' Edgar Anderson's Iris Data
+#' Edgar Anderson's Iris Data. See
 #'
 #' @format A data frame with 150 cases (rows) and 5 variables (columns)
 #' \describe{
@@ -21,3 +21,6 @@
 #'   }
 #' }
 "iris"
+
+#' Motor Trend Car Road Tests from R datasets
+"mtcars"

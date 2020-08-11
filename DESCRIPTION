@@ -23,6 +23,11 @@ Imports:
     stats,
     plotly,
     fmsb,
-    scales
+    scales,
+    factoextra,
+    FactoMineR,
+    ggfortify,
+    corrplot,
+    ggrepel
 Depends: 
     R (>= 2.10)

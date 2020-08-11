@@ -19,13 +19,21 @@ parallel_plot(
 \arguments{
 \item{input_df}{data frame.}
 
+\item{group_vector}{vector. Vector (part of the data frame), to sort by.}
+
 \item{out_path}{string. Path to save parallel plot to png. If out_path is empty the parallel plot is printed to the device.}
 
+\item{title}{string. Main Title. Default = "Parallel plot"}
+
+\item{x_title}{string. Title of x-axis. Default: none}
+
+\item{y_title}{string. Title of y-axis. Default: none}
+
+\item{legend_title}{string. Title of legend. Default: none}
+
+\item{col_names}{vector. Column names of the data frame and lables on the x-axis. Default: colnames(input_df)}
+
 \item{scale}{string. Method used to scale the variable. Default = "globalminmax". Options: "std", "robust", "uniminmax", "globalminmax", "center", "centerObs". For more information on the options see help(ggparcoord).}
-
-\item{groupColumn}{numeric. Column to sort by.}
-
-\item{titles}{a vector of strings. 1. Main Title. Default = "Parallel plot", 2. X-axis title. Default = "". 3. Y-axis title. Default = ""}
 }
 \description{
 `parallel_plot` prints a paralell coordinates plot using a data frame

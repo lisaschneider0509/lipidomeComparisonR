@@ -206,8 +206,9 @@ correlation_plot <- function(input_df, method = "spearman", out_path = "none"){
 #' Matrix heatmap
 #'
 #' @description `matrix_heatmap` displays values of a matrix in a heatmap
-#' @param input_matrix matrix. For exaple correlation or matrix of ratios or differences.
+#' @param input_df data frame or matrix. For exaple correlation or matrix of ratios or differences.
 #' @param interactive logical. Print heatmap to device (FALSE, default) or open interactive heatmap in browser (TRUE).
+#' @param title string. Main title of the plot. Default: no title
 #' @param out_path string. Path to save heatmap to png. If out_path is empty the heatmap is printed to the device.
 #' @export
 #' @examples
@@ -291,9 +292,13 @@ calculate_ratio_matrix <- function(input_vector,
 #' @description `parallel_plot` prints a paralell coordinates plot using a data frame
 #' @details This function takes a data frame with at least one factor variable and displays it in a pralell coordinates plot, where the different groups are color coded. This plot works best for <= 10 parameters.
 #' @param input_df data frame.
-#' @param groupColumn numeric. Column to sort by.
+#' @param group_vector vector. Vector (part of the data frame), to sort by.
 #' @param out_path string. Path to save parallel plot to png. If out_path is empty the parallel plot is printed to the device.
-#' @param titles a vector of strings. 1. Main Title. Default = "Parallel plot", 2. X-axis title. Default = "". 3. Y-axis title. Default = ""
+#' @param title string. Main Title. Default = "Parallel plot"
+#' @param x_title string. Title of x-axis. Default: none
+#' @param y_title string. Title of y-axis. Default: none
+#' @param legend_title string. Title of legend. Default: none
+#' @param col_names vector. Column names of the data frame and lables on the x-axis. Default: colnames(input_df)
 #' @param scale string. Method used to scale the variable. Default = "globalminmax". Options: "std", "robust", "uniminmax", "globalminmax", "center", "centerObs". For more information on the options see help(ggparcoord).
 #' @export
 #' @examples
@@ -359,7 +364,8 @@ parallel_plot <- function(input_df,
 #' the order of parameters. If the data has large differences in size, normalizing or scaling the data is necessary.
 #' Doesn't work with non normal data.}
 #' @param minimized_df data frame. A data frame that contains only one value per group and variable. Most often this will be a data frame of means calculated from another data frame.
-#' @param tile string. Main title of the chart. Default = "Spider chart"
+#' @param title string. Main title of the chart. Default = "Spider chart"
+#' @param legend_lab vector. Lables. Default: rownames(minimized_df)
 #' @param out_path string. Path to save spider chart to png. If out_path is empty, the spider chart is printed to the device.
 #' @export
 #' @examples
@@ -393,7 +399,7 @@ spider_chart <- function(minimized_df,
     colors_in = scales::alpha(colors_border, alpha = 0.1)
 
 
-    par(mfrow = c(1, 1)) # radar chart
+    graphics::par(mfrow = c(1, 1)) # radar chart
     fmsb::radarchart(spider_data,
                axistype=1,
                caxislabels = c(spider_min,
@@ -482,11 +488,13 @@ simple_barchart <- function(data_frame, x, y, fill = "#35608DFF",
 #' @description `plot_ratio_barcharts` plots the ratios of a list of values from a data frame by group.
 #' @param data_frame data frame. From aggregate() function.
 #' @param subset_vector vector of column names from the data_frame.
-#' @param grop_column string. Name of the column to group by.
+#' @param group_column string. Name of the column to group by.
 #' @example
 #' aggregated_iris <- aggregate(iris[-5], by = list(iris$Species), FUN = mean)
 #' plot_ratio_barcharts(aggregated_iris, c("Sepal.Length", "Sepal.Width", "Petal.Length"), group_column = "Group.1")
-plot_ratio_barcharts <- function(data_frame, subset_vector, group_column){
+plot_ratio_barcharts <- function(data_frame,
+                                 subset_vector,
+                                 group_column){
   mysubset <- subset(data_frame, select = subset_vector)
   myratios <- lapply(1:nrow(mysubset),
                      function(i) calculate_ratio_matrix(as.numeric(mysubset[i, ]),

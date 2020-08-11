@@ -14,9 +14,11 @@ spider_chart(
 \arguments{
 \item{minimized_df}{data frame. A data frame that contains only one value per group and variable. Most often this will be a data frame of means calculated from another data frame.}
 
-\item{out_path}{string. Path to save spider chart to png. If out_path is empty, the spider chart is printed to the device.}
+\item{title}{string. Main title of the chart. Default = "Spider chart"}
 
-\item{tile}{string. Main title of the chart. Default = "Spider chart"}
+\item{legend_lab}{vector. Lables. Default: rownames(minimized_df)}
+
+\item{out_path}{string. Path to save spider chart to png. If out_path is empty, the spider chart is printed to the device.}
 }
 \description{
 `spider chart` takes a minimized data frame (one value per group) and prints a spider chart
