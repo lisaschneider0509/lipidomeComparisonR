@@ -28,6 +28,9 @@ Imports:
     FactoMineR,
     ggfortify,
     corrplot,
-    ggrepel
+    ggrepel,
+    dendextend,
+    gplots,
+    heatmaply
 Depends: 
     R (>= 2.10)

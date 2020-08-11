@@ -24,3 +24,6 @@
 
 #' Motor Trend Car Road Tests from R datasets
 "mtcars"
+
+#' Violent Crime Rates by US State from R datasets
+"USArrests"
